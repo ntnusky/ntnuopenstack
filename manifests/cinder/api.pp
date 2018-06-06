@@ -1,13 +1,13 @@
 # Installs and configures the cinder API
 class ntnuopenstack::cinder::api {
-  $region = hiera('ntnusky::region')
-  $confhaproxy = hiera('ntnusky::haproxy::configure::backend', true)
+  $region = hiera('ntnuopenstack::region')
+  $confhaproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
 
-  $keystone_password = hiera('ntnusky::cinder::keystone::password')
+  $keystone_password = hiera('ntnuopenstack::cinder::keystone::password')
 
   # Determine the keystone endpoint
-  $admin_endpoint = hiera('ntnusky::endpoint::admin', undef)
-  $public_endpoint = hiera('ntnusky::endpoint::public', undef)
+  $admin_endpoint = hiera('ntnuopenstack::endpoint::admin', undef)
+  $public_endpoint = hiera('ntnuopenstack::endpoint::public', undef)
   $keystone_public_ip = hiera('profile::api::keystone::public::ip', false)
   $keystone_admin_ip = hiera('profile::api::keystone::admin::ip', false)
   $keystone_admin  = pick($admin_endpoint, "http://${keystone_admin_ip}")

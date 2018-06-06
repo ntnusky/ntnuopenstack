@@ -6,10 +6,10 @@ class ntnuopenstack::cinder::haproxy::management {
   include ::ntnuopenstack::cinder::firewall::haproxy
   include ::ntnuopenstack::cinder::haproxy::backend::oldmanagement
 
-  $ipv4 = hiera('profile::haproxy::management::ipv4')
-  $ipv6 = hiera('profile::haproxy::management::ipv6', false)
-  $certificate = hiera('profile::haproxy::management::apicert', false)
-  $certfile = hiera('profile::haproxy::services::management::certfile',
+  $ipv4 = hiera('ntnuopenstack::endpoint::admin::ipv4')
+  $ipv6 = hiera('ntnuopenstack::endpoint::admin::ipv6', false)
+  $certificate = hiera('ntnuopenstack::endpoint::admin::cert', false)
+  $certfile = hiera('ntnuopenstack::endpoint::admin::cert::path',
                     '/etc/ssl/private/haproxy.managementapi.pem')
 
   if($certificate) {

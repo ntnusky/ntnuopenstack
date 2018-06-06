@@ -1,13 +1,13 @@
 # Configures glance registry and backend
 class ntnuopenstack::glance::registry {
-  $region = hiera('profile::region')
-  $keystone_password = hiera('profile::glance::keystone::password')
-  $confhaproxy = hiera('profile::openstack::haproxy::configure::backend', true)
+  $region = hiera('ntnuopenstack::region')
+  $keystone_password = hiera('ntnuopenstack::glance::keystone::password')
+  $confhaproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
 
   # Determine the correct endpoint for keystone
-  $admin_endpoint = hiera('profile::openstack::endpoint::admin', undef)
-  $internal_endpoint = hiera('profile::openstack::endpoint::internal', undef)
-  $public_endpoint = hiera('profile::openstack::endpoint::public', undef)
+  $admin_endpoint = hiera('ntnuopenstack::endpoint::admin', undef)
+  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', undef)
+  $public_endpoint = hiera('ntnuopenstack::endpoint::public', undef)
   $keystone_public_ip = hiera('profile::api::keystone::public::ip', '127.0.0.1')
   $keystone_admin_ip = hiera('profile::api::keystone::admin::ip', '127.0.0.1')
   $keystone_admin    = pick($admin_endpoint, "http://${keystone_admin_ip}")
@@ -24,7 +24,7 @@ class ntnuopenstack::glance::registry {
   }
 
   # Determine how we connect to the database
-  $mysql_pass = hiera('profile::mysql::glancepass')
+  $mysql_pass = hiera('ntnuopenstack::glance::mysql::password')
   $mysql_old = hiera('profile::mysql::ip', undef)
   $mysql_new = hiera('profile::haproxy::management::ipv4', undef)
   $mysql_ip = pick($mysql_new, $mysql_old)

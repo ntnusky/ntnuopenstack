@@ -4,8 +4,8 @@ class ntnuopenstack::neutron::ml2::config {
   $tenant_network_strategy = hiera($k)
 
   if($tenant_network_strategy == 'vlan') {
-    $vlan_low = hiera('profile::neutron::vlan_low')
-    $vlan_high = hiera('profile::neutron::vlan_high')
+    $vlan_low = hiera('ntnuopenstack::neutron::vlan_low')
+    $vlan_high = hiera('ntnuopenstack::neutron::vlan_high')
 
     class { '::neutron::plugins::ml2':
       type_drivers         => ['vlan', 'flat'],
@@ -14,8 +14,8 @@ class ntnuopenstack::neutron::ml2::config {
       network_vlan_ranges  => ["physnet-vlan:${vlan_low}:${vlan_high}"],
     }
   } elsif($tenant_network_strategy == 'vxlan') {
-    $vni_low = hiera('profile::neutron::vni_low')
-    $vni_high = hiera('profile::neutron::vni_high')
+    $vni_low = hiera('ntnuopenstack::neutron::vni_low')
+    $vni_high = hiera('ntnuopenstack::neutron::vni_high')
 
     class { '::neutron::plugins::ml2':
       type_drivers         => ['vxlan', 'flat'],

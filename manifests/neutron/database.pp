@@ -1,7 +1,7 @@
 # Sets up the neutron database
 class ntnuopenstack::neutron::database {
-  $password = hiera('profile::mysql::neutronpass')
-  $allowed_hosts = hiera('profile::mysql::allowed_hosts')
+  $password = hiera('ntnuopenstack::neutron::mysql::password')
+  $allowed_hosts = hiera('ntnuopenstack::mysql::allowed_hosts')
 
   class { '::neutron::db::mysql' :
     password      => $password,

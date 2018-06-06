@@ -1,7 +1,7 @@
 # Installs and configures the neutron api
 class ntnuopenstack::neutron::api {
   # Determine the correct database settings
-  $mysql_password = hiera('profile::mysql::neutronpass')
+  $mysql_password = hiera('ntnuopenstack::neutron::mysql::password')
   $mysql_old = hiera('profile::mysql::ip', undef)
   $mysql_new = hiera('profile::haproxy::management::ipv4', undef)
   $mysql_ip = pick($mysql_new, $mysql_old)
@@ -21,9 +21,9 @@ class ntnuopenstack::neutron::api {
   $nova_admin_ip      = hiera('profile::api::nova::admin::ip', false)
 
   # Retrieve api urls, if they exist. 
-  $admin_endpoint    = hiera('profile::openstack::endpoint::admin', undef)
-  $internal_endpoint = hiera('profile::openstack::endpoint::internal', undef)
-  $public_endpoint   = hiera('profile::openstack::endpoint::public', undef)
+  $admin_endpoint    = hiera('ntnuopenstack::endpoint::admin', undef)
+  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', undef)
+  $public_endpoint   = hiera('ntnuopenstack::endpoint::public', undef)
 
   # Determine which endpoint to use
   $keystone_admin    = pick($admin_endpoint, "http://${keystone_admin_ip}")
@@ -31,13 +31,13 @@ class ntnuopenstack::neutron::api {
   $nova_internal     = pick($internal_endpoint, "http://${nova_admin_ip}")
 
   # Openstack settings
-  $nova_password = hiera('profile::nova::keystone::password')
-  $neutron_password = hiera('profile::neutron::keystone::password')
-  $service_providers = hiera('profile::neutron::service_providers')
-  $region = hiera('profile::region')
+  $nova_password = hiera('ntnuopenstack::nova::keystone::password')
+  $neutron_password = hiera('ntnuopenstack::neutron::keystone::password')
+  $service_providers = hiera('ntnuopenstack::neutron::service_providers')
+  $region = hiera('ntnuopenstack::region')
 
   # Should haproxy be configured?
-  $confhaproxy = hiera('profile::openstack::haproxy::configure::backend', true)
+  $confhaproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
 
   require ::ntnuopenstack::neutron::base
   include ::ntnuopenstack::neutron::firewall::api

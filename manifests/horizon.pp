@@ -1,22 +1,22 @@
 # Installs and configures horizon
 class ntnuopenstack::horizon {
   # Determine if SSL should be configured
-  $ssl_cert = hiera('profile::horizon::ssl_cert', false)
+  $ssl_cert = hiera('ntnuopenstack::horizon::ssl_cert', false)
 
   # Determine if haproxy should be configured
-  $haproxy = hiera('profile::openstack::haproxy::configure::backend', true)
+  $haproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
 
   # Try to retrieve IP-addresses for keystone and horizon.
   $horizon_ip = hiera('profile::api::horizon::public::ip', false)
   $keystone_ip = hiera('profile::api::keystone::public::ip', false)
 
   # Try to retrieve endpoint-names
-  $keystone_endpoint = hiera('profile::openstack::endpoint::internal', undef)
+  $keystone_endpoint = hiera('ntnuopenstack::endpoint::internal', undef)
 
   # Horizon settings
-  $server_name = hiera('profile::horizon::server_name')
-  $django_secret = hiera('profile::horizon::django_secret')
-  $ldap_name = hiera('profile::keystone::ldap_backend::name')
+  $server_name = hiera('ntnuopenstack::horizon::server_name')
+  $django_secret = hiera('ntnuopenstack::horizon::django_secret')
+  $ldap_name = hiera('ntnuopenstack::keystone::ldap_backend::name')
 
   # Try to retrieve memcache addresses.
   $memcache_servers = hiera_array('profile::memcache::servers', false)

@@ -1,6 +1,6 @@
 # Installs and configures the keystone identity API.
 class ntnuopenstack::keystone {
-  $confhaproxy = hiera('profile::openstack::haproxy::configure::backend', true)
+  $confhaproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
   $keystoneip = hiera('profile::api::keystone::admin::ip', false)
 
   require ::profile::baseconfig::firewall

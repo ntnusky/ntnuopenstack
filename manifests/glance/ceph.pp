@@ -1,6 +1,6 @@
 # Configures ceph for glance use
 class ntnuopenstack::glance::ceph {
-  $glance_key = hiera('profile::ceph::glance_key')
+  $glance_key = hiera('ntnuopenstack::glance::ceph::key')
 
   require ::profile::ceph::client
 

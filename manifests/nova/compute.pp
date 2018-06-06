@@ -2,14 +2,14 @@
 class ntnuopenstack::nova::compute {
   # Determine the VNCProxy-settings
   $nova_public = hiera('profile::api::nova::public::ip', '127.0.0.1')
-  $host = hiera('profile::horizon::server_name', undef)
+  $host = hiera('ntnuopenstack::horizon::server_name', undef)
   $vncproxy_host = pick($host, $nova_public)
-  $port = hiera('profile::vncproxy::port', 6080)
-  $cert = hiera('profile::haproxy::services::apicert', false)
+  $port = hiera('ntnuopenstack::nova::vncproxy::port', 6080)
+  $cert = hiera('ntnuopenstack::endpoint::public::cert', false)
 
   $management_if = hiera('profile::interfaces::management')
   $management_ip = getvar("::ipaddress_${management_if}")
-  $nova_uuid = hiera('profile::ceph::nova_uuid')
+  $nova_uuid = hiera('ntnuopenstack::nova::ceph::uuid')
 
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::nova::base::compute

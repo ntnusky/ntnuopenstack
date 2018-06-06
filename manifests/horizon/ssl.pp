@@ -1,8 +1,8 @@
 # Installs the ssl certificates used by horizon
 class ntnuopenstack::horizon::ssl {
-  $ssl_key = hiera('profile::horizon::ssl_key')
-  $ssl_cert = hiera('profile::horizon::ssl_cert')
-  $ssl_ca = hiera('profile::horizon::ssl_ca')
+  $ssl_key = hiera('ntnuopenstack::horizon::ssl_key')
+  $ssl_cert = hiera('ntnuopenstack::horizon::ssl_cert')
+  $ssl_ca = hiera('ntnuopenstack::horizon::ssl_ca')
 
   file { '/etc/ssl/private/horizon.key':
     ensure  => file,

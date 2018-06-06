@@ -1,14 +1,14 @@
 # Configures the keystone endpoint
 class ntnuopenstack::keystone::endpoint {
-  $region = hiera('profile::region')
+  $region = hiera('ntnuopenstack::region')
   $admin_ip = hiera('profile::api::keystone::admin::ip', '127.0.0.1')
   $public_ip = hiera('profile::api::keystone::public::ip', '127.0.0.1')
 
-  $admin_endpoint = hiera('profile::openstack::endpoint::admin',
+  $admin_endpoint = hiera('ntnuopenstack::endpoint::admin',
       "http://${admin_ip}")
-  $internal_endpoint = hiera('profile::openstack::endpoint::internal',
+  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal',
       "http://${admin_ip}")
-  $public_endpoint = hiera('profile::openstack::endpoint::public',
+  $public_endpoint = hiera('ntnuopenstack::endpoint::public',
       "http://${public_ip}")
 
   # We need to define the endpoints on the keystone hosts, so include the other

@@ -1,13 +1,13 @@
 # Basic nova configuration for compute nodes.
 class ntnuopenstack::nova::base::compute {
   # Determine correct mysql settings
-  $mysql_password = hiera('profile::mysql::novapass')
+  $mysql_password = hiera('ntnuopenstack::nova::mysql::password')
   $mysql_old = hiera('profile::mysql::ip', undef)
   $mysql_new = hiera('profile::haproxy::management::ipv4', undef)
   $mysql_ip = pick($mysql_new, $mysql_old)
   $database_connection = "mysql://nova:${mysql_password}@${mysql_ip}/nova"
 
-  $internal_endpoint = hiera('profile::openstack::endpoint::internal', undef)
+  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', undef)
   if($internal_endpoint) {
     $glance_internal = "${internal_endpoint}:9292"
   } else {
@@ -23,8 +23,8 @@ class ntnuopenstack::nova::base::compute {
   $rabbit_pass = hiera('profile::rabbitmq::rabbitpass')
   $rabbit_ip = hiera('profile::rabbitmq::ip')
 
-  $placement_password = hiera('profile::placement::keystone::password')
-  $region = hiera('profile::region')
+  $placement_password = hiera('ntnuopenstack::nova::placement::keysone::password')
+  $region = hiera('ntnuopenstack::region')
 
   require ::ntnuopenstack::repo
   include ::ntnuopenstack::nova::sudo

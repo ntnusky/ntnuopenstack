@@ -4,15 +4,15 @@ class ntnuopenstack::heat::base {
   $keystone_admin_ip  = hiera('profile::api::keystone::admin::ip', '127.0.0.1')
 
   # Retrieve api urls, if they exist. 
-  $admin_endpoint    = hiera('profile::openstack::endpoint::admin', undef)
-  $internal_endpoint = hiera('profile::openstack::endpoint::internal', undef)
+  $admin_endpoint    = hiera('ntnuopenstack::endpoint::admin', undef)
+  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', undef)
 
   # Determine which endpoint to use
   $keystone_admin    = pick($admin_endpoint, "http://${keystone_admin_ip}")
   $keystone_internal = pick($internal_endpoint, "http://${keystone_admin_ip}")
 
   # Misc other settings
-  $region = hiera('profile::region')
+  $region = hiera('ntnuopenstack::region')
 
   # Determine memcahce-server-addresses
   $memcached_ip = hiera('profile::memcache::ip', undef)
@@ -28,7 +28,7 @@ class ntnuopenstack::heat::base {
   $rabbit_pass = hiera('profile::rabbitmq::rabbitpass')
 
   # Database-connection
-  $mysql_pass = hiera('profile::mysql::heatpass')
+  $mysql_pass = hiera('ntnuopenstack::heat::mysql::password')
   $mysql_old = hiera('profile::mysql::ip', undef)
   $mysql_new = hiera('profile::haproxy::management::ipv4', undef)
   $mysql_ip = pick($mysql_new, $mysql_old)

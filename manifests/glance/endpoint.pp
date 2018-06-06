@@ -1,11 +1,11 @@
 # Registers the glance endpoint in keystone
 class ntnuopenstack::glance::endpoint {
-  $region = hiera('profile::region')
-  $keystone_password = hiera('profile::glance::keystone::password')
+  $region = hiera('ntnuopenstack::region')
+  $keystone_password = hiera('ntnuopenstack::glance::keystone::password')
 
-  $admin_endpoint = hiera('profile::openstack::endpoint::admin', undef)
-  $internal_endpoint = hiera('profile::openstack::endpoint::internal', undef)
-  $public_endpoint = hiera('profile::openstack::endpoint::public', undef)
+  $admin_endpoint = hiera('ntnuopenstack::endpoint::admin', undef)
+  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', undef)
+  $public_endpoint = hiera('ntnuopenstack::endpoint::public', undef)
 
   $glance_admin_ip = hiera('profile::api::glance::admin::ip', '127.0.0.1')
   $glance_public_ip = hiera('profile::api::glance::public::ip', '127.0.0.1')

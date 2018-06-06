@@ -1,10 +1,10 @@
 # Installs and configures the neutron agents
 class ntnuopenstack::neutron::agents {
-  $adminlb_ip = hiera('profile::haproxy::management::ipv4', undef)
+  $adminlb_ip = hiera('ntnuopenstack::endpoint::admin::ipv4', undef)
   $admin_ip = hiera('profile::api::neutron::admin::ip', undef)
-  $dns_servers = hiera('profile::nova::dns')
-  $neutron_vrrp_pass = hiera('profile::neutron::vrrp_pass')
-  $nova_metadata_secret = hiera('profile::nova::sharedmetadataproxysecret')
+  $dns_servers = hiera('ntnuopenstack::neutron::dns')
+  $neutron_vrrp_pass = hiera('ntnuopenstack::neutron::vrrp_pass')
+  $nova_metadata_secret = hiera('ntnuopenstack::nova::sharedmetadataproxysecret')
 
   require ::ntnuopenstack::neutron::base
   require ::ntnuopenstack::neutron::firewall::l3agent

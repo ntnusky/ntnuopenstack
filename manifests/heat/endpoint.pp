@@ -5,9 +5,9 @@ class ntnuopenstack::heat::endpoint {
   $heat_public_ip = hiera('profile::api::heat::public::ip', '127.0.0.1')
 
   # Retrieve api urls, if they exist. 
-  $admin_endpoint    = hiera('profile::openstack::endpoint::admin', undef)
-  $internal_endpoint = hiera('profile::openstack::endpoint::internal', undef)
-  $public_endpoint   = hiera('profile::openstack::endpoint::public', undef)
+  $admin_endpoint    = hiera('ntnuopenstack::endpoint::admin', undef)
+  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', undef)
+  $public_endpoint   = hiera('ntnuopenstack::endpoint::public', undef)
 
   # Determine which endpoint to use
   $heat_admin     = pick($admin_endpoint, "http://${heat_admin_ip}")
@@ -15,8 +15,8 @@ class ntnuopenstack::heat::endpoint {
   $heat_public    = pick($public_endpoint, "http://${heat_public_ip}")
 
   # Other settings
-  $mysql_pass = hiera('profile::mysql::heatpass')
-  $region = hiera('profile::region')
+  $mysql_pass = hiera('ntnuopenstack::heat::mysql::password')
+  $region = hiera('ntnuopenstack::region')
 
   require ::ntnuopenstack::repo
 

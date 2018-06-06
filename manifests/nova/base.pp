@@ -1,7 +1,7 @@
 # Performs basic nova configuration.
 class ntnuopenstack::nova::base {
   # Determine correct mysql IP
-  $mysql_password = hiera('profile::mysql::novapass')
+  $mysql_password = hiera('ntnuopenstack::nova::mysql::password')
   $mysql_old = hiera('profile::mysql::ip', undef)
   $mysql_new = hiera('profile::haproxy::management::ipv4', undef)
   $mysql_ip = pick($mysql_new, $mysql_old)
@@ -15,7 +15,7 @@ class ntnuopenstack::nova::base {
   $rabbit_pass = hiera('profile::rabbitmq::rabbitpass')
   $rabbit_ip = hiera('profile::rabbitmq::ip')
 
-  $internal_endpoint = hiera('profile::openstack::endpoint::internal', false)
+  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', false)
   if($internal_endpoint) {
     $glance_internal = "${internal_endpoint}:9292"
   } else {

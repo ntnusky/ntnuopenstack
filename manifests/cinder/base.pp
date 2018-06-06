@@ -1,7 +1,7 @@
 # Configures the base cinder config
 class ntnuopenstack::cinder::base {
   # Determine where the database resides 
-  $mysql_pass = hiera('ntnusky::cinder::mysql::password')
+  $mysql_pass = hiera('ntnuopenstack::cinder::mysql::password')
   $mysql_old = hiera('profile::mysql::ip', undef)
   $mysql_new = hiera('profile::haproxy::management::ipv4', undef)
   $mysql_ip = pick($mysql_new, $mysql_old)

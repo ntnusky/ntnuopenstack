@@ -1,6 +1,6 @@
 # Installs and configure neutron services
 class ntnuopenstack::neutron::services {
-  $fw_driver = hiera('profile::neutron::fwaas_driver')
+  $fw_driver = hiera('ntnuopenstack::neutron::fwaas_driver')
 
   require ::ntnuopenstack::neutron::base
   require ::ntnuopenstack::repo

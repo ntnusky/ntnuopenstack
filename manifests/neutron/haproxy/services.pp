@@ -6,10 +6,10 @@ class ntnuopenstack::neutron::haproxy::services {
   include ::ntnuopenstack::neutron::firewall::haproxy
   include ::ntnuopenstack::neutron::haproxy::backend::oldpublic
 
-  $ipv4 = hiera('profile::haproxy::services::ipv4')
-  $ipv6 = hiera('profile::haproxy::services::ipv6', false)
-  $certificate = hiera('profile::haproxy::services::apicert', false)
-  $certfile = hiera('profile::haproxy::services::apicert::certfile',
+  $ipv4 = hiera('ntnuopenstack::endpoint::public::ipv4')
+  $ipv6 = hiera('ntnuopenstack::endpoint::public::ipv6', false)
+  $certificate = hiera('ntnuopenstack::endpoint::public::cert', false)
+  $certfile = hiera('ntnuopenstack::endpoint::public::cert::certfile',
                     '/etc/ssl/private/haproxy.servicesapi.pem')
 
   if($certificate) {

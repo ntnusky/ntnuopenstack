@@ -2,7 +2,7 @@
 # be used to include heat-servers not administerd by the same
 # puppet-infrastructure in the rotation.
 class ntnuopenstack::heat::haproxy::backend::oldmanagement {
-  $controllers = hiera_hash('profile::openstack::oldcontrollers', false)
+  $controllers = hiera_hash('ntnuopenstack::oldcontrollers', false)
 
   if($controllers) {
     $names = keys($controllers)

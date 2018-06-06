@@ -1,6 +1,6 @@
 # Installs the heat API
 class ntnuopenstack::heat::api {
-  $confhaproxy = hiera('profile::openstack::haproxy::configure::backend', true)
+  $confhaproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
   $heat_admin_ip = hiera('profile::api::heat::admin::ip', false)
 
   require ::ntnuopenstack::heat::base

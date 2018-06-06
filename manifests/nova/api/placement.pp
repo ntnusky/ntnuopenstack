@@ -1,10 +1,10 @@
 # Installs and configures Placement API
 class ntnuopenstack::nova::api::placement {
-  $placement_password = hiera('profile::placement::keystone::password')
-  $region = hiera('profile::region')
-  $confhaproxy = hiera('profile::openstack::haproxy::configure::backend', true)
+  $placement_password = hiera('ntnuopenstack::nova::placement::keysone::password')
+  $region = hiera('ntnuopenstack::region')
+  $confhaproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
 
-  $admin_endpoint = hiera('profile::openstack::endpoint::admin', undef)
+  $admin_endpoint = hiera('ntnuopenstack::endpoint::admin', undef)
   $keystone_admin_ip = hiera('profile::api::keystone::admin::ip', '127.0.0.1')
   $keystone_admin    = pick($admin_endpoint, "http://${keystone_admin_ip}")
 

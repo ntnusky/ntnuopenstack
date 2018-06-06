@@ -1,9 +1,9 @@
 # Configures nova to use neutron for networking.
 class ntnuopenstack::nova::neutron {
-  $neutron_password = hiera('profile::neutron::keystone::password')
-  $region = hiera('profile::region')
+  $neutron_password = hiera('ntnuopenstack::neutron::keystone::password')
+  $region = hiera('ntnuopenstack::region')
 
-  $internal_endpoint = hiera('profile::openstack::endpoint::internal', undef)
+  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', undef)
 
   $keystone_admin_ip = hiera('profile::api::keystone::admin::ip', '127.0.0.1')
   $keystone_internal = pick($internal_endpoint, "http://${keystone_admin_ip}")

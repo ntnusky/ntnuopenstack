@@ -1,7 +1,7 @@
 # Configures ceph to facilitate for cinder, and for cinder to use ceph for
 # storage.
 class ntnuopenstack::cinder::ceph {
-  $ceph_key = hiera('ntnusky::cinder::ceph::key')
+  $ceph_key = hiera('ntnuopenstack::cinder::ceph::key')
 
   require ::profile::ceph::client
 

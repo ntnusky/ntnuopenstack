@@ -2,11 +2,11 @@
 class ntnuopenstack::heat::engine {
   # Determine which endpoint to use
   $heat_admin_ip = hiera('profile::api::heat::admin::ip', '127.0.0.1')
-  $internal_endpoint = hiera('profile::openstack::endpoint::internal', undef)
+  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', undef)
   $heat_internal  = pick($internal_endpoint, "http://${heat_admin_ip}")
 
   # Retrieve other settings:
-  $auth_encryption_key = hiera('profile::heat::auth_encryption_key')
+  $auth_encryption_key = hiera('ntnuopenstack::heat::auth_encryption_key')
 
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::heat::base

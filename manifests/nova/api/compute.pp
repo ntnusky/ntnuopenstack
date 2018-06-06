@@ -10,19 +10,19 @@ class ntnuopenstack::nova::api::compute {
   }
 
   # Determine if haproxy or keepalived should be configured
-  $confhaproxy = hiera('profile::openstack::haproxy::configure::backend', true)
+  $confhaproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
   $nova_admin_ip = hiera('profile::api::nova::admin::ip', false)
 
   # Retrieve openstack parameters
-  $nova_password = hiera('profile::nova::keystone::password')
-  $nova_secret = hiera('profile::nova::sharedmetadataproxysecret')
-  $sync_db = hiera('profile::nova::sync_db')
-  $region = hiera('profile::region')
+  $nova_password = hiera('ntnuopenstack::nova::keystone::password')
+  $nova_secret = hiera('ntnuopenstack::nova::sharedmetadataproxysecret')
+  $sync_db = hiera('ntnuopenstack::nova::sync_db')
+  $region = hiera('ntnuopenstack::region')
 
   # Determine the keystone endpoint.
   $keystone_admin_ip = hiera('profile::api::keystone::admin::ip', '127.0.0.1')
-  $admin_endpoint    = hiera('profile::openstack::endpoint::admin', undef)
-  $internal_endpoint = hiera('profile::openstack::endpoint::internal', undef)
+  $admin_endpoint    = hiera('ntnuopenstack::endpoint::admin', undef)
+  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', undef)
   $keystone_admin    = pick($admin_endpoint, "http://${keystone_admin_ip}")
   $keystone_internal = pick($internal_endpoint, "http://${keystone_admin_ip}")
 

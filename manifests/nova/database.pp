@@ -1,7 +1,7 @@
 # Creates the databases for nova.
 class ntnuopenstack::nova::database {
-  $mysql_password = hiera('profile::mysql::novapass')
-  $allowed_hosts = hiera('profile::mysql::allowed_hosts')
+  $mysql_password = hiera('ntnuopenstack::nova::mysql::password')
+  $allowed_hosts = hiera('ntnuopenstack::mysql::allowed_hosts')
 
   class { '::nova::db::mysql' :
     password      => $mysql_password,

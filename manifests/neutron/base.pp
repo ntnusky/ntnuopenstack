@@ -1,7 +1,7 @@
 # Installs the base neutron services.
 class ntnuopenstack::neutron::base {
-  $service_plugins = hiera('profile::neutron::service_plugins')
-  $mtu = hiera('profile::neutron::mtu', undef)
+  $service_plugins = hiera('ntnuopenstack::neutron::service_plugins')
+  $mtu = hiera('ntnuopenstack::neutron::mtu', undef)
   $rabbit_user = hiera('profile::rabbitmq::rabbituser')
   $rabbit_pass = hiera('profile::rabbitmq::rabbitpass')
   $rabbit_ip = hiera('profile::rabbitmq::ip')

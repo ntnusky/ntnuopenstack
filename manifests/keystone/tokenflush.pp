@@ -1,7 +1,7 @@
 # Installs the script and cronjob for flushing tokens from the keystone
 # database.
 class ntnuopenstack::keystone::tokenflush {
-  $token_flush_host = hiera('profile::keystone::tokenflush::host')
+  $token_flush_host = hiera('ntnuopenstack::keystone::tokenflush::host')
 
   file { '/usr/local/bin/keystone-token-flush.sh':
     ensure => file,

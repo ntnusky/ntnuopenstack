@@ -1,7 +1,7 @@
 # Creates the database for keystone
 class ntnuopenstack::keystone::database {
-  $password = hiera('profile::mysql::keystonepass')
-  $allowed_hosts = hiera('profile::mysql::allowed_hosts')
+  $password = hiera('ntnuopenstack::keystone::mysql::password')
+  $allowed_hosts = hiera('ntnuopenstack::mysql::allowed_hosts')
 
   require ::ntnuopenstack::repo
 

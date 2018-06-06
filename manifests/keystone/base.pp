@@ -1,19 +1,19 @@
 # Performs the base configuration of keystone 
 class ntnuopenstack::keystone::base {
-  $region = hiera('profile::region')
+  $region = hiera('ntnuopenstack::region')
   $admin_ip = hiera('profile::api::keystone::admin::ip', '127.0.0.1')
   $public_ip = hiera('profile::api::keystone::public::ip', '127.0.0.1')
 
-  $admin_endpoint = hiera('profile::openstack::endpoint::admin',
+  $admin_endpoint = hiera('ntnuopenstack::endpoint::admin',
       "http://${admin_ip}")
-  $public_endpoint = hiera('profile::openstack::endpoint::public',
+  $public_endpoint = hiera('ntnuopenstack::endpoint::public',
       "http://${public_ip}")
 
-  $admin_email = hiera('profile::keystone::admin_email')
-  $admin_pass = hiera('profile::keystone::admin_password')
-  $admin_token = hiera('profile::keystone::admin_token')
+  $admin_email = hiera('ntnuopenstack::keystone::admin_email')
+  $admin_pass = hiera('ntnuopenstack::keystone::admin_password')
+  $admin_token = hiera('ntnuopenstack::keystone::admin_token')
 
-  $mysql_password = hiera('profile::mysql::keystonepass')
+  $mysql_password = hiera('ntnuopenstack::keystone::mysql::password')
   $mysql_old = hiera('profile::mysql::ip', undef)
   $mysql_new = hiera('profile::haproxy::management::ipv4', undef)
   $mysql_ip = pick($mysql_new, $mysql_old)
@@ -21,7 +21,7 @@ class ntnuopenstack::keystone::base {
   $db_con = "mysql://keystone:${mysql_password}@${mysql_ip}/keystone"
 
   $cache_servers = hiera_array('profile::memcache::servers', false)
-  $confhaproxy = hiera('profile::openstack::haproxy::configure::backend', true)
+  $confhaproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
 
   require ::ntnuopenstack::repo
   include ::ntnuopenstack::keystone::tokenflush
