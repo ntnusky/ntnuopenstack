@@ -1,0 +1,41 @@
+{
+  "name": "ntnuopenstack",
+  "version": "0.0.1",
+  "author": "NTNU IIK",
+  "summary": "Installs, configures, and manages openstack.",
+  "license": "",
+  "source": "https://github.com/ntnusky/ntnuopenstack",
+  "project_page": "https://github.com/ntnusky/ntnuopenstack",
+  "dependencies": [
+    { "name":"opentsack/ceph","version_requirement":">= 2.4.0 < 3.0.0" },
+    { "name":"opentsack/cinder","version_requirement":">= 9.6.0 < 10.0.0" },
+    { "name":"opentsack/glance","version_requirement":">= 9.7.0 < 10.0.0" },
+    { "name":"opentsack/heat","version_requirement":">= 9.6.0 < 10.0.0" },
+    { "name":"opentsack/horizon","version_requirement":">= 9.8.0 < 10.0.0" },
+    { "name":"opentsack/keystone","version_requirement":">= 9.6.0 < 10.0.0" },
+    { "name":"opentsack/neutron","version_requirement":">= 9.6.0 < 10.0.0" },
+    { "name":"opentsack/nova","version_requirement":">= 9.7.0 < 10.0.0" },
+    { "name":"opentsack/openstack_extras","version_requirement":">= 9.6.0 < 10.0.0" },
+    { "name":"opentsack/openstacklib","version_requirement":">= 9.6.0 < 10.0.0" },
+    { "name":"opentsack/oslo","version_requirement":">= 9.6.0 < 10.0.0" },
+    { "name":"opentsack/vswitch","version_requirement":">= 5.6.0 < 6.0.0" },
+    { "name":"opentsack/stdlib","version_requirement":">= 4.15.0 < 5.0.0" },
+    { "name":"opentsack/inifile","version_requirement":">= 1.5.0 < 2.0.0" }
+  ],
+  "data_provider": "hiera",
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "16.04"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 3.8.0 < 6.0.0"
+    }
+  ],
+  "description": "Configures puppet openstack"
+}

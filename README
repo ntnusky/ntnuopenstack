@@ -1,0 +1,7 @@
+# ntnuopenstack
+
+1. [Module Description ](#module-description)
+
+## Module description
+
+The ntnuopenstack module installs and configures openstack services and api's.
