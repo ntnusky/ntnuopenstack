@@ -5,7 +5,7 @@ class ntnuopenstack::maillist {
     ensure  => file,
     owner   => 'root',
     mode    => '0755',
-    content => template('profile/generateMailList.erb'),
+    content => template('ntnuopenstack/generateMailList.erb'),
   }
 
   cron { 'maillist':
