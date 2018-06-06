@@ -3,3 +3,5 @@ ntnuopenstack::neutron::external::networks: "%{lookup('profile::neutron::externa
 ntnuopenstack::neutron::external::<network>::bridge: "%{lookup('profile::neutron::external::<network>::bridge')}"
 ntnuopenstack::neutron::external::<network>::interface: "%{lookup('profile::neutron::external::<network>::interface')}"
 ntnuopenstack::neutron::external::<network>::vlanid: "%{lookup('profile::neutron::external::<network>::vlanid')}"
+
+ntnuopenstack::haproxy::configure::backend: "%{lookup('profile::openstack::haproxy::configure::backend')}"
