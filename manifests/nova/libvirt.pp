@@ -25,7 +25,7 @@ class ntnuopenstack::nova::libvirt {
 
   file { '/etc/libvirt/qemu.conf':
     ensure => present,
-    source => 'puppet:///modules/profile/qemu.conf',
+    source => 'puppet:///modules/ntnuopenstack/qemu.conf',
     owner  => 'root',
     group  => 'root',
     mode   => '0644',

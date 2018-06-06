@@ -5,7 +5,7 @@ class ntnuopenstack::keystone::tokenflush {
 
   file { '/usr/local/bin/keystone-token-flush.sh':
     ensure => file,
-    source => 'puppet:///modules/profile/openstack/keystone-token-flush.sh',
+    source => 'puppet:///modules/ntnuopenstack/openstack/keystone-token-flush.sh',
     mode   => '0555',
   }
 
