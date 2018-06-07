@@ -23,6 +23,9 @@ class ntnuopenstack::keystone::base {
   $cache_servers = hiera_array('profile::memcache::servers', false)
   $confhaproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
 
+  $credential_keys = hiera_hash('ntnuopenstack::keystone::credential::keys')
+  $fernet_keys = hiera_hash('ntnuopenstack::keystone::fernet::keys')
+
   require ::ntnuopenstack::repo
   include ::ntnuopenstack::keystone::tokenflush
 
@@ -51,8 +54,8 @@ class ntnuopenstack::keystone::base {
     admin_endpoint               => "${admin_endpoint}:35357/",
     public_endpoint              => "${public_endpoint}:5000/",
     token_provider               => 'uuid',
-    enable_fernet_setup          => true,
-    enable_credential_setup      => true,
+    fernet_keys                  => $fernet_keys,
+    credential_keys              => $credential_keys,
     enable_proxy_headers_parsing => $confhaproxy,
     using_domain_config          => true,
     *                            => $keystone_opts,
