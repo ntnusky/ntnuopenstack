@@ -53,7 +53,7 @@ class ntnuopenstack::keystone::base {
     admin_bind_host              => '0.0.0.0',
     admin_endpoint               => "${admin_endpoint}:35357/",
     public_endpoint              => "${public_endpoint}:5000/",
-    token_provider               => 'uuid',
+    token_provider               => 'fernet',
     fernet_keys                  => $fernet_keys,
     enable_fernet_setup          => true,
     credential_keys              => $credential_keys,
