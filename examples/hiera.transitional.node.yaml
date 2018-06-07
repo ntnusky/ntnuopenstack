@@ -1,7 +1,7 @@
 ---
-ntnuopenstack::neutron::external::networks: "%{lookup('profile::neutron::external::networks')}"
-ntnuopenstack::neutron::external::<network>::bridge: "%{lookup('profile::neutron::external::<network>::bridge')}"
-ntnuopenstack::neutron::external::<network>::interface: "%{lookup('profile::neutron::external::<network>::interface')}"
-ntnuopenstack::neutron::external::<network>::vlanid: "%{lookup('profile::neutron::external::<network>::vlanid')}"
+ntnuopenstack::neutron::external::networks: "%{alias('profile::neutron::external::networks')}"
+ntnuopenstack::neutron::external::<network>::bridge: "%{alias('profile::neutron::external::<network>::bridge')}"
+ntnuopenstack::neutron::external::<network>::interface: "%{alias('profile::neutron::external::<network>::interface')}"
+ntnuopenstack::neutron::external::<network>::vlanid: "%{alias('profile::neutron::external::<network>::vlanid')}"
 
-ntnuopenstack::haproxy::configure::backend: "%{lookup('profile::openstack::haproxy::configure::backend')}"
+ntnuopenstack::haproxy::configure::backend: "%{alias('profile::openstack::haproxy::configure::backend')}"
