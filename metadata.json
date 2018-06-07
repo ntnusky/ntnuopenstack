@@ -1,6 +1,6 @@
 {
   "name": "ntnuopenstack",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "author": "NTNU IIK",
   "summary": "Installs, configures, and manages openstack.",
   "license": "",
