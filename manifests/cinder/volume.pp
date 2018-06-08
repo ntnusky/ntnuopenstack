@@ -4,6 +4,7 @@ class ntnuopenstack::cinder::volume {
   $ceph_uuid = hiera('ntnuopenstack::nova::ceph::uuid')
 
   require ::ntnuopenstack::repo
+  require ::ntnuopenstack::clients
   require ::ntnuopenstack::cinder::base
   contain ::ntnuopenstack::cinder::ceph
 
