@@ -16,7 +16,22 @@ class ntnuopenstack::cinder::volume {
     rbd_secret_uuid => $ceph_uuid,
   }
 
-  cinder_type {'rbd-images':
+  cinder_type {'Slow50':
+    ensure     => present,
+    properties => ['volume_backend_name=rbd-images'],
+  }
+  
+  cinder_type {'Normal':
+    ensure     => present,
+    properties => ['volume_backend_name=rbd-images'],
+  }
+  
+  cinder_type {'Fast':
+    ensure     => present,
+    properties => ['volume_backend_name=rbd-images'],
+  }
+  
+  cinder_type {'Unlimited':
     ensure     => present,
     properties => ['volume_backend_name=rbd-images'],
   }
