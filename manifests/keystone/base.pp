@@ -36,7 +36,7 @@ class ntnuopenstack::keystone::base {
 
     $keystone_opts = {
       'memcache_servers' => $memcache,
-      'cache_backend'    => 'keystone.cache.memcache_pool',
+      'cache_backend'    => 'dogpile.cache.memcached',
       'cache_enabled'    => true,
       'token_caching'    => true,
     }
