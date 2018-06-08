@@ -2,21 +2,17 @@
 class ntnuopenstack::neutron::base {
   $service_plugins = hiera('ntnuopenstack::neutron::service_plugins')
   $mtu = hiera('ntnuopenstack::neutron::mtu', undef)
-  $rabbit_user = hiera('profile::rabbitmq::rabbituser')
-  $rabbit_pass = hiera('profile::rabbitmq::rabbitpass')
-  $rabbit_ip = hiera('profile::rabbitmq::ip')
+  $transport_url = hiera('ntnuopenstack::transport::url')
 
   require ::ntnuopenstack::repo
   include ::ntnuopenstack::neutron::sudo
 
   class { '::neutron':
-    core_plugin             => 'ml2',
     allow_overlapping_ips   => true,
-    service_plugins         => $service_plugins,
+    core_plugin             => 'ml2',
+    default_transport_url   => $transport_url,
     dhcp_agents_per_network => 2,
-    rabbit_password         => $rabbit_pass,
-    rabbit_user             => $rabbit_user,
-    rabbit_host             => $rabbit_ip,
     global_physnet_mtu      => $mtu,
+    service_plugins         => $service_plugins,
   }
 }

@@ -1,13 +1,8 @@
 # Glance rabbit configuration 
 class ntnuopenstack::glance::rabbit {
-  $rabbit_ip = hiera('profile::rabbitmq::ip')
-  $rabbit_user = hiera('profile::rabbitmq::rabbituser')
-  $rabbit_pass = hiera('profile::rabbitmq::rabbitpass')
-
+  $transport_url = hiera('ntnuopenstack::transport::url')
 
   class { '::glance::notify::rabbitmq':
-    rabbit_password => $rabbit_pass,
-    rabbit_userid   => $rabbit_user,
-    rabbit_host     => $rabbit_ip,
+    default_transport_url => $transport_url,
   }
 }

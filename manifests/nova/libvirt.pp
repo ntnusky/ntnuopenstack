@@ -17,10 +17,7 @@ class ntnuopenstack::nova::libvirt {
     libvirt_disk_cachemodes => [ 'network=writeback' ],
   }
 
-  $common = 'VIR_MIGRATE_UNDEFINE_SOURCE,VIR_MIGRATE_PEER2PEER,VIR_MIGRATE_LIVE'
   class { '::nova::migration::libvirt':
-    live_migration_flag  => $common,
-    block_migration_flag => "${common}, VIR_MIGRATE_NON_SHARED_INC",
   }
 
   file { '/etc/libvirt/qemu.conf':

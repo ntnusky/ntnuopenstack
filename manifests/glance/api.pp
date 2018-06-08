@@ -58,7 +58,6 @@ class ntnuopenstack::glance::api {
     auth_strategy                => '',
     database_connection          => $database_connection,
     enable_proxy_headers_parsing => $confhaproxy,
-    keystone_password            => $keystone_password,
     known_stores                 => ['glance.store.rbd.Store'],
     os_region_name               => $region,
     registry_host                => '127.0.0.1',
