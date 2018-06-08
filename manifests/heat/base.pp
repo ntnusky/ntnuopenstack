@@ -43,22 +43,9 @@ class ntnuopenstack::heat::base {
   }
 
   class { '::heat':
-    # Auth_strategy is blank to prevent ::heat from including 
-    # ::heat::keystone::authtoken
-    auth_strategy         => '',
     database_connection   => $database_connection,
     default_transport_url => $transport_url,
     region_name           => $region,
     *                     => $extra_options,
-  }
-
-  class { '::heat::keystone::authtoken':
-    password            => $mysql_pass,
-    auth_url            => "${keystone_admin}:35357",
-    auth_uri            => "${keystone_internal}:5000/",
-    project_domain_name => 'Default',
-    user_domain_name    => 'Default',
-    memcached_servers   => $memcache,
-    region_name         => $region,
   }
 }
