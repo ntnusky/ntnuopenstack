@@ -8,9 +8,19 @@ class ntnuopenstack::cinder::volume {
   contain ::ntnuopenstack::cinder::ceph
 
   class { '::cinder::volume': }
-  class { '::cinder::volume::rbd':
+
+  cinder::backend::rbd {'rbd-images':
     rbd_pool        => 'volumes',
     rbd_user        => 'nova',
     rbd_secret_uuid => $ceph_uuid,
+  }
+
+  cinder_type {'rbd-images':
+    ensure     => present,
+    properties => ['volume_backend_name=rbd-images'],
+  }
+  
+  class { 'cinder::backends':
+    enabled_backends => ['rbd-images']
   }
 }
