@@ -8,17 +8,13 @@ class ntnuopenstack::cinder::base {
   $database_connection = "mysql://cinder:${mysql_pass}@${mysql_ip}/cinder"
 
   # Credentials for the messagequeue
-  $rabbit_ip = hiera('profile::rabbitmq::ip')
-  $rabbit_user = hiera('profile::rabbitmq::rabbituser')
-  $rabbit_pass = hiera('profile::rabbitmq::rabbitpass')
+  $transport_url = hiera('ntnuopenstack::transport::url')
 
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::cinder::sudo
 
   class { '::cinder':
-    database_connection => $database_connection,
-    rabbit_host         => $rabbit_ip,
-    rabbit_userid       => $rabbit_user,
-    rabbit_password     => $rabbit_pass,
+    database_connection   => $database_connection,
+    default_transport_url => $transport_url, 
   }
 }

@@ -48,7 +48,6 @@ class ntnuopenstack::keystone::base {
     admin_token                  => $admin_token,
     admin_password               => $admin_pass,
     database_connection          => $db_con,
-    debug                        => true,
     enabled                      => false,
     admin_bind_host              => '0.0.0.0',
     admin_endpoint               => "${admin_endpoint}:35357/",

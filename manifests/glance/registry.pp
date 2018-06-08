@@ -49,7 +49,6 @@ class ntnuopenstack::glance::registry {
     # ::glance::registry::authtoken.
     auth_strategy       => '',
     database_connection => $database_connection,
-    keystone_password   => $keystone_password,
   }
 
   class { '::glance::registry::authtoken':

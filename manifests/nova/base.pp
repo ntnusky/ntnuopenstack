@@ -11,9 +11,7 @@ class ntnuopenstack::nova::base {
   $api_db_con = "mysql://nova_api:${mysql_password}@${mysql_ip}/nova_api"
 
   # RabbitMQ connection-information
-  $rabbit_user = hiera('profile::rabbitmq::rabbituser')
-  $rabbit_pass = hiera('profile::rabbitmq::rabbitpass')
-  $rabbit_ip = hiera('profile::rabbitmq::ip')
+  $transport_url = hiera('ntnuopenstack::transport::url')
 
   $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', false)
   if($internal_endpoint) {
@@ -29,10 +27,8 @@ class ntnuopenstack::nova::base {
 
   class { '::nova':
     database_connection     => $db_con,
+    default_transport_url   => $transport_url,
     api_database_connection => $api_db_con,
-    rabbit_host             => $rabbit_ip,
-    rabbit_userid           => $rabbit_user,
-    rabbit_password         => $rabbit_pass,
     image_service           => 'nova.image.glance.GlanceImageService',
     glance_api_servers      => $glance_internal,
   }

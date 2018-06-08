@@ -22,10 +22,8 @@ class ntnuopenstack::heat::base {
     "${server}:11211"
   }
 
-  # RabbitMQ
-  $rabbit_ip = hiera('profile::rabbitmq::ip')
-  $rabbit_user = hiera('profile::rabbitmq::rabbituser')
-  $rabbit_pass = hiera('profile::rabbitmq::rabbitpass')
+  # Transport url
+  $transport_url = hiera('ntnuopenstack::transport::url')
 
   # Database-connection
   $mysql_pass = hiera('ntnuopenstack::heat::mysql::password')
@@ -47,21 +45,11 @@ class ntnuopenstack::heat::base {
   class { '::heat':
     # Auth_strategy is blank to prevent ::heat from including 
     # ::heat::keystone::authtoken
-    auth_strategy                => '',
-    database_connection          => $database_connection,
-    region_name                  => $region,
-    rabbit_password              => $rabbit_pass,
-    rabbit_userid                => $rabbit_user,
-    rabbit_host                  => $rabbit_ip,
-    auth_uri                     => "${keystone_internal}:5000/",
-    identity_uri                 => "${keystone_admin}:35357",
-    keystone_tenant              => 'services',
-    keystone_user                => 'heat',
-    keystone_password            => $mysql_pass,
-    keystone_project_domain_name => 'Default',
-    keystone_user_domain_name    => 'Default',
-    memcached_servers            => $memcache,
-    *                            => $extra_options,
+    auth_strategy         => '',
+    database_connection   => $database_connection,
+    default_transport_url => $transport_url,
+    region_name           => $region,
+    *                     => $extra_options,
   }
 
   class { '::heat::keystone::authtoken':
