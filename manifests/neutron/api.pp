@@ -18,7 +18,6 @@ class ntnuopenstack::neutron::api {
   # Retrieve service IP Addresses
   $keystone_admin_ip  = hiera('profile::api::keystone::admin::ip', '127.0.0.1')
   $keystone_public_ip = hiera('profile::api::keystone::public::ip', '127.0.0.1')
-  $nova_admin_ip      = hiera('profile::api::nova::admin::ip', false)
 
   # Retrieve api urls, if they exist. 
   $admin_endpoint    = hiera('ntnuopenstack::endpoint::admin', undef)
@@ -28,7 +27,6 @@ class ntnuopenstack::neutron::api {
   # Determine which endpoint to use
   $keystone_admin    = pick($admin_endpoint, "http://${keystone_admin_ip}")
   $keystone_internal = pick($internal_endpoint, "http://${keystone_admin_ip}")
-  $nova_internal     = pick($internal_endpoint, "http://${nova_admin_ip}")
 
   # Openstack settings
   $nova_password = hiera('ntnuopenstack::nova::keystone::password')
@@ -44,7 +42,7 @@ class ntnuopenstack::neutron::api {
   include ::ntnuopenstack::neutron::ml2::config
   include ::profile::services::memcache::pythonclient
 
-  if($nova_admin_ip) {
+  if($keystone_admin_ip != '127.0.0.1') {
     contain ::ntnuopenstack::neutron::keepalived
   }
 
