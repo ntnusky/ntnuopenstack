@@ -76,7 +76,6 @@ class ntnuopenstack::neutron::api {
     password    => $nova_password,
     auth_url    => "${keystone_admin}:35357",
     region_name => $region,
-    nova_url    => "${nova_internal}:8774/v2",
   }
 
   class { 'neutron::services::lbaas':
