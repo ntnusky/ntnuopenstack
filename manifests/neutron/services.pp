@@ -6,12 +6,9 @@ class ntnuopenstack::neutron::services {
   require ::ntnuopenstack::repo
 
   class { '::neutron::services::fwaas':
-    enabled => true,
-    driver  => $fw_driver,
-  }
-
-  neutron_fwaas_service_config {
-    'fwaas/agent_version': value => 'v1';
+    enabled       => true,
+    driver        => $fw_driver,
+    agent_version => 'v1',
   }
 
   neutron_l3_agent_config {
