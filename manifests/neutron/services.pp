@@ -11,10 +11,6 @@ class ntnuopenstack::neutron::services {
     agent_version => 'v1',
   }
 
-  neutron_l3_agent_config {
-    'AGENT/extensions': value => 'fwaas';
-  }
-
   class { 'neutron::services::lbaas':
   }
 }
