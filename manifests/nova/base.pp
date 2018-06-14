@@ -10,6 +10,13 @@ class ntnuopenstack::nova::base {
   $db_con = "mysql://nova:${mysql_password}@${mysql_ip}/nova"
   $api_db_con = "mysql://nova_api:${mysql_password}@${mysql_ip}/nova_api"
 
+  # Nova placement configuration
+  $region = hiera('ntnuopenstack::region')
+  $placement_password = hiera('ntnuopenstack::nova::placement::keysone::password')
+  $admin_endpoint = hiera('ntnuopenstack::endpoint::admin', undef)
+  $keystone_admin_ip = hiera('profile::api::keystone::admin::ip', '127.0.0.1')
+  $keystone_admin = pick($admin_endpoint, "http://${keystone_admin_ip}")
+
   # RabbitMQ connection-information
   $transport_url = hiera('ntnuopenstack::transport::url')
 
@@ -31,5 +38,11 @@ class ntnuopenstack::nova::base {
     api_database_connection => $api_db_con,
     image_service           => 'nova.image.glance.GlanceImageService',
     glance_api_servers      => $glance_internal,
+  }
+
+  class { '::nova::placement':
+    password       => $placement_password,
+    auth_url       => "${keystone_admin}:35357/v3",
+    os_region_name => $region,
   }
 }
