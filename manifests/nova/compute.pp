@@ -24,8 +24,6 @@ class ntnuopenstack::nova::compute {
     $protocol = 'http'
   }
 
-  nova_config { 'DEFAULT/default_floating_pool': value => 'public' }
-
   class { '::nova::compute':
     enabled                          => true,
     vnc_enabled                      => true,
