@@ -20,12 +20,9 @@ class ntnuopenstack::nova::endpoint::api {
 
   class { '::nova::keystone::auth':
     password        => $nova_password,
-    public_url      => "${nova_public}:8774/v2/%(tenant_id)s",
-    internal_url    => "${nova_internal}:8774/v2/%(tenant_id)s",
-    admin_url       => "${nova_admin}:8774/v2/%(tenant_id)s",
-    public_url_v3   => "${nova_public}:8774/v3",
-    internal_url_v3 => "${nova_internal}:8774/v3",
-    admin_url_v3    => "${nova_admin}:8774/v3",
+    public_url      => "${nova_public}:8774/v2.1",
+    internal_url    => "${nova_internal}:8774/v2.1",
+    admin_url       => "${nova_admin}:8774/v2.1",
     region          => $region,
   }
 }
