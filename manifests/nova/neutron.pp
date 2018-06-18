@@ -11,9 +11,13 @@ class ntnuopenstack::nova::neutron {
   $neutron_admin_ip = hiera('profile::api::neutron::admin::ip', '127.0.0.1')
   $neutron_internal = pick($internal_endpoint, "http://${neutron_admin_ip}")
 
+  $default_floating_pool = hiera('ntnuopenstack::neutron::default::floatingpool',
+      'ntnu-internal')
+
   require ::ntnuopenstack::repo
 
   class { '::nova::network::neutron':
+    default_floating_pool => $default_floating_pool,
     neutron_region_name   => $region,
     neutron_password      => $neutron_password,
     neutron_url           => "${neutron_internal}:9696",

@@ -25,7 +25,6 @@ class ntnuopenstack::keystone::endpoint {
     public_url   => "${public_endpoint}:5000",
     admin_url    => "${admin_endpoint}:35357",
     internal_url => "${internal_endpoint}:5000",
-    version      => 'v3',
     region       => $region,
     require      => Class['::keystone'],
   }

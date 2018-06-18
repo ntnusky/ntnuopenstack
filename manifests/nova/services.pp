@@ -7,7 +7,6 @@ class ntnuopenstack::nova::services {
 
   class { [
     '::nova::scheduler',
-    '::nova::cert',
     '::nova::consoleauth',
     '::nova::conductor'
   ]:

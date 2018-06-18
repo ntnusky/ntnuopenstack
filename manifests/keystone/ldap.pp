@@ -28,6 +28,7 @@ class ntnuopenstack::keystone::ldap {
     user_enabled_attribute => userAccountControl,
     user_enabled_mask      => 2,
     user_enabled_default   => 512,
+    group_ad_nesting       => true,
     group_tree_dn          => $ldap_group_tree_dn,
     group_filter           => $ldap_group_filter,
     group_objectclass      => group,
@@ -40,7 +41,6 @@ class ntnuopenstack::keystone::ldap {
 
   keystone_domain_config {
     "${ldap_name}::identity/list_limit": value   => '100';
-    "${ldap_name}::ldap/group_ad_nesting": value => true;
   }
 
   keystone_domain { $ldap_name:
