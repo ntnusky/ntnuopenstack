@@ -12,7 +12,7 @@ class ntnuopenstack::neutron::agents {
 
   class { '::neutron::agents::metadata':
     shared_secret => $nova_metadata_secret,
-    metadata_ip   => pick($adminlb_ip, $admin_ip),
+    metadata_host => pick($adminlb_ip, $admin_ip),
     enabled       => true,
   }
 
