@@ -77,10 +77,10 @@ class ntnuopenstack::horizon {
     keystone_default_domain        => $ldap_name,
     keystone_multidomain_support   => true,
     keystone_url                   => $keystone_url,
-    keystone_domain_choices        => {
-      {'name': 'default', 'display': 'The default domain'},
-      {'name': $ldap_name, 'display': $description},
-    },
+    keystone_domain_choices        => [
+      {'name' => 'default', 'display' => 'The default domain'},
+      {'name' => $ldap_name, 'display' => $description},
+    ],
     neutron_options                => {
       enable_firewall => true,
       enable_lb       => true,
