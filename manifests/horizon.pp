@@ -71,6 +71,8 @@ class ntnuopenstack::horizon {
     $memcache = {}
   }
 
+  horizon::dashboard { 'heat': }
+
   class { '::horizon':
     allowed_hosts                  => [$::fqdn, $server_name],
     enable_secure_proxy_ssl_header => $haproxy,
@@ -78,8 +80,8 @@ class ntnuopenstack::horizon {
     keystone_multidomain_support   => true,
     keystone_url                   => $keystone_url,
     keystone_domain_choices        => [
-      {'name' => 'default', 'display' => 'Openstack accounts'},
       {'name' => $ldap_name, 'display' => $description},
+      {'name' => 'default',  'display' => 'Openstack accounts'},
     ],
     neutron_options                => {
       enable_firewall => true,
