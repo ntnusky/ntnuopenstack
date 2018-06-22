@@ -17,6 +17,8 @@ class ntnuopenstack::horizon {
   $server_name = hiera('ntnuopenstack::horizon::server_name')
   $django_secret = hiera('ntnuopenstack::horizon::django_secret')
   $ldap_name = hiera('ntnuopenstack::keystone::ldap_backend::name')
+  $description = hiera('ntnuopenstack::horizon::ldap::description',
+      "${ldap_name} accounts")
 
   # Try to retrieve memcache addresses.
   $memcache_servers = hiera_array('profile::memcache::servers', false)
@@ -75,6 +77,10 @@ class ntnuopenstack::horizon {
     keystone_default_domain        => $ldap_name,
     keystone_multidomain_support   => true,
     keystone_url                   => $keystone_url,
+    keystone_domain_choices        => {
+      {'name': 'default', 'display': 'The default domain'},
+      {'name': $ldap_name, 'display': $description},
+    },
     neutron_options                => {
       enable_firewall => true,
       enable_lb       => true,
