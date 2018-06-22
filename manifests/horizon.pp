@@ -78,7 +78,7 @@ class ntnuopenstack::horizon {
     keystone_multidomain_support   => true,
     keystone_url                   => $keystone_url,
     keystone_domain_choices        => [
-      {'name' => 'default', 'display' => 'The default domain'},
+      {'name' => 'default', 'display' => 'Openstack accounts'},
       {'name' => $ldap_name, 'display' => $description},
     ],
     neutron_options                => {
