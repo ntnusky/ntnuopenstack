@@ -15,13 +15,13 @@ class ntnuopenstack::heat::endpoint {
   $heat_public    = pick($public_endpoint, "http://${heat_public_ip}")
 
   # Other settings
-  $mysql_pass = hiera('ntnuopenstack::heat::mysql::password')
+  $heat_password = hiera('ntnuopenstack::heat::keystone::password')
   $region = hiera('ntnuopenstack::region')
 
   require ::ntnuopenstack::repo
 
   class  { '::heat::keystone::auth':
-    password     => $mysql_pass,
+    password     => $heat_password,
     public_url   => "${heat_public}:8004/v1/%(tenant_id)s",
     internal_url => "${heat_internal}:8004/v1/%(tenant_id)s",
     admin_url    => "${heat_admin}:8004/v1/%(tenant_id)s",
@@ -29,7 +29,7 @@ class ntnuopenstack::heat::endpoint {
   }
 
   class { '::heat::keystone::auth_cfn':
-    password     => $mysql_pass,
+    password     => $heat_password,
     service_name => 'heat-cfn',
     region       => $region,
     public_url   => "${heat_public}:8000/v1",
