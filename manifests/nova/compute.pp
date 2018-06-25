@@ -36,6 +36,7 @@ class ntnuopenstack::nova::compute {
 
   user { 'nova':
     shell => '/bin/bash',
+    home  => '/var/lib/nova',
   }
 
   class { '::nova::compute::rbd':
