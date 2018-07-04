@@ -10,7 +10,10 @@ class ntnuopenstack::neutron::tenant::vxlan {
   # Make sure there is allways an IP available for tunnel endpoints, even if the
   # correct IP is not present yet.
   if(has_key($facts['networking']['interfaces'], 'br-provider')) {
-    $local_ip = pick($facts['networking']['interfaces']['br-provider']['ip'], '169.254.254.254')
+    $local_ip = pick(
+      $facts['networking']['interfaces']['br-provider']['ip'],
+      '169.254.254.254'
+    )
   } else {
     $local_ip = '169.254.254.254'
   }
