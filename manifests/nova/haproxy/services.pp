@@ -47,6 +47,7 @@ class ntnuopenstack::nova::haproxy::services {
     }
   }
 
+  profile::services::haproxy::tools::collect { 'bk_nova_public': }
   haproxy::backend { 'bk_nova_public':
     mode    => 'http',
     options => {
@@ -67,6 +68,7 @@ class ntnuopenstack::nova::haproxy::services {
     }
   }
 
+  profile::services::haproxy::tools::collect { 'bk_nova_vnc': }
   haproxy::backend { 'bk_nova_vnc':
     mode    => 'tcp',
     options => {

@@ -57,6 +57,7 @@ class ntnuopenstack::heat::haproxy::services {
     options => $ft_cfn_options,
   }
 
+  profile::services::haproxy::tools::collect { 'bk_heat_public': }
   haproxy::backend { 'bk_heat_public':
     mode    => 'http',
     options => {
@@ -69,6 +70,7 @@ class ntnuopenstack::heat::haproxy::services {
     },
   }
 
+  profile::services::haproxy::tools::collect { 'bk_heat_cfn_public': }
   haproxy::backend { 'bk_heat_cfn_public':
     mode    => 'http',
     options => {

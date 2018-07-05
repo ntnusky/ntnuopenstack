@@ -3,6 +3,11 @@ class ntnuopenstack::horizon::haproxy::backend {
   $if = hiera('profile::interfaces::management')
   $ip = $::facts['networking']['interfaces'][$if]['ip']
 
+  profile::services::haproxy::tools::register { "Horizon-${::hostname}":
+    servername  => $::hostname,
+    backendname => 'bk_horizon',
+  }
+
   @@haproxy::balancermember { "horizon-${::fqdn}":
     listening_service => 'bk_horizon',
     server_names      => $::hostname,

@@ -65,10 +65,13 @@ class ntnuopenstack::heat::haproxy::management {
     ],
   }
 
+  profile::services::haproxy::tools::collect { 'bk_heat_api_admin': }
   haproxy::backend { 'bk_heat_api_admin':
     mode    => 'http',
     options => $backend_options,
   }
+
+  profile::services::haproxy::tools::collect { 'bk_heat_cfn_admin': }
   haproxy::backend { 'bk_heat_cfn_admin':
     mode    => 'http',
     options => $backend_options,

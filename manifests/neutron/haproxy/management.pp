@@ -51,6 +51,7 @@ class ntnuopenstack::neutron::haproxy::management {
     ],
   }
 
+  profile::services::haproxy::tools::collect { 'bk_neutron_api_admin': }
   haproxy::backend { 'bk_neutron_api_admin':
     mode    => 'http',
     options => $backend_options,

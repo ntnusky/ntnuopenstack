@@ -76,10 +76,14 @@ class ntnuopenstack::glance::haproxy::management {
     ],
   }
 
+  profile::services::haproxy::tools::collect { 'bk_glance_api_admin': }
+
   haproxy::backend { 'bk_glance_api_admin':
     mode    => 'http',
     options => $backend_options,
   }
+
+  profile::services::haproxy::tools::collect { 'bk_glance_registry': }
 
   haproxy::backend { 'bk_glance_registry':
     mode    => 'http',

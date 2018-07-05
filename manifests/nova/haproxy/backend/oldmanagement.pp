@@ -8,6 +8,12 @@ class ntnuopenstack::nova::haproxy::backend::oldmanagement {
     $names = keys($controllers)
     $addresses = values($controllers)
 
+    profile::services::haproxy::tools::register { "NovaAdminApi-${::hostname}":
+      servername  => $::hostname,
+      backendname => 'bk_nova_api_admin',
+      export      => false,
+    }
+
     haproxy::balancermember { 'nova-admin-static':
       listening_service => 'bk_nova_api_admin',
       server_names      => $names,
@@ -16,12 +22,24 @@ class ntnuopenstack::nova::haproxy::backend::oldmanagement {
       options           => 'check inter 2000 rise 2 fall 5',
     }
 
+    profile::services::haproxy::tools::register { "NovaPublic-${::hostname}":
+      servername  => $::hostname,
+      backendname => 'bk_nova_place_admin',
+      export      => false,
+    }
+
     haproxy::balancermember { 'nova-place-static':
       listening_service => 'bk_nova_place_admin',
       server_names      => $names,
       ipaddresses       => $addresses,
       ports             => '8778',
       options           => 'check inter 2000 rise 2 fall 5',
+    }
+
+    profile::services::haproxy::tools::register { "NovaMetadata-${::hostname}":
+      servername  => $::hostname,
+      backendname => 'bk_nova_metadata',
+      export      => false,
     }
 
     haproxy::balancermember { 'nova-metadata-static':

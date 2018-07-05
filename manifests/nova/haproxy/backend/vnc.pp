@@ -3,6 +3,11 @@ class ntnuopenstack::nova::haproxy::backend::vnc {
   $if = hiera('profile::interfaces::management')
   $ip = $::facts['networking']['interfaces'][$if]['ip']
 
+  profile::services::haproxy::tools::register { "NovaVNC-${::hostname}":
+    servername  => $::hostname,
+    backendname => 'bk_nova_vnc',
+  }
+
   @@haproxy::balancermember { "nova-vnc-${::fqdn}":
     listening_service => 'bk_nova_vnc',
     server_names      => $::hostname,

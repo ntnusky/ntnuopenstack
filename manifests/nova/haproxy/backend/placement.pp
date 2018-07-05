@@ -3,6 +3,11 @@ class ntnuopenstack::nova::haproxy::backend::placement {
   $if = hiera('profile::interfaces::management')
   $ip = $::facts['networking']['interfaces'][$if]['ip']
 
+  profile::services::haproxy::tools::register { "NovaPlace-${::hostname}":
+    servername  => $::hostname,
+    backendname => 'bk_nova_place_admin',
+  }
+
   @@haproxy::balancermember { "nova-place-${::fqdn}":
     listening_service => 'bk_nova_place_admin',
     server_names      => $::hostname,

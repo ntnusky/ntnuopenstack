@@ -8,6 +8,12 @@ class ntnuopenstack::keystone::haproxy::backend::oldpublic {
     $names = keys($controllers)
     $addresses = values($controllers)
 
+    profile::services::haproxy::tools::register { "KeystonePublic-${::hostname}":
+      servername  => $::hostname,
+      backendname => 'bk_keystone_public',
+      export      => false,
+    }
+
     haproxy::balancermember { 'keystone-public-static':
       listening_service => 'bk_keystone_public',
       server_names      => $names,

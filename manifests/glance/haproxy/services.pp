@@ -42,6 +42,8 @@ class ntnuopenstack::glance::haproxy::services {
     options => $ft_options,
   }
 
+  profile::services::haproxy::tools::collect { 'bk_glance_public': }
+
   haproxy::backend { 'bk_glance_public':
     mode    => 'http',
     options => {

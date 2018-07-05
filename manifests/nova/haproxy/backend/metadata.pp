@@ -3,6 +3,11 @@ class ntnuopenstack::nova::haproxy::backend::metadata {
   $if = hiera('profile::interfaces::management')
   $ip = $::facts['networking']['interfaces'][$if]['ip']
 
+  profile::services::haproxy::tools::register { "NovaMetadata-${::hostname}":
+    servername  => $::hostname,
+    backendname => 'bk_nova_metadata',
+  }
+
   @@haproxy::balancermember { "nova-metadata-${::fqdn}":
     listening_service => 'bk_nova_metadata',
     server_names      => $::hostname,

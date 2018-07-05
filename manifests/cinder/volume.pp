@@ -20,22 +20,22 @@ class ntnuopenstack::cinder::volume {
     ensure     => present,
     properties => ['volume_backend_name=rbd-images'],
   }
-  
+
   cinder_type {'Normal':
     ensure     => present,
     properties => ['volume_backend_name=rbd-images'],
   }
-  
+
   cinder_type {'Fast':
     ensure     => present,
     properties => ['volume_backend_name=rbd-images'],
   }
-  
+
   cinder_type {'Unlimited':
     ensure     => present,
     properties => ['volume_backend_name=rbd-images'],
   }
-  
+
   class { 'cinder::backends':
     enabled_backends => ['rbd-images']
   }

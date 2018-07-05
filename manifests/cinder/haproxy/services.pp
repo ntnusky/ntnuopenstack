@@ -42,6 +42,8 @@ class ntnuopenstack::cinder::haproxy::services {
     options => $ft_options,
   }
 
+  profile::services::haproxy::tools::collect { 'bk_cinder_public': }
+
   haproxy::backend { 'bk_cinder_public':
     mode    => 'http',
     options => {
