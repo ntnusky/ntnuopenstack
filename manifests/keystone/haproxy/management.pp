@@ -67,11 +67,13 @@ class ntnuopenstack::keystone::haproxy::management {
     ],
   }
 
+  profile::services::haproxy::tools::collect { 'bk_keystone_admin': }
   haproxy::backend { 'bk_keystone_admin':
     mode    => 'http',
     options => $backend_options,
   }
 
+  profile::services::haproxy::tools::collect { 'bk_keystone_internal': }
   haproxy::backend { 'bk_keystone_internal':
     mode    => 'http',
     options => $backend_options,

@@ -42,6 +42,7 @@ class ntnuopenstack::keystone::haproxy::services {
     options => $ft_options,
   }
 
+  profile::services::haproxy::tools::collect { 'bk_keystone_public': }
   haproxy::backend { 'bk_keystone_public':
     mode    => 'http',
     options => {

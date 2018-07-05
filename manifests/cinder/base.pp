@@ -15,6 +15,6 @@ class ntnuopenstack::cinder::base {
 
   class { '::cinder':
     database_connection   => $database_connection,
-    default_transport_url => $transport_url, 
+    default_transport_url => $transport_url,
   }
 }

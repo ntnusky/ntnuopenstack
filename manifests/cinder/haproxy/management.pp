@@ -51,6 +51,8 @@ class ntnuopenstack::cinder::haproxy::management {
     ],
   }
 
+  profile::services::haproxy::tools::collect { 'bk_cinder_api_admin': }
+
   haproxy::backend { 'bk_cinder_api_admin':
     mode    => 'http',
     options => $backend_options,

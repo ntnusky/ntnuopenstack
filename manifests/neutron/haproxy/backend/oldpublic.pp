@@ -8,6 +8,12 @@ class ntnuopenstack::neutron::haproxy::backend::oldpublic {
     $names = keys($controllers)
     $addresses = values($controllers)
 
+    profile::services::haproxy::tools::register { "NeutronPublic-${::hostname}":
+      servername  => $::hostname,
+      backendname => 'bk_neutron_public',
+      export      => false,
+    }
+
     haproxy::balancermember { 'neutron-public-static':
       listening_service => 'bk_neutron_public',
       server_names      => $names,

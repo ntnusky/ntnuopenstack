@@ -8,6 +8,12 @@ class ntnuopenstack::cinder::haproxy::backend::oldmanagement {
     $names = keys($controllers)
     $addresses = values($controllers)
 
+    profile::services::haproxy::tools::register { "CinderAdmin-${::hostname}":
+      servername  => $::hostname,
+      backendname => 'bk_cinder_api_admin',
+      export      => false,
+    }
+
     haproxy::balancermember { 'cinder-admin-static':
       listening_service => 'bk_cinder_api_admin',
       server_names      => $names,

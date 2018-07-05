@@ -42,6 +42,7 @@ class ntnuopenstack::neutron::haproxy::services {
     options => $ft_options,
   }
 
+  profile::services::haproxy::tools::collect { 'bk_neutron_public': }
   haproxy::backend { 'bk_neutron_public':
     mode    => 'http',
     options => {

@@ -8,6 +8,12 @@ class ntnuopenstack::nova::haproxy::backend::oldpublic {
     $names = keys($controllers)
     $addresses = values($controllers)
 
+    profile::services::haproxy::tools::register { "NovaPublic-${::hostname}":
+      servername  => $::hostname,
+      backendname => 'bk_nova_public',
+      export      => false,
+    }
+
     haproxy::balancermember { 'nova-public-static':
       listening_service => 'bk_nova_public',
       server_names      => $names,

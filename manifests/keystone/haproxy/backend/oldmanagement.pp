@@ -8,12 +8,24 @@ class ntnuopenstack::keystone::haproxy::backend::oldmanagement {
     $names = keys($controllers)
     $addresses = values($controllers)
 
+    profile::services::haproxy::tools::register { "KeystoneAdmin-${::hostname}":
+      servername  => $::hostname,
+      backendname => 'bk_keystone_admin',
+      export      => false,
+    }
+
     haproxy::balancermember { 'keystone-admin-static':
       listening_service => 'bk_keystone_admin',
       server_names      => $names,
       ipaddresses       => $addresses,
       ports             => '35357',
       options           => 'check inter 2000 rise 2 fall 5',
+    }
+
+    profile::services::haproxy::tools::register { "KeystoneInternal-${::hostname}":
+      servername  => $::hostname,
+      backendname => 'bk_keystone_internal',
+      export      => false,
     }
 
     haproxy::balancermember { 'keystone-internal-static':

@@ -83,10 +83,12 @@ class ntnuopenstack::nova::haproxy::management {
     ],
   }
 
+  profile::services::haproxy::tools::collect { 'bk_nova_api_admin': }
   haproxy::backend { 'bk_nova_api_admin':
     mode    => 'http',
     options => $backend_options,
   }
+  profile::services::haproxy::tools::collect { 'bk_nova_metadata': }
   haproxy::backend { 'bk_nova_metadata':
     mode    => 'http',
     options => {
@@ -97,6 +99,7 @@ class ntnuopenstack::nova::haproxy::management {
       ]
     },
   }
+  profile::services::haproxy::tools::collect { 'bk_nova_place_admin': }
   haproxy::backend { 'bk_nova_place_admin':
     mode    => 'http',
     options => $backend_options,

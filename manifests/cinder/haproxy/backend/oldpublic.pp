@@ -8,6 +8,12 @@ class ntnuopenstack::cinder::haproxy::backend::oldpublic {
     $names = keys($controllers)
     $addresses = values($controllers)
 
+    profile::services::haproxy::tools::register { "CinderPublic-${::hostname}":
+      servername  => $::hostname,
+      backendname => 'bk_cinder_public',
+      export      => false,
+    }
+
     haproxy::balancermember { 'cinder-public-static':
       listening_service => 'bk_cinder_public',
       server_names      => $names,

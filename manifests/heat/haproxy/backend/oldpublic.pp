@@ -8,12 +8,24 @@ class ntnuopenstack::heat::haproxy::backend::oldpublic {
     $names = keys($controllers)
     $addresses = values($controllers)
 
+    profile::services::haproxy::tools::register { "HeatPublic-${::hostname}":
+      servername  => $::hostname,
+      backendname => 'bk_heat_public',
+      export      => false,
+    }
+
     haproxy::balancermember { 'heat-public-static':
       listening_service => 'bk_heat_public',
       server_names      => $names,
       ipaddresses       => $addresses,
       ports             => '8004',
       options           => 'check inter 2000 rise 2 fall 5',
+    }
+
+    profile::services::haproxy::tools::register { "HeatCfnPublic-${::hostname}":
+      servername  => $::hostname,
+      backendname => 'bk_heat_cfn_public',
+      export      => false,
     }
 
     haproxy::balancermember { 'heat-cfn-public-static':

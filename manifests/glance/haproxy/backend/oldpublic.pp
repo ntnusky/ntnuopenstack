@@ -8,6 +8,12 @@ class ntnuopenstack::glance::haproxy::backend::oldpublic {
     $names = keys($controllers)
     $addresses = values($controllers)
 
+    profile::services::haproxy::tools::register { "Glance_public-${::hostname}":
+      servername  => $::hostname,
+      backendname => 'bk_glance_public',
+      export      => false,
+    }
+
     haproxy::balancermember { 'glance-public-static':
       listening_service => 'bk_glance_public',
       server_names      => $names,
