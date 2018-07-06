@@ -4,6 +4,7 @@ class ntnuopenstack::neutron::tenant::vxlan {
 
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::neutron::base
+  include ::ntnuopenstack::neutron::firewall::vxlan
   include ::ntnuopenstack::neutron::ml2::config
   require ::vswitch::ovs
 
