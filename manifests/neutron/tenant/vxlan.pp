@@ -4,12 +4,20 @@ class ntnuopenstack::neutron::tenant::vxlan {
 
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::neutron::base
+  include ::ntnuopenstack::neutron::firewall::vxlan
   include ::ntnuopenstack::neutron::ml2::config
   require ::vswitch::ovs
 
   # Make sure there is allways an IP available for tunnel endpoints, even if the
   # correct IP is not present yet.
-  $local_ip = pick($::ipaddress_br_provider, '169.254.254.254')
+  if(has_key($facts['networking']['interfaces'], 'br-provider')) {
+    $local_ip = pick(
+      $facts['networking']['interfaces']['br-provider']['ip'],
+      '169.254.254.254'
+    )
+  } else {
+    $local_ip = '169.254.254.254'
+  }
 
   if($_tenant_if == 'vlan') {
     $tenant_parent = hiera('profile::interfaces::tenant::parentif')
