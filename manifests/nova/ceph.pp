@@ -17,7 +17,7 @@ class ntnuopenstack::nova::ceph {
   $images = 'allow rwx pool=images'
   ceph::key { 'client.nova':
     secret  => $nova_key,
-    cap_mon => 'allow r',
+    cap_mon => 'allow r , allow command \"osd blacklist\"',
     cap_osd => "${top},${volumes}, ${images}",
     inject  => true,
   }
