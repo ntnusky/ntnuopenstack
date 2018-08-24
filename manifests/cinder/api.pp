@@ -18,8 +18,12 @@ class ntnuopenstack::cinder::api {
   }
 
   class { '::cinder::api':
-    enabled                      => true,
+    enabled                      => false,
     default_volume_type          => 'Normal',
     enable_proxy_headers_parsing => $confhaproxy,
+  }
+
+  class { '::cinder::wsgi::apache':
+    ssl => false,
   }
 }
