@@ -23,7 +23,7 @@ class ntnuopenstack::cinder::api {
     enable_proxy_headers_parsing => $confhaproxy,
   }
 
-  class { '::cinder::wsgi::apahce':
+  class { '::cinder::wsgi::apache':
     ssl => false,
   }
 }
