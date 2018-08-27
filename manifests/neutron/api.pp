@@ -43,7 +43,7 @@ class ntnuopenstack::neutron::api {
   include ::ntnuopenstack::neutron::ml2::config
   include ::profile::services::memcache::pythonclient
 
-  if ($enable_ipv6) {
+  if ($enable_ipv6_pd) {
     contain ::ntnuopenstack::neutron::ipv6::config
   }
 
