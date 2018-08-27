@@ -1,7 +1,7 @@
 # Installs and configures a neutron network node
 class ntnuopenstack::neutron::network {
 
-  $enable_ipv6 = hiera('ntnuopenstack::neutron::tenant::dhcpv6pd', false)
+  $enable_ipv6_pd = hiera('ntnuopenstack::neutron::tenant::dhcpv6pd', false)
   require ::ntnuopenstack::repo
 
   contain ::ntnuopenstack::neutron::agents
@@ -11,7 +11,7 @@ class ntnuopenstack::neutron::network {
   contain ::ntnuopenstack::neutron::services
   contain ::ntnuopenstack::neutron::tenant
 
-  if ($enable_ipv6) {
+  if ($enable_ipv6_pd) {
     contain ::ntnuopenstack::neutron::ipv6::agent
   }
 }
