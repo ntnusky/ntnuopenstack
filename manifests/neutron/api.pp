@@ -33,6 +33,7 @@ class ntnuopenstack::neutron::api {
   $neutron_password = hiera('ntnuopenstack::neutron::keystone::password')
   $service_providers = hiera('ntnuopenstack::neutron::service_providers')
   $region = hiera('ntnuopenstack::region')
+  $enable_ipv6 = hiera('ntnuopenstack::neutron::enable_ipv6', false)
 
   # Should haproxy be configured?
   $confhaproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
@@ -40,8 +41,11 @@ class ntnuopenstack::neutron::api {
   require ::ntnuopenstack::neutron::base
   include ::ntnuopenstack::neutron::firewall::api
   include ::ntnuopenstack::neutron::ml2::config
-  contain ::ntnuopenstack::neutron::ipv6::config
   include ::profile::services::memcache::pythonclient
+
+  if ($enable_ipv6) {
+    contain ::ntnuopenstack::neutron::ipv6::config
+  }
 
   if($keystone_admin_ip != '127.0.0.1') {
     contain ::ntnuopenstack::neutron::keepalived
