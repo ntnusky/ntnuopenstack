@@ -5,7 +5,7 @@ class ntnuopenstack::neutron::network {
   contain ::ntnuopenstack::neutron::agents
   contain ::ntnuopenstack::neutron::external
   contain ::ntnuopenstack::neutron::firewall::l3agent
-  contain ::ntnuopenstack::neutron::ipv6
+  contain ::ntnuopenstack::neutron::ipv6::agent
   contain ::ntnuopenstack::neutron::lbaas
   contain ::ntnuopenstack::neutron::services
   contain ::ntnuopenstack::neutron::tenant

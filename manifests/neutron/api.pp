@@ -40,7 +40,7 @@ class ntnuopenstack::neutron::api {
   require ::ntnuopenstack::neutron::base
   include ::ntnuopenstack::neutron::firewall::api
   include ::ntnuopenstack::neutron::ml2::config
-  contain ::ntnuopenstack::neutron::ipv6
+  contain ::ntnuopenstack::neutron::ipv6::config
   include ::profile::services::memcache::pythonclient
 
   if($keystone_admin_ip != '127.0.0.1') {
