@@ -33,7 +33,7 @@ class ntnuopenstack::neutron::api {
   $neutron_password = hiera('ntnuopenstack::neutron::keystone::password')
   $service_providers = hiera('ntnuopenstack::neutron::service_providers')
   $region = hiera('ntnuopenstack::region')
-  $enable_ipv6 = hiera('ntnuopenstack::neutron::enable_ipv6', false)
+  $enable_ipv6_pd = hiera('ntnuopenstack::neutron::tenant::dhcpv6pd', false)
 
   # Should haproxy be configured?
   $confhaproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
