@@ -44,20 +44,18 @@ class ntnuopenstack::heat::base {
   }
 
   if ($rabbitservers) {
-    $rabbit_ha_queues    = true
-    $amqp_durable_queues = true
+    $ha_transport_conf = {
+      rabbit_ha_queues    => true,
+      amqp_durable_queues => true,
     }
   } else {
-    $rabbit_ha_queues    = false
-    $amqp_durable_queues = false
+    $ha_transport_conf = {}
   }
 
   class { '::heat':
     database_connection   => $database_connection,
     default_transport_url => $transport_url,
     region_name           => $region,
-    rabbit_ha_queues      => $rabbit_ha_queues,
-    amqp_durable_queues   => $amqp_durable_queues,
-    *                     => $extra_options,
+    *                     => $extra_options + $ha_transport_conf,
   }
 }
