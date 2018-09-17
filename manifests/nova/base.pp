@@ -18,6 +18,17 @@ class ntnuopenstack::nova::base {
   $keystone_admin = pick($admin_endpoint, "http://${keystone_admin_ip}")
 
   # RabbitMQ connection-information
+  $rabbitservers  = hiera('profile::rabbitmq::servers', false)
+
+  if ($rabbitservers) {
+    $ha_transport_conf = {
+      rabbit_ha_queues    => true,
+      amqp_durable_queues => true,
+    }
+  } else {
+    $ha_transport_conf = {}
+  }
+
   $transport_url = hiera('ntnuopenstack::transport::url')
 
   $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', false)
@@ -38,6 +49,7 @@ class ntnuopenstack::nova::base {
     api_database_connection => $api_db_con,
     image_service           => 'nova.image.glance.GlanceImageService',
     glance_api_servers      => $glance_internal,
+    *                       => $ha_transport_conf,
   }
 
   class { '::nova::placement':
