@@ -24,6 +24,7 @@ class ntnuopenstack::heat::base {
 
   # Transport url
   $transport_url = hiera('ntnuopenstack::transport::url')
+  $rabbitservers = hiera('profile::rabbitmq::servers', false)
 
   # Database-connection
   $mysql_pass = hiera('ntnuopenstack::heat::mysql::password')
@@ -42,10 +43,19 @@ class ntnuopenstack::heat::base {
     $extra_options = {}
   }
 
+  if ($rabbitservers) {
+    $ha_transport_conf = {
+      rabbit_ha_queues    => true,
+      amqp_durable_queues => true,
+    }
+  } else {
+    $ha_transport_conf = {}
+  }
+
   class { '::heat':
     database_connection   => $database_connection,
     default_transport_url => $transport_url,
     region_name           => $region,
-    *                     => $extra_options,
+    *                     => $extra_options + $ha_transport_conf,
   }
 }

@@ -19,6 +19,7 @@ class ntnuopenstack::nova::base::compute {
   $keystone_admin_ip = hiera('profile::api::keystone::admin::ip', '127.0.0.1')
   $keystone_endpoint = pick($internal_endpoint, "http://${keystone_admin_ip}")
 
+  $rabbitservers = hiera('profile::rabbitmq::servers', false)
   $transport_url = hiera('ntnuopenstack::transport::url')
 
   $placement_password = hiera('ntnuopenstack::nova::placement::keysone::password')
@@ -27,11 +28,21 @@ class ntnuopenstack::nova::base::compute {
   require ::ntnuopenstack::repo
   include ::ntnuopenstack::nova::sudo
 
+  if ($rabbitservers) {
+    $ha_transport_conf = {
+      rabbit_ha_queues    => true,
+      amqp_durable_queues => true,
+    }
+  } else {
+    $ha_transport_conf = {}
+  }
+
   class { '::nova':
     database_connection           => $database_connection,
     default_transport_url         => $transport_url,
     glance_api_servers            => $glance_internal,
     block_device_allocate_retries => 120,
+    *                             => $ha_transport_conf,
   }
 
   class { '::nova::placement':
