@@ -75,12 +75,13 @@ class ntnuopenstack::horizon {
 
   class { '::horizon':
     allowed_hosts                  => [$::fqdn, $server_name],
+    default_theme                  => 'default',
     enable_secure_proxy_ssl_header => $haproxy,
     keystone_default_domain        => $ldap_name,
     keystone_multidomain_support   => true,
     keystone_url                   => $keystone_url,
     keystone_domain_choices        => [
-      {'name' => $ldap_name, 'display' => $description},
+      {'name'                      => $ldap_name, 'display' => $description},
       {'name' => 'default',  'display' => 'Openstack accounts'},
     ],
     neutron_options                => {
@@ -90,6 +91,7 @@ class ntnuopenstack::horizon {
     instance_options               => {
       create_volume => false,
     },
+    password_retrieve              => true,
     secret_key                     => $django_secret,
     server_aliases                 => [$::fqdn, $server_name],
     servername                     => $server_name,
