@@ -26,4 +26,8 @@ class ntnuopenstack::neutron::base {
     service_plugins         => $service_plugins,
     *                       => $ha_transport_conf,
   }
+
+  neutron_config { 'DEFAULT/max_routes':
+    value => 100,
+  }
 }
