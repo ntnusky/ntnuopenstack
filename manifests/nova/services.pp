@@ -5,11 +5,16 @@ class ntnuopenstack::nova::services {
   contain ::ntnuopenstack::nova::neutron
   contain ::ntnuopenstack::nova::vncproxy
 
+  $discover_interval = lookup('ntnuopenstack::nova::discover_hosts_interval', 3600)
+
   class { [
-    '::nova::scheduler',
     '::nova::consoleauth',
     '::nova::conductor'
   ]:
     enabled => true,
+  }
+
+  class { '::nova::scheduler':
+    discover_hosts_in_cells_interval => $discover_interval,
   }
 }
