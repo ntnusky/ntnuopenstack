@@ -27,6 +27,7 @@ class ntnuopenstack::nova::base::compute {
 
   require ::ntnuopenstack::repo
   include ::ntnuopenstack::nova::sudo
+  include ::ntnuopenstack::nova::firewall::compute
 
   if ($rabbitservers) {
     $ha_transport_conf = {
