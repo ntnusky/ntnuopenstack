@@ -7,6 +7,7 @@ class ntnuopenstack::swift::radosgw {
   }
 
   ::ceph::rgw::keystone { 'radosgw.main':
+    pkg_radosgw                 => 'radosgw',
     rgw_keystone_url            => "${endpoint_internal}:5000",
     rgw_keystone_version        => 'v3',
     rgw_keystone_accepted_roles => 'admin',
@@ -15,5 +16,6 @@ class ntnuopenstack::swift::radosgw {
     rgw_keystone_admin_user     => 'swift',
     rgw_keystone_admin_password => $keystone_password,
     use_pki                     => false,
+    user                        => 'www-data',
   }
 }
