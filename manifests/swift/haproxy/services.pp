@@ -48,7 +48,7 @@ class ntnuopenstack::swift::haproxy::services {
     options => {
       'balance' => 'source',
       'option'  => [
-        'httpchk HEAD /healthcheck HTTP/1.0',
+        'httpchk HEAD /',
         'forwardfor',
         'http-server-close',
       ],
