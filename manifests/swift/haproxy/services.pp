@@ -1,9 +1,9 @@
-# Configures the haproxy frontend for the public glance API
+# Configures the haproxy frontend for the public swift API
 class ntnuopenstack::swift::haproxy::services {
   require ::profile::services::haproxy
   require ::profile::services::haproxy::certs::serviceapi
 
-  include ::ntnuopenstack::glance::firewall::haproxy
+  include ::ntnuopenstack::swift::firewall::haproxy
 
   $ipv4 = hiera('ntnuopenstack::endpoint::public::ipv4')
   $ipv6 = hiera('ntnuopenstack::endpoint::public::ipv6', false)
