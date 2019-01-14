@@ -21,12 +21,12 @@ class ntnuopenstack::swift::haproxy::management {
 
   if($ipv6) {
     $bind = {
-      "${ipv4}:8080" => $ssl,
-      "${ipv6}:8080" => $ssl,
+      "${ipv4}:7480" => $ssl,
+      "${ipv6}:7480" => $ssl,
     }
   } else {
     $bind = {
-      "${ipv4}:8080" => $ssl,
+      "${ipv4}:7480" => $ssl,
     }
   }
 

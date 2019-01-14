@@ -12,7 +12,7 @@ class ntnuopenstack::swift::haproxy::backend {
     listening_service => 'bk_swift_public',
     server_names      => $::hostname,
     ipaddresses       => $ip,
-    ports             => '8080',
+    ports             => '7480',
     options           => 'check inter 2000 rise 2 fall 5',
   }
 
@@ -25,7 +25,7 @@ class ntnuopenstack::swift::haproxy::backend {
     listening_service => 'bk_swift_admin',
     server_names      => $::hostname,
     ipaddresses       => $ip,
-    ports             => '8080',
+    ports             => '7480',
     options           => 'check inter 2000 rise 2 fall 5',
   }
 }

@@ -4,13 +4,13 @@ class ntnuopenstack::swift::firewall::haproxy {
 
   firewall { '500 accept IPv4 Swift API':
     proto  => 'tcp',
-    dport  => '8080',
+    dport  => '7480',
     action => 'accept',
   }
 
   firewall { '500 accept IPv6 Swift API':
     proto    => 'tcp',
-    dport    => '8080',
+    dport    => '7480',
     action   => 'accept',
     provider => 'ip6tables',
   }

@@ -7,7 +7,7 @@ class ntnuopenstack::swift::firewall::server {
   firewall { '500 accept Swift API':
     source => $managementnet,
     proto  => 'tcp',
-    dport  => '8080',
+    dport  => '7480',
     action => 'accept',
   }
 }
