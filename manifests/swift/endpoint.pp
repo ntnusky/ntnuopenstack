@@ -19,8 +19,8 @@ class ntnuopenstack::swift::endpoint {
     password            => $keystone_password,
     email               => 'swift@localhost',
     tenant              => 'services',
-    public_url          => "${endpoint_public}:7480/v1/AUTH_%(tenant_id)s",
-    admin_url           => "${endpoint_admin}:7480",
-    internal_url        => "${endpoint_internal}:7480/v1/AUTH_%(tenant_id)s",
+    public_url          => "${endpoint_public}:7480/v1",
+    admin_url           => "${endpoint_admin}:7480/v1",
+    internal_url        => "${endpoint_internal}:7480/v1",
   }
 }
