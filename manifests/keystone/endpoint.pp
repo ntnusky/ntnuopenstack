@@ -11,9 +11,9 @@ class ntnuopenstack::keystone::endpoint {
   $public_endpoint = hiera('ntnuopenstack::endpoint::public',
       "http://${public_ip}")
 
-  $swift = lookup('ntnuopenstack::swift::keystone::password', { 
+  $swift = lookup('ntnuopenstack::swift::keystone::password', {
     'default_value': false,
-  }
+  })
 
   # We need to define the endpoints on the keystone hosts, so include the other
   # endpoints here.
