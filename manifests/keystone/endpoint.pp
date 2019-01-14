@@ -12,7 +12,7 @@ class ntnuopenstack::keystone::endpoint {
       "http://${public_ip}")
 
   $swift = lookup('ntnuopenstack::swift::keystone::password', {
-    'default_value': false,
+    'default_value' => false,
   })
 
   # We need to define the endpoints on the keystone hosts, so include the other
