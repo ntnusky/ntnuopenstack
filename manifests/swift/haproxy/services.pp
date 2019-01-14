@@ -48,9 +48,12 @@ class ntnuopenstack::swift::haproxy::services {
     options => {
       'balance' => 'source',
       'option'  => [
-        'tcplog',
-        'tcpka',
-        'httpchk',
+        'httpchk HEAD /healthcheck HTTP/1.0',
+        'forwardfor',
+        'http-server-close',
+      ],
+      'timeout' => [
+        'http-keep-alive 500',
       ],
     },
   }
