@@ -10,11 +10,11 @@ class ntnuopenstack::swift::endpoint {
   keystone::resource::service_identity { 'swift':
     configure_user      => true,
     configure_user_role => true,
-    configure_endpoint  => true, 
+    configure_endpoint  => true,
     service_type        => 'object-store',
     service_description => 'Openstack Object-Store Service',
-    service_name        => 'swift' 
-    auth_name           => 'swift' 
+    service_name        => 'swift',
+    auth_name           => 'swift',
     region              => $region,
     password            => $keystone_password,
     email               => 'swift@localhost',

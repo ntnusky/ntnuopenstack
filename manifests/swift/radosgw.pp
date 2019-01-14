@@ -5,7 +5,7 @@ class ntnuopenstack::swift::radosgw {
 
   ::ceph::rgw { 'radosgw.main':
   }
-  
+
   ::ceph::rgw::keystone { 'radosgw.main':
     rgw_keystone_url            => "${endpoint_internal}:5000"
     rgw_keystone_version        => 'v3',
