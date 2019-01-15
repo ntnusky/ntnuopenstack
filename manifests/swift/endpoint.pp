@@ -20,7 +20,7 @@ class ntnuopenstack::swift::endpoint {
     email               => 'swift@localhost',
     tenant              => 'services',
     public_url          => "${endpoint_public}:7480/swift/v1/%(project_id)s",
-    admin_url           => "${endpoint_admin}:7480/swift/v1/%(project_id)s",
+    admin_url           => "${endpoint_admin}:7480/swift/v1",
     internal_url        => "${endpoint_internal}:7480/swift/v1/%(project_id)s",
   }
 }
