@@ -3,6 +3,14 @@ class ntnuopenstack::swift::radosgw {
   $endpoint_internal = lookup('ntnuopenstack::endpoint::internal')
   $keystone_password = lookup('ntnuopenstack::swift::keystone::password')
 
+  # The default quota is set to 20GB here per project, but this can be
+  # overridden through hiera. Quotas per project can also be set on the
+  # radosgws. 
+  $default_limit = lookup('ntnuopenstack::swift::quota::size', {
+    'value_type'    => Integer,
+    'default_value' => '21474836480',
+  }
+
   ::ceph::rgw { 'radosgw.main':
     pkg_radosgw => 'radosgw',
     user        => 'www-data',
@@ -20,6 +28,7 @@ class ntnuopenstack::swift::radosgw {
   }
 
   ceph_config {
-    "client.radosgw.main/rgw swift account in url": value => true;
+    'client.radosgw.main/rgw swift account in url': value => true;
+    'global/rgw user default quota max size':       value => $default_limit;
   }
 }
