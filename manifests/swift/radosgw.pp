@@ -8,7 +8,7 @@ class ntnuopenstack::swift::radosgw {
   # radosgws. 
   $default_limit = lookup('ntnuopenstack::swift::quota::size', {
     'value_type'    => Integer,
-    'default_value' => '21474836480',
+    'default_value' => 21474836480,
   })
 
   ::ceph::rgw { 'radosgw.main':
