@@ -5,7 +5,7 @@ class ntnuopenstack::swift::haproxy::services {
   })
 
   if($swiftname) {
-
+    include ::ntnuopenstack::swift::haproxy::web
   } else {
     include ::ntnuopenstack::swift::haproxy::standalone
   }
