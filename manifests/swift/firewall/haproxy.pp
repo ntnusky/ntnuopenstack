@@ -3,7 +3,7 @@ class ntnuopenstack::swift::firewall::haproxy {
   require ::profile::baseconfig::firewall
 
   $swiftname = lookup('ntnuopenstack::swift::dns::name', {
-    'default_value' => False,
+    'default_value' => false,
   })
 
   # If no name is set for swift, the service is placed under the regular API

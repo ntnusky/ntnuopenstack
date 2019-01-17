@@ -8,9 +8,9 @@ class ntnuopenstack::swift::endpoint {
   $region = hiera('ntnuopenstack::region')
 
   $swiftname = lookup('ntnuopenstack::swift::dns::name', {
-    'default_value' => False,
+    'default_value' => false,
   })
-  $certificate = lookup("profile::haproxy::${profile}::webcert", {
+  $certificate = lookup('profile::haproxy::services::webcert', {
     'default_value' => false,
   })
 
@@ -45,8 +45,8 @@ class ntnuopenstack::swift::endpoint {
     password            => $keystone_password,
     email               => 'swift@localhost',
     tenant              => 'services',
-    public_url          => $public
+    public_url          => $public,
     admin_url           => $admin,
-    internal_url        => $internal, 
+    internal_url        => $internal,
   }
 }
