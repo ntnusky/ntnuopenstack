@@ -44,6 +44,12 @@ class ntnuopenstack::keystone::base {
     $keystone_opts = {}
   }
 
+  if($confhaproxy) {
+    $logformat = 'forwarded'
+  } else {
+    $logformat = false
+  }
+
   class { '::keystone':
     admin_token                  => $admin_token,
     admin_password               => $admin_pass,
@@ -70,8 +76,9 @@ class ntnuopenstack::keystone::base {
   }
 
   class { '::keystone::wsgi::apache':
-    servername       => $public_ip,
-    servername_admin => $admin_ip,
-    ssl              => false,
+    servername        => $public_ip,
+    servername_admin  => $admin_ip,
+    ssl               => false,
+    access_log_format => $logformat,
   }
 }
