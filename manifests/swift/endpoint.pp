@@ -18,10 +18,6 @@ class ntnuopenstack::swift::endpoint {
   # endpoint at port 7480. If name is set swift is placed at port 80/443 under
   # the supplied name.
   if($swiftname) {
-    $public = "${endpoint_public}:7480/swift/v1/%(project_id)s"
-    $admin = "${endpoint_admin}:7480/swift/v1"
-    $internal = "${endpoint_internal}:7480/swift/v1/%(project_id)s"
-  } else {
     if($certificate) {
       $proto='https'
     } else {
@@ -31,6 +27,10 @@ class ntnuopenstack::swift::endpoint {
     $public = "${proto}://${swiftname}/swift/v1/%(project_id)s"
     $admin = "${proto}://${swiftname}/swift/v1"
     $internal = "${proto}://${swiftname}/swift/v1/%(project_id)s"
+  } else {
+    $public = "${endpoint_public}:7480/swift/v1/%(project_id)s"
+    $admin = "${endpoint_admin}:7480/swift/v1"
+    $internal = "${endpoint_internal}:7480/swift/v1/%(project_id)s"
   }
 
   keystone::resource::service_identity { 'swift':
