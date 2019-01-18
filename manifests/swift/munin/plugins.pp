@@ -1,9 +1,9 @@
 # This class installs munin plugins which monitors the ceph cluster. Should be
 # installed on the ceph monitors.
 class ntnuopenstack::swift::munin::plugins {
-  require ::profile::ceph::monitoring::collectors
-  require ::profile::monitoring::munin::plugin::ceph::base
-  require ::profile::systemd::reload
+  include ::profile::ceph::monitoring::collectors
+  include ::profile::monitoring::munin::plugin::ceph::base
+  include ::profile::systemd::reload
 
   $pool_prefix = "default.rgw"
   $pools = ['control', 'meta', 'log', 'buckets.index', 'buckets.data']
