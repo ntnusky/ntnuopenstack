@@ -15,6 +15,9 @@ class ntnuopenstack::cinder::api {
 
   if($confhaproxy) {
     contain ::ntnuopenstack::cinder::haproxy::backend::server
+    $logformat = 'forwarded'
+  } else {
+    $logformat = false
   }
 
   class { '::cinder::api':
@@ -24,6 +27,7 @@ class ntnuopenstack::cinder::api {
   }
 
   class { '::cinder::wsgi::apache':
-    ssl => false,
+    ssl               => false,
+    access_log_format => $logformat,
   }
 }

@@ -35,6 +35,9 @@ class ntnuopenstack::nova::api::compute {
   if($confhaproxy) {
     contain ::ntnuopenstack::nova::haproxy::backend::api
     contain ::ntnuopenstack::nova::haproxy::backend::metadata
+    $use_forwarded_for = true
+  } else {
+    $use_forwarded_for = false
   }
 
   if($nova_admin_ip) {
@@ -54,6 +57,7 @@ class ntnuopenstack::nova::api::compute {
     enable_proxy_headers_parsing         => $confhaproxy,
     sync_db                              => $sync_db,
     sync_db_api                          => $sync_db,
+    use_forwarded_for                    => $use_forwarded_for,
   }
 
   nova_config {

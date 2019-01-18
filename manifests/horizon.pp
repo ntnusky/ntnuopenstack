@@ -30,6 +30,11 @@ class ntnuopenstack::horizon {
   # If this server should be placed behind haproxy, make sure to configure it.
   if($haproxy) {
     include ::ntnuopenstack::horizon::haproxy::backend
+    $extra_params = {
+      access_log_format => 'forwarded',
+    }
+  } else {
+    $extra_params = undef
   }
 
   # If we should serve horizon over SSL:
@@ -97,6 +102,7 @@ class ntnuopenstack::horizon {
     server_aliases                 => [$::fqdn, $server_name],
     servername                     => $server_name,
     session_timeout                => $session_timeout,
+    vhost_extra_params             => $extra_params,
     *                              => merge($ssl_settings, $memcache),
   }
 }
