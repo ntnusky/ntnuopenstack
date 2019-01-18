@@ -1,0 +1,61 @@
+# Configures the haproxy frontend for the public swift API, if the swift-api is
+# placed on the api-name at port 7480.
+class ntnuopenstack::swift::haproxy::standalone {
+  require ::profile::services::haproxy
+  require ::profile::services::haproxy::certs::serviceapi
+
+  include ::ntnuopenstack::swift::firewall::haproxy
+
+  $ipv4 = hiera('ntnuopenstack::endpoint::public::ipv4')
+  $ipv6 = hiera('ntnuopenstack::endpoint::public::ipv6', false)
+  $certificate = hiera('ntnuopenstack::endpoint::public::cert', false)
+  $certfile = hiera('ntnuopenstack::endpoint::public::cert::certfile',
+                    '/etc/ssl/private/haproxy.servicesapi.pem')
+
+  if($certificate) {
+    $ssl = ['ssl', 'crt', $certfile]
+    $proto = 'X-Forwarded-Proto:\ https'
+  } else {
+    $ssl = []
+    $proto = 'X-Forwarded-Proto:\ http'
+  }
+
+  $ft_options = {
+    'default_backend' => 'bk_swift_public',
+    'reqadd'          => $proto,
+  }
+
+  if($ipv6) {
+    $bind = {
+      "${ipv4}:7480" => $ssl,
+      "${ipv6}:7480" => $ssl,
+    }
+  } else {
+    $bind = {
+      "${ipv4}:7480" => $ssl,
+    }
+  }
+
+  haproxy::frontend { 'ft_swift_public':
+    bind    => $bind,
+    mode    => 'http',
+    options => $ft_options,
+  }
+
+  profile::services::haproxy::tools::collect { 'bk_swift_public': }
+
+  haproxy::backend { 'bk_swift_public':
+    mode    => 'http',
+    options => {
+      'balance' => 'source',
+      'option'  => [
+        'httpchk HEAD /',
+        'forwardfor',
+        'http-server-close',
+      ],
+      'timeout' => [
+        'http-keep-alive 500',
+      ],
+    },
+  }
+}
