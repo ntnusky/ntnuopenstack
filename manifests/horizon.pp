@@ -73,8 +73,12 @@ class ntnuopenstack::horizon {
       'cache_backend'   => 'django.core.cache.backends.memcached.MemcachedCache',
       'cache_server_ip' => $memcache_servers,
     }
+    $session_engine = {
+      'django_session_engine' => 'django.contrib.sessions.backends.cache'
+    }
   } else {
     $memcache = {}
+    $session_engine = {}
   }
 
   horizon::dashboard { 'heat': }
@@ -103,6 +107,6 @@ class ntnuopenstack::horizon {
     servername                     => $server_name,
     session_timeout                => $session_timeout,
     vhost_extra_params             => $extra_params,
-    *                              => merge($ssl_settings, $memcache),
+    *                              => merge($ssl_settings, $memcache, $session_engine),
   }
 }
