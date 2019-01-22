@@ -78,6 +78,8 @@ class ntnuopenstack::horizon {
   }
 
   horizon::dashboard { 'heat': }
+  horizon::dashboard { 'neutron-fwaas': }
+  horizon::dashboard { 'neutron-lbaas': }
 
   class { '::horizon':
     allowed_hosts                  => [$::fqdn, $server_name],
