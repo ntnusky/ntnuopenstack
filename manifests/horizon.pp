@@ -72,12 +72,15 @@ class ntnuopenstack::horizon {
     $memcache = {
       'cache_backend'   => 'django.core.cache.backends.memcached.MemcachedCache',
       'cache_server_ip' => $memcache_servers,
+      'django_session_engine' => 'django.contrib.sessions.backends.cache',
     }
   } else {
     $memcache = {}
   }
 
   horizon::dashboard { 'heat': }
+  horizon::dashboard { 'neutron-fwaas': }
+  horizon::dashboard { 'neutron-lbaas': }
 
   class { '::horizon':
     allowed_hosts                  => [$::fqdn, $server_name],
