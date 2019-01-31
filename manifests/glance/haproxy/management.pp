@@ -6,87 +6,43 @@ class ntnuopenstack::glance::haproxy::management {
 
   include ::ntnuopenstack::glance::firewall::haproxy::api
   include ::ntnuopenstack::glance::firewall::haproxy::registry
-  include ::ntnuopenstack::glance::haproxy::backend::oldmanagement
 
-  $ipv4 = hiera('ntnuopenstack::endpoint::admin::ipv4')
-  $ipv6 = hiera('ntnuopenstack::endpoint::admin::ipv6', false)
-  $certificate = hiera('ntnuopenstack::endpoint::admin::cert', false)
-  $certfile = hiera('ntnuopenstack::endpoint::admin::cert::path',
-                    '/etc/ssl/private/haproxy.managementapi.pem')
-
+  $certificate = lookup('ntnuopenstack::endpoint::admin::cert', {
+    'default_value' => false,
+  })
   if($certificate) {
-    $ssl = ['ssl', 'crt', $certfile]
-    $proto = 'X-Forwarded-Proto:\ https'
+    $certfile = lookup('ntnuopenstack::endpoint::admin::cert::path', {
+      'value_type'    => String,
+      'default_value' => '/etc/ssl/private/haproxy.managementapi.pem'
+    })
   } else {
-    $ssl = []
-    $proto = 'X-Forwarded-Proto:\ http'
+    $certfile = false
   }
 
-  if($ipv6) {
-    $bind_api = {
-      "${ipv4}:9292" => $ssl,
-      "${ipv6}:9292" => $ssl,
-    }
-    $bind_reg = {
-      "${ipv4}:9191" => $ssl,
-      "${ipv6}:9191" => $ssl,
-    }
-  } else {
-    $bind_api = {
-      "${ipv4}:9292" => $ssl,
-    }
-    $bind_reg = {
-      "${ipv4}:9191" => $ssl,
-    }
+  ::profile::services::haproxy::frontend { 'glance_api_admin':
+    profile   => 'management',
+    port      => 9292,
+    certfile  => $certfile,
+    mode      => 'http',
+    bkoptions => {
+      'option'  => [
+        'tcplog',
+        'tcpka',
+        'httpchk',
+      ],
+    },
   }
 
-  $ft_api_options = {
-    'default_backend' => 'bk_glance_api_admin',
-    'reqadd'          => $proto,
-  }
-  $ft_reg_options = {
-    'default_backend' => 'bk_glance_registry',
-    'reqadd'          => $proto,
-  }
-
-  haproxy::frontend { 'ft_glance_api_admin':
-    bind    => $bind_api,
-    mode    => 'http',
-    options => $ft_api_options,
-  }
-  haproxy::frontend { 'ft_glance_registry':
-    bind    => $bind_reg,
-    mode    => 'http',
-    options => $ft_reg_options,
-  }
-
-  $backend_options = {
-    'balance' => 'source',
-    'option'  => [
-      'tcplog',
-      'tcpka',
-      'httpchk',
-    ],
-  }
-  $backend_reg_options = {
-    'balance' => 'source',
-    'option'  => [
-      'tcplog',
-      'tcpka',
-    ],
-  }
-
-  profile::services::haproxy::tools::collect { 'bk_glance_api_admin': }
-
-  haproxy::backend { 'bk_glance_api_admin':
-    mode    => 'http',
-    options => $backend_options,
-  }
-
-  profile::services::haproxy::tools::collect { 'bk_glance_registry': }
-
-  haproxy::backend { 'bk_glance_registry':
-    mode    => 'http',
-    options => $backend_reg_options,
+  ::profile::services::haproxy::frontend { 'glance_registry':
+    profile   => 'management',
+    port      => 9191,
+    certfile  => $certfile,
+    mode      => 'http',
+    bkoptions => {
+      'option'  => [
+        'tcplog',
+        'tcpka',
+      ],
+    },
   }
 }

@@ -4,76 +4,44 @@ class ntnuopenstack::heat::haproxy::management {
   require ::profile::services::haproxy::certs::manageapi
 
   include ::ntnuopenstack::heat::firewall::haproxy
-  include ::ntnuopenstack::heat::haproxy::backend::oldmanagement
 
-  $ipv4 = hiera('ntnuopenstack::endpoint::admin::ipv4')
-  $ipv6 = hiera('ntnuopenstack::endpoint::admin::ipv6', false)
-  $certificate = hiera('ntnuopenstack::endpoint::admin::cert', false)
-  $certfile = hiera('ntnuopenstack::endpoint::admin::cert::path',
-                    '/etc/ssl/private/haproxy.managementapi.pem')
-
+  $certificate = lookup('ntnuopenstack::endpoint::admin::cert', {
+    'default_value' => false,
+  })
   if($certificate) {
-    $ssl = ['ssl', 'crt', $certfile]
+    $certfile = lookup('ntnuopenstack::endpoint::admin::cert::path', {
+      'value_type'    => String,
+      'default_value' => '/etc/ssl/private/haproxy.managementapi.pem'
+    })
   } else {
-    $ssl = []
+    $certfile = false
   }
 
-  if($ipv6) {
-    $bind_api = {
-      "${ipv4}:8004" => $ssl,
-      "${ipv6}:8004" => $ssl,
-    }
-    $bind_cfn = {
-      "${ipv4}:8000" => $ssl,
-      "${ipv6}:8000" => $ssl,
-    }
-  } else {
-    $bind_api = {
-      "${ipv4}:8004" => $ssl,
-    }
-    $bind_cfn = {
-      "${ipv4}:8000" => $ssl,
-    }
+  ::profile::services::haproxy::frontend { 'heat_api_admin':
+    profile   => 'management',
+    port      => 8004,
+    certfile  => $certfile,
+    mode      => 'http',
+    bkoptions => {
+      'option'  => [
+        'tcplog',
+        'tcpka',
+        'httpchk',
+      ],
+    },
   }
 
-  $ft_api_options = {
-    'default_backend' => 'bk_heat_api_admin',
-    'reqadd'          => 'X-Forwarded-Proto:\ https',
-  }
-  $ft_cfn_options = {
-    'default_backend' => 'bk_heat_cfn_admin',
-    'reqadd'          => 'X-Forwarded-Proto:\ https',
-  }
-
-  haproxy::frontend { 'ft_heat_api_admin':
-    bind    => $bind_api,
-    mode    => 'http',
-    options => $ft_api_options,
-  }
-  haproxy::frontend { 'ft_heat_cfn_admin':
-    bind    => $bind_cfn,
-    mode    => 'http',
-    options => $ft_cfn_options,
-  }
-
-  $backend_options = {
-    'balance' => 'source',
-    'option'  => [
-      'tcplog',
-      'tcpka',
-      'httpchk',
-    ],
-  }
-
-  profile::services::haproxy::tools::collect { 'bk_heat_api_admin': }
-  haproxy::backend { 'bk_heat_api_admin':
-    mode    => 'http',
-    options => $backend_options,
-  }
-
-  profile::services::haproxy::tools::collect { 'bk_heat_cfn_admin': }
-  haproxy::backend { 'bk_heat_cfn_admin':
-    mode    => 'http',
-    options => $backend_options,
+  ::profile::services::haproxy::frontend { 'heat_cfn_admin':
+    profile   => 'management',
+    port      => 8000,
+    certfile  => $certfile,
+    mode      => 'http',
+    bkoptions => {
+      'option'  => [
+        'tcplog',
+        'tcpka',
+        'httpchk',
+      ],
+    },
   }
 }

@@ -1,7 +1,7 @@
 # Configures the haproxy frontend for the public cinder API
 class ntnuopenstack::cinder::haproxy::services {
   require ::profile::services::haproxy
-  require ::profile::services::haproxy::certs::manageapi
+  require ::profile::services::haproxy::certs::serviceapi
 
   include ::ntnuopenstack::cinder::firewall::haproxy
 
@@ -11,14 +11,14 @@ class ntnuopenstack::cinder::haproxy::services {
   if($certificate) {
     $certfile = lookup('ntnuopenstack::endpoint::public::cert::path', {
       'value_type'    => String,
-      'default_value' => '/etc/ssl/private/haproxy.managementapi.pem'
+      'default_value' => '/etc/ssl/private/haproxy.servicesapi.pem'
     })
   } else {
     $certfile = false
   }
 
   ::profile::services::haproxy::frontend { 'cinder_public':
-    profile   => 'management',
+    profile   => 'services',
     port      => 8776,
     certfile  => $certfile,
     mode      => 'http',

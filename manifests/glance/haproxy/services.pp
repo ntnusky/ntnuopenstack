@@ -4,50 +4,25 @@ class ntnuopenstack::glance::haproxy::services {
   require ::profile::services::haproxy::certs::serviceapi
 
   include ::ntnuopenstack::glance::firewall::haproxy::api
-  include ::ntnuopenstack::glance::haproxy::backend::oldpublic
 
-  $ipv4 = hiera('ntnuopenstack::endpoint::public::ipv4')
-  $ipv6 = hiera('ntnuopenstack::endpoint::public::ipv6', false)
-  $certificate = hiera('ntnuopenstack::endpoint::public::cert', false)
-  $certfile = hiera('ntnuopenstack::endpoint::public::cert::certfile',
-                    '/etc/ssl/private/haproxy.servicesapi.pem')
-
+  $certificate = lookup('ntnuopenstack::endpoint::public::cert', {
+    'default_value' => false,
+  })
   if($certificate) {
-    $ssl = ['ssl', 'crt', $certfile]
-    $proto = 'X-Forwarded-Proto:\ https'
+    $certfile = lookup('ntnuopenstack::endpoint::public::cert::path', {
+      'value_type'    => String,
+      'default_value' => '/etc/ssl/private/haproxy.servicesapi.pem'
+    })
   } else {
-    $ssl = []
-    $proto = 'X-Forwarded-Proto:\ http'
+    $certfile = false
   }
 
-  $ft_options = {
-    'default_backend' => 'bk_glance_public',
-    'reqadd'          => $proto,
-  }
-
-  if($ipv6) {
-    $bind = {
-      "${ipv4}:9292" => $ssl,
-      "${ipv6}:9292" => $ssl,
-    }
-  } else {
-    $bind = {
-      "${ipv4}:9292" => $ssl,
-    }
-  }
-
-  haproxy::frontend { 'ft_glance_public':
-    bind    => $bind,
-    mode    => 'http',
-    options => $ft_options,
-  }
-
-  profile::services::haproxy::tools::collect { 'bk_glance_public': }
-
-  haproxy::backend { 'bk_glance_public':
-    mode    => 'http',
-    options => {
-      'balance' => 'source',
+  ::profile::services::haproxy::frontend { 'glance_api_admin':
+    profile   => 'services',
+    port      => 9292,
+    certfile  => $certfile,
+    mode      => 'http',
+    bkoptions => {
       'option'  => [
         'tcplog',
         'tcpka',
