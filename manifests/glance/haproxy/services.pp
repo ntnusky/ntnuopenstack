@@ -17,7 +17,7 @@ class ntnuopenstack::glance::haproxy::services {
     $certfile = false
   }
 
-  ::profile::services::haproxy::frontend { 'glance_api_admin':
+  ::profile::services::haproxy::frontend { 'glance_public':
     profile   => 'services',
     port      => 9292,
     certfile  => $certfile,
