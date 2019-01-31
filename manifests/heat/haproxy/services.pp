@@ -18,7 +18,7 @@ class ntnuopenstack::heat::haproxy::services {
   }
 
   ::profile::services::haproxy::frontend { 'heat_public':
-    profile   => 'management',
+    profile   => 'services',
     port      => 8004,
     certfile  => $certfile,
     mode      => 'http',
@@ -32,7 +32,7 @@ class ntnuopenstack::heat::haproxy::services {
   }
 
   ::profile::services::haproxy::frontend { 'heat_cfn_public':
-    profile   => 'management',
+    profile   => 'services',
     port      => 8000,
     certfile  => $certfile,
     mode      => 'http',
