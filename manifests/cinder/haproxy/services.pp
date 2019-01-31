@@ -9,7 +9,7 @@ class ntnuopenstack::cinder::haproxy::services {
     'default_value' => false,
   })
   if($certificate) {
-    $certfile = hiera('ntnuopenstack::endpoint::public::cert::path', {
+    $certfile = lookup('ntnuopenstack::endpoint::public::cert::path', {
       'value_type'    => String,
       'default_value' => '/etc/ssl/private/haproxy.managementapi.pem'
     })
