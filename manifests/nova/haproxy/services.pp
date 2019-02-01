@@ -4,54 +4,25 @@ class ntnuopenstack::nova::haproxy::services {
   require ::profile::services::haproxy::certs::serviceapi
 
   include ::ntnuopenstack::nova::firewall::haproxy
-  include ::ntnuopenstack::nova::haproxy::backend::oldpublic
 
-  $ipv4 = hiera('ntnuopenstack::endpoint::public::ipv4')
-  $ipv6 = hiera('ntnuopenstack::endpoint::public::ipv6', false)
-  $certificate = hiera('ntnuopenstack::endpoint::public::cert', false)
-  $certfile = hiera('ntnuopenstack::endpoint::public::cert::certfile',
-                    '/etc/ssl/private/haproxy.servicesapi.pem')
-
+  $certificate = lookup('ntnuopenstack::endpoint::public::cert', {
+    'default_value' => false,
+  })
   if($certificate) {
-    $ssl = ['ssl', 'crt', $certfile]
-    $proto = 'X-Forwarded-Proto:\ https'
+    $certfile = lookup('ntnuopenstack::endpoint::public::cert::path', {
+      'value_type'    => String,
+      'default_value' => '/etc/ssl/private/haproxy.servicesapi.pem'
+    })
   } else {
-    $ssl = []
-    $proto = 'X-Forwarded-Proto:\ http'
+    $certfile = false
   }
 
-  if($ipv6) {
-    $bind = {
-      "${ipv4}:8774" => $ssl,
-      "${ipv6}:8774" => $ssl,
-    }
-    $bindvnc = {
-      "${ipv4}:6080" => $ssl,
-      "${ipv6}:6080" => $ssl,
-    }
-  } else {
-    $bind = {
-      "${ipv4}:8774" => $ssl,
-    }
-    $bindvnc = {
-      "${ipv4}:6080" => $ssl,
-    }
-  }
-
-  haproxy::frontend { 'ft_nova_public':
-    bind    => $bind,
-    mode    => 'http',
-    options => {
-      'default_backend' => 'bk_nova_public',
-      'reqadd'          => $proto,
-    }
-  }
-
-  profile::services::haproxy::tools::collect { 'bk_nova_public': }
-  haproxy::backend { 'bk_nova_public':
-    mode    => 'http',
-    options => {
-      'balance' => 'source',
+  ::profile::services::haproxy::frontend { 'nova_public':
+    profile   => 'services',
+    port      => 8774,
+    certfile  => $certfile,
+    mode      => 'http',
+    bkoptions => {
       'option'  => [
         'tcplog',
         'tcpka',
@@ -60,19 +31,12 @@ class ntnuopenstack::nova::haproxy::services {
     },
   }
 
-  haproxy::frontend { 'ft_nova_vnc':
-    bind    => $bindvnc,
-    mode    => 'tcp',
-    options => {
-      'default_backend' => 'bk_nova_vnc',
-    }
-  }
-
-  profile::services::haproxy::tools::collect { 'bk_nova_vnc': }
-  haproxy::backend { 'bk_nova_vnc':
-    mode    => 'tcp',
-    options => {
-      'balance' => 'source',
+  ::profile::services::haproxy::frontend { 'nova_vnc':
+    profile   => 'services',
+    port      => 6080,
+    certfile  => $certfile,
+    mode      => 'tcp',
+    bkoptions => {
       'option'  => [
         'tcplog',
         'tcpka',

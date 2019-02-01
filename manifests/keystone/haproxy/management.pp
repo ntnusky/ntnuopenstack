@@ -4,78 +4,44 @@ class ntnuopenstack::keystone::haproxy::management {
   require ::profile::services::haproxy::certs::manageapi
 
   include ::ntnuopenstack::keystone::firewall::haproxy::management
-  include ::ntnuopenstack::keystone::haproxy::backend::oldmanagement
 
-  $ipv4 = hiera('ntnuopenstack::endpoint::admin::ipv4')
-  $ipv6 = hiera('ntnuopenstack::endpoint::admin::ipv6', false)
-  $certificate = hiera('ntnuopenstack::endpoint::admin::cert', false)
-  $certfile = hiera('ntnuopenstack::endpoint::admin::cert::path',
-                    '/etc/ssl/private/haproxy.managementapi.pem')
-
+  $certificate = lookup('ntnuopenstack::endpoint::admin::cert', {
+    'default_value' => false,
+  })
   if($certificate) {
-    $ssl = ['ssl', 'crt', $certfile]
-    $proto = 'X-Forwarded-Proto:\ https'
+    $certfile = lookup('ntnuopenstack::endpoint::admin::cert::path', {
+      'value_type'    => String,
+      'default_value' => '/etc/ssl/private/haproxy.managementapi.pem'
+    })
   } else {
-    $ssl = []
-    $proto = 'X-Forwarded-Proto:\ http'
+    $certfile = false
   }
 
-  if($ipv6) {
-    $bind_adm = {
-      "${ipv4}:35357" => $ssl,
-      "${ipv6}:35357" => $ssl,
-    }
-    $bind_int = {
-      "${ipv4}:5000" => $ssl,
-      "${ipv6}:5000" => $ssl,
-    }
-  } else {
-    $bind_adm = {
-      "${ipv4}:35357" => $ssl,
-    }
-    $bind_int = {
-      "${ipv4}:5000" => $ssl,
-    }
+  ::profile::services::haproxy::frontend { 'keystone_admin':
+    profile   => 'management',
+    port      => 35357,
+    certfile  => $certfile,
+    mode      => 'http',
+    bkoptions => {
+      'option'  => [
+        'tcplog',
+        'tcpka',
+        'httpchk',
+      ],
+    },
   }
 
-  $ft_admin_options = {
-    'default_backend' => 'bk_keystone_admin',
-    'reqadd'          => $proto,
-  }
-  $ft_internal_options = {
-    'default_backend' => 'bk_keystone_internal',
-    'reqadd'          => $proto,
-  }
-
-  haproxy::frontend { 'ft_keystone_admin':
-    bind    => $bind_adm,
-    mode    => 'http',
-    options => $ft_admin_options,
-  }
-  haproxy::frontend { 'ft_keystone_internal':
-    bind    => $bind_int,
-    mode    => 'http',
-    options => $ft_internal_options,
-  }
-
-  $backend_options = {
-    'balance' => 'source',
-    'option'  => [
-      'tcplog',
-      'tcpka',
-      'httpchk',
-    ],
-  }
-
-  profile::services::haproxy::tools::collect { 'bk_keystone_admin': }
-  haproxy::backend { 'bk_keystone_admin':
-    mode    => 'http',
-    options => $backend_options,
-  }
-
-  profile::services::haproxy::tools::collect { 'bk_keystone_internal': }
-  haproxy::backend { 'bk_keystone_internal':
-    mode    => 'http',
-    options => $backend_options,
+  ::profile::services::haproxy::frontend { 'keystone_internal':
+    profile   => 'management',
+    port      => 5000,
+    certfile  => $certfile,
+    mode      => 'http',
+    bkoptions => {
+      'option'  => [
+        'tcplog',
+        'tcpka',
+        'httpchk',
+      ],
+    },
   }
 }
