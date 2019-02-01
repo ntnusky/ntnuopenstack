@@ -1,24 +1,33 @@
 # Performs basic nova configuration.
 class ntnuopenstack::nova::base {
-  # Determine correct mysql IP
-  $mysql_password = hiera('ntnuopenstack::nova::mysql::password')
-  $mysql_old = hiera('profile::mysql::ip', undef)
-  $mysql_new = hiera('profile::haproxy::management::ipv4', undef)
-  $mysql_ip = pick($mysql_new, $mysql_old)
+  # Retrieve memcache configuration
+  $memcache_servers = lookup('profile::memcache::servers', {
+    'value_type'    => Array[Stdlib::IP::Address],
+    'default_value' => [],
+  })
+  $memcache = $memcache_servers.map | $server | {
+    "${server}:11211"
+  }
 
-  # Mysql connectionstrings
+  # Retrieve mysql session
+  $mysql_password = lookup('ntnuopenstack::nova::mysql::password')
+  $mysql_ip = lookup('profile::haproxy::management::ipv4', {
+      'value_type' => Stdlib::IP::Address,
+  })
   $db_con = "mysql://nova:${mysql_password}@${mysql_ip}/nova"
   $api_db_con = "mysql://nova_api:${mysql_password}@${mysql_ip}/nova_api"
 
   # Nova placement configuration
-  $region = hiera('ntnuopenstack::region')
-  $placement_password = hiera('ntnuopenstack::nova::placement::keysone::password')
-  $admin_endpoint = hiera('ntnuopenstack::endpoint::admin', undef)
-  $keystone_admin_ip = hiera('profile::api::keystone::admin::ip', '127.0.0.1')
-  $keystone_admin = pick($admin_endpoint, "http://${keystone_admin_ip}")
+  $region = lookup('ntnuopenstack::region')
+  $placement_password = lookup('ntnuopenstack::nova::placement::keysone::password')
+  $keystone_admin = lookup('ntnuopenstack::endpoint::admin') 
+  $internal_endpoint = lookup('ntnuopenstack::endpoint::internal')
 
   # RabbitMQ connection-information
-  $rabbitservers  = hiera('profile::rabbitmq::servers', false)
+  $rabbitservers  = lookup('profile::rabbitmq::servers', {
+    'value_type'   => Variant[Array[String], Boolean],
+    'deault_value' => false,
+  })
 
   if ($rabbitservers) {
     $ha_transport_conf = {
@@ -29,16 +38,7 @@ class ntnuopenstack::nova::base {
     $ha_transport_conf = {}
   }
 
-  $transport_url = hiera('ntnuopenstack::transport::url')
-
-  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', false)
-  if($internal_endpoint) {
-    $glance_internal = "${internal_endpoint}:9292"
-  } else {
-    $controller_management_addresses = hiera('controller::management::addresses')
-    $oldapi = join([join($controller_management_addresses, ':9292,'),''], ':9292')
-    $glance_internal = $oldapi
-  }
+  $transport_url = lookup('ntnuopenstack::transport::url')
 
   require ::ntnuopenstack::repo
   include ::ntnuopenstack::nova::sudo
@@ -48,7 +48,7 @@ class ntnuopenstack::nova::base {
     default_transport_url   => $transport_url,
     api_database_connection => $api_db_con,
     image_service           => 'nova.image.glance.GlanceImageService',
-    glance_api_servers      => $glance_internal,
+    glance_api_servers      => "${internal_endpoint}:9292",
     *                       => $ha_transport_conf,
   }
 
@@ -56,5 +56,10 @@ class ntnuopenstack::nova::base {
     password       => $placement_password,
     auth_url       => "${keystone_admin}:35357/v3",
     os_region_name => $region,
+  }
+
+  class { '::nova::cache' :
+    backend          => 'oslo_cache.memcache_pool',
+    memcache_servers => $memcache,
   }
 }
