@@ -24,9 +24,9 @@ class ntnuopenstack::nova::base {
   $internal_endpoint = lookup('ntnuopenstack::endpoint::internal')
 
   # RabbitMQ connection-information
-  $rabbitservers  = lookup('profile::rabbitmq::servers', {
-    'value_type'   => Variant[Array[String], Boolean],
-    'deault_value' => false,
+  $rabbitservers = lookup('profile::rabbitmq::servers', {
+    'value_type'    => Variant[Array[String], Boolean],
+    'default_value' => false,
   })
 
   if ($rabbitservers) {
