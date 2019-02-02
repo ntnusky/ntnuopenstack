@@ -59,6 +59,7 @@ class ntnuopenstack::nova::base {
   }
 
   class { '::nova::cache' :
+    enabled          => true,
     backend          => 'oslo_cache.memcache_pool',
     memcache_servers => $memcache,
   }

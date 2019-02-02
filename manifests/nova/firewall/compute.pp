@@ -18,6 +18,12 @@ class ntnuopenstack::nova::firewall::compute {
       dport  => '49152-49215',
       action => 'accept',
     }
+    firewall { '502 accept remote console from the vncproxies':
+      source => $managementv4,
+      proto  => 'tcp',
+      dport  => '5900-5999',
+      action => 'accept',
+    }
   }
   if($managementv6) {
     firewall { '500 ipv6 accept libvirtd connection for migration':
@@ -31,6 +37,13 @@ class ntnuopenstack::nova::firewall::compute {
       source   => $managementv6,
       proto    => 'tcp',
       dport    => '49152-49215',
+      action   => 'accept',
+      provider => 'ip6tables',
+    }
+    firewall { '501 ipv6 accept remote console from the vncproxies':
+      source   => $managementv6,
+      proto    => 'tcp',
+      dport    => '5900-5999',
       action   => 'accept',
       provider => 'ip6tables',
     }
