@@ -14,10 +14,7 @@ class ntnuopenstack::keystone::base {
   $admin_token = hiera('ntnuopenstack::keystone::admin_token')
 
   $mysql_password = hiera('ntnuopenstack::keystone::mysql::password')
-  $mysql_old = hiera('profile::mysql::ip', undef)
-  $mysql_new = hiera('profile::haproxy::management::ipv4', undef)
-  $mysql_ip = pick($mysql_new, $mysql_old)
-
+  $mysql_ip = lookup('ntnuopenstack::keystone::database::ip')
   $db_con = "mysql://keystone:${mysql_password}@${mysql_ip}/keystone"
 
   $cache_servers = hiera_array('profile::memcache::servers', false)

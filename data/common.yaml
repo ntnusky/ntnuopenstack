@@ -1,0 +1,2 @@
+---
+ntnuopenstack::keystone::database::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
