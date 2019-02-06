@@ -1,30 +1,38 @@
 # Performs the base configuration of keystone 
 class ntnuopenstack::keystone::base {
-  $region = hiera('ntnuopenstack::region')
-  $admin_ip = hiera('profile::api::keystone::admin::ip', '127.0.0.1')
-  $public_ip = hiera('profile::api::keystone::public::ip', '127.0.0.1')
+  $region = lookup('ntnuopenstack::region', String)
 
-  $admin_endpoint = hiera('ntnuopenstack::endpoint::admin',
-      "http://${admin_ip}")
-  $public_endpoint = hiera('ntnuopenstack::endpoint::public',
-      "http://${public_ip}")
+  $admin_endpoint  = lookup('ntnuopenstack::endpoint::admin', Stdlib::Httpurl)
+  $public_endpoint = lookup('ntnuopenstack::endpoint::public', Stdlib::Httpurl)
 
-  $admin_email = hiera('ntnuopenstack::keystone::admin_email')
-  $admin_pass = hiera('ntnuopenstack::keystone::admin_password')
-  $admin_token = hiera('ntnuopenstack::keystone::admin_token')
+  $admin_email = lookup('ntnuopenstack::keystone::admin_email', String)
+  $admin_pass  = lookup('ntnuopenstack::keystone::admin_password', String)
+  $admin_token = lookup('ntnuopenstack::keystone::admin_token', String)
 
-  $mysql_password = hiera('ntnuopenstack::keystone::mysql::password')
-  $mysql_ip = lookup('ntnuopenstack::keystone::database::ip')
+  $mysql_password = lookup('ntnuopenstack::keystone::mysql::password', String)
+  $mysql_ip = lookup('ntnuopenstack::keystone::database::ip', Stdlib::IP::Address)
   $db_con = "mysql://keystone:${mysql_password}@${mysql_ip}/keystone"
 
-  $cache_servers = hiera_array('profile::memcache::servers', false)
-  $confhaproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
+  $cache_servers = lookup('profile::memcache::servers', {
+    'value_type'    => Variant[Array[String], Boolean],
+    'default_value' => false,
+    'merge'         => 'unique',
+  })
+  $confhaproxy = lookup('ntnuopenstack::haproxy::configure::backend', {
+    'value_type'    => Boolean,
+    'default_value' => true,
+  })
 
-  $credential_keys = hiera_hash('ntnuopenstack::keystone::credential::keys')
-  $fernet_keys = hiera_hash('ntnuopenstack::keystone::fernet::keys')
+  $credential_keys = lookup('ntnuopenstack::keystone::credential::keys', {
+    'value_type' => Hash[Stdlib::Unixpath, String],
+    'merge'      => 'hash',
+  })
+  $fernet_keys = lookup('ntnuopenstack::keystone::fernet::keys', {
+    'value_type' => Hash[Stdlib::Unixpath, String],
+    'merge'      => 'hash',
+  })
 
   require ::ntnuopenstack::repo
-  include ::ntnuopenstack::keystone::tokenflush
 
   if($cache_servers) {
     $memcache = $cache_servers.map | $server | {
@@ -73,8 +81,6 @@ class ntnuopenstack::keystone::base {
   }
 
   class { '::keystone::wsgi::apache':
-    servername        => $public_ip,
-    servername_admin  => $admin_ip,
     ssl               => false,
     access_log_format => $logformat,
   }

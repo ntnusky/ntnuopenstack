@@ -1,29 +1,41 @@
-# Opens the firewall for the keystone port from any source
+# Configures the firewall to allow regular keystone from the infra-net, and
+# keystone-admin from all the management networks. 
 class ntnuopenstack::keystone::firewall::haproxy::management {
-  require ::firewall
   require ::profile::baseconfig::firewall
 
-  $infra4_net1 = hiera('profile::networks::management::ipv4::prefix')
-  $infra4_net2 = hiera('profile::networks::management::ipv4::prefix::extra', [])
-  $mgmt4_nets = hiera_array('profile::networking::management::ipv4::prefixes')
-  $infra4_nets = concat([], $infra4_net1, $infra4_net2)
+  $infra4_net = lookup('profile::networks::management::ipv4::prefix', {
+    'value_type'    => Variant[Boolean, Stdlib::IP::Address::V4::CIDR],
+    'default_value' => false,
+  })
+  $mgmt4_nets = lookup('profile::networking::management::ipv4::prefixes', {
+    'value_type'    => Array[Stdlib::IP::Address::V4::CIDR],
+    'default_value' => [],
+    'merge'         => 'unique',
+  })
 
-  $infra6_net = hiera('profile::networks::management::ipv6::prefix', false)
-  $mgmt6_nets = hiera_array('profile::networking::management::ipv6::prefixes', [])
+  $infra6_net = lookup('profile::networks::management::ipv6::prefix', {
+    'value_type'    => Variant[Boolean, Stdlib::IP::Address::V6::CIDR],
+    'default_value' => false,
+  })
+  $mgmt6_nets = lookup('profile::networking::management::ipv6::prefixes', {
+    'value_type'    => Array[Stdlib::IP::Address::V6::CIDR],
+    'default_value' => [],
+    'merge'         => 'unique',
+  })
+
+  if($infra4_net) {
+    firewall { '100 Keystone API - Internal':
+      proto  => 'tcp',
+      dport  => 5000,
+      action => 'accept',
+      source => $infra4_net,
+    }
+  }
 
   $mgmt4_nets.each | $net | {
     firewall { "100 Keystone API - Admin from ${net}":
       proto  => 'tcp',
       dport  => 35357,
-      action => 'accept',
-      source => $net,
-    }
-  }
-
-  $infra4_nets.each | $net | {
-    firewall { "100 Keystone API - Internal - ${net}":
-      proto  => 'tcp',
-      dport  => 5000,
       action => 'accept',
       source => $net,
     }
@@ -48,5 +60,4 @@ class ntnuopenstack::keystone::firewall::haproxy::management {
       provider => 'ip6tables',
     }
   }
-
 }

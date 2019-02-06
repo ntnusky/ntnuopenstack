@@ -1,14 +1,30 @@
 # Configures keystone to use an LDAP backend for authentication
 class ntnuopenstack::keystone::ldap {
-  $ldap_name = hiera('ntnuopenstack::keystone::ldap_backend::name')
-  $ldap_url = hiera('ntnuopenstack::keystone::ldap_backend::url')
-  $ldap_user = hiera('ntnuopenstack::keystone::ldap_backend::user')
-  $ldap_password = hiera('ntnuopenstack::keystone::ldap_backend::password')
-  $ldap_suffix = hiera('ntnuopenstack::keystone::ldap_backend::suffix')
-  $ldap_user_tree_dn = hiera('ntnuopenstack::keystone::ldap_backend::user_tree_dn')
-  $ldap_user_filter = hiera('ntnuopenstack::keystone::ldap_backend::user_filter',undef)
-  $ldap_group_tree_dn = hiera('ntnuopenstack::keystone::ldap_backend::group_tree_dn')
-  $ldap_group_filter = hiera('ntnuopenstack::keystone::ldap_backend::group_filter',undef)
+  $ldap_name = lookup('ntnuopenstack::keystone::ldap_backend::name', String)
+  $ldap_url  = lookup('ntnuopenstack::keystone::ldap_backend::url',  String)
+  $ldap_user = lookup('ntnuopenstack::keystone::ldap_backend::user', String)
+  $ldap_password = lookup(
+    'ntnuopenstack::keystone::ldap_backend::password',
+    String,
+  )
+  $ldap_suffix = lookup('ntnuopenstack::keystone::ldap_backend::suffix', String)
+  $ldap_user_tree_dn = lookup(
+    'ntnuopenstack::keystone::ldap_backend::user_tree_dn', String
+  )
+  $ldap_user_filter = lookup(
+    'ntnuopenstack::keystone::ldap_backend::user_filter', {
+    'value_type'    => Variant[Undef, String],
+    'default_value' => undef,
+  })
+  $ldap_group_tree_dn = lookup(
+    'ntnuopenstack::keystone::ldap_backend::group_tree_dn',
+    String,
+  )
+  $ldap_group_filter = lookup(
+    'ntnuopenstack::keystone::ldap_backend::group_filter', {
+    'value_type'    => Variant[Undef, String],
+    'default_value' => undef,
+  })
 
   require ::ntnuopenstack::repo
 
