@@ -24,11 +24,11 @@ class ntnuopenstack::keystone::base {
   })
 
   $credential_keys = lookup('ntnuopenstack::keystone::credential::keys', {
-    'value_type' => Hash[Stdlib::Unixpath, String],
+    'value_type' => Hash[Stdlib::Unixpath, Hash[String, String]],
     'merge'      => 'hash',
   })
   $fernet_keys = lookup('ntnuopenstack::keystone::fernet::keys', {
-    'value_type' => Hash[Stdlib::Unixpath, String],
+    'value_type' => Hash[Stdlib::Unixpath, Hash[String, String]],
     'merge'      => 'hash',
   })
 
