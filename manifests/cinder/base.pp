@@ -1,7 +1,7 @@
 # Configures the base cinder config
 class ntnuopenstack::cinder::base {
   # Determine where the database resides 
-  $mysql_pass = lookup('ntnuopenstack::keystone::mysql::password', String)
+  $mysql_pass = lookup('ntnuopenstack::cinder::mysql::password', String)
   $mysql_ip = lookup('ntnuopenstack::cinder::mysql::ip', Stdlib::IP::Address)
   $database_connection = "mysql://cinder:${mysql_pass}@${mysql_ip}/cinder"
 
