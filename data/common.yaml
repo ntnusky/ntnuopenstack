@@ -4,6 +4,11 @@ ntnuopenstack::cinder::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin
 ntnuopenstack::cinder::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
 ntnuopenstack::cinder::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"
 
+ntnuopenstack::glance::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
+ntnuopenstack::glance::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
+ntnuopenstack::glance::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
+ntnuopenstack::glance::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"
+
 ntnuopenstack::keystone::auth::url: "%{lookup('ntnuopenstack::endpoint::admin')}:35357"
 ntnuopenstack::keystone::auth::uri: "%{lookup('ntnuopenstack::endpoint::internal')}:5000/"
 ntnuopenstack::keystone::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"

@@ -1,6 +1,6 @@
 # Configures the haproxy backends for glance
-class ntnuopenstack::glance::haproxy::backend::server {
-  $if = hiera('profile::interfaces::management')
+class ntnuopenstack::glance::haproxy::backend {
+  $if = lookup('profile::interfaces::management')
   $ip = $::facts['networking']['interfaces'][$if]['ip']
 
   profile::services::haproxy::tools::register { "GlancePublic-${::hostname}":

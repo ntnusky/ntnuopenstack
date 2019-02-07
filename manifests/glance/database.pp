@@ -1,7 +1,10 @@
 # This class sets up the database for glance
 class ntnuopenstack::glance::database {
-  $password = hiera('ntnuopenstack::glance::mysql::password')
-  $allowed_hosts = hiera('ntnuopenstack::mysql::allowed_hosts')
+  $password = lookup('ntnuopenstack::glance::mysql::password', String)
+  $allowed_hosts = lookup('ntnuopenstack::mysql::allowed_hosts', {
+    'value_type' => Array[String],
+    'merge'      => 'first',
+  })
 
   require ::ntnuopenstack::repo
 

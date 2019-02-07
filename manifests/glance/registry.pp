@@ -1,34 +1,33 @@
 # Configures glance registry and backend
 class ntnuopenstack::glance::registry {
-  $region = hiera('ntnuopenstack::region')
-  $keystone_password = hiera('ntnuopenstack::glance::keystone::password')
-  $confhaproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
+  # Determine where the database is
+  $mysql_pass = lookup('ntnuopenstack::glance::mysql::password', String)
+  $mysql_ip = lookup('ntnuopenstack::keystone::mysql::ip', Stdlib::IP::Address)
+  $database_connection = "mysql://glance:${mysql_pass}@${mysql_ip}/glance"
 
-  # Determine the correct endpoint for keystone
-  $admin_endpoint = hiera('ntnuopenstack::endpoint::admin', undef)
-  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', undef)
-  $public_endpoint = hiera('ntnuopenstack::endpoint::public', undef)
-  $keystone_public_ip = hiera('profile::api::keystone::public::ip', '127.0.0.1')
-  $keystone_admin_ip = hiera('profile::api::keystone::admin::ip', '127.0.0.1')
-  $keystone_admin    = pick($admin_endpoint, "http://${keystone_admin_ip}")
-  $keystone_internal = pick($internal_endpoint, "http://${keystone_admin_ip}")
-  $keystone_public   = pick($public_endpoint, "http://${keystone_public_ip}")
+  # Openstack parameters
+  $region = lookup('ntnuopenstack::region', String)
+  $keystone_password = lookup('ntnuopenstack::glance::keystone::password', String)
+
+  # Determine where the keystone service is located.
+  $keystone_admin  = lookup('ntnuopenstack::keystone::endpoint::admin', Stdlib::Httpurl)
+  $keystone_public = lookup('ntnuopenstack::keystone::endpoint::public', Stdlib::Httpurl)
 
   # Retrieve addresses for the memcached servers, either the old IP or the new
   # list of hosts.
-  $memcached_ip = hiera('profile::memcache::ip', undef)
-  $memcache_servers = hiera_array('profile::memcache::servers', undef)
-  $memcache_servers_real = pick($memcache_servers, [$memcached_ip])
-  $memcache = $memcache_servers_real.map | $server | {
+  $cache_servers = lookup('profile::memcache::servers', {
+    'value_type'    => Array[String],
+    'merge'         => 'unique',
+  })
+  $memcache = $cache_servers.map | $server | {
     "${server}:11211"
   }
 
-  # Determine how we connect to the database
-  $mysql_pass = hiera('ntnuopenstack::glance::mysql::password')
-  $mysql_old = hiera('profile::mysql::ip', undef)
-  $mysql_new = hiera('profile::haproxy::management::ipv4', undef)
-  $mysql_ip = pick($mysql_new, $mysql_old)
-  $database_connection = "mysql://glance:${mysql_pass}@${mysql_ip}/glance"
+  # Variables to determine if haproxy or keepalived should be configured.
+  $confhaproxy = lookup('ntnuopenstack::haproxy::configure::backend', {
+    'value_type'    => Boolean,
+    'default_value' => true,
+  })
 
   contain ::ntnuopenstack::glance::ceph
   contain ::ntnuopenstack::glance::firewall::server::registry
@@ -37,7 +36,7 @@ class ntnuopenstack::glance::registry {
   require ::ntnuopenstack::repo
 
   if($confhaproxy) {
-    contain ::ntnuopenstack::glance::haproxy::backend::server
+    contain ::ntnuopenstack::glance::haproxy::backend
   }
 
   class { '::glance::backend::rbd' :

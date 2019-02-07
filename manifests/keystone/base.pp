@@ -2,8 +2,8 @@
 class ntnuopenstack::keystone::base {
   $region = lookup('ntnuopenstack::region', String)
 
-  $admin_endpoint  = lookup('ntnuopenstack::endpoint::admin', Stdlib::Httpurl)
-  $public_endpoint = lookup('ntnuopenstack::endpoint::public', Stdlib::Httpurl)
+  $admin_endpoint  = lookup('ntnuopenstack::keystone::endpoint::admin', Stdlib::Httpurl)
+  $public_endpoint = lookup('ntnuopenstack::keystone::endpoint::public', Stdlib::Httpurl)
 
   $admin_email = lookup('ntnuopenstack::keystone::admin_email', String)
   $admin_pass  = lookup('ntnuopenstack::keystone::admin_password', String)
