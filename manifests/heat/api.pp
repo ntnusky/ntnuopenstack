@@ -1,18 +1,16 @@
 # Installs the heat API
 class ntnuopenstack::heat::api {
-  $confhaproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
-  $heat_admin_ip = hiera('profile::api::heat::admin::ip', false)
+  $confhaproxy = lookup('ntnuopenstack::haproxy::configure::backend', {
+    'value_type'    => Boolean,
+    'default_value' => true,
+  })
 
   require ::ntnuopenstack::heat::base
   require ::ntnuopenstack::heat::firewall::api
   require ::ntnuopenstack::repo
 
-  if($heat_admin_ip) {
-    contain ::ntnuopenstack::heat::keepalived
-  }
-
   if($confhaproxy) {
-    contain ::ntnuopenstack::heat::haproxy::backend::server
+    contain ::ntnuopenstack::heat::haproxy::backend
   }
 
   class { '::heat::api' : }

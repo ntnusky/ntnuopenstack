@@ -1,27 +1,19 @@
 # Registers the heat endpoints in keystone
 class ntnuopenstack::heat::endpoint {
-  # Retrieve service IP Addresses
-  $heat_admin_ip = hiera('profile::api::heat::admin::ip', '127.0.0.1')
-  $heat_public_ip = hiera('profile::api::heat::public::ip', '127.0.0.1')
+  $region = lookup('ntnuopenstack::region', String)
+  $password = lookup('ntnuopenstack::heat::keystone::password', String)
 
-  # Retrieve api urls, if they exist. 
-  $admin_endpoint    = hiera('ntnuopenstack::endpoint::admin', undef)
-  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', undef)
-  $public_endpoint   = hiera('ntnuopenstack::endpoint::public', undef)
-
-  # Determine which endpoint to use
-  $heat_admin     = pick($admin_endpoint, "http://${heat_admin_ip}")
-  $heat_internal  = pick($internal_endpoint, "http://${heat_admin_ip}")
-  $heat_public    = pick($public_endpoint, "http://${heat_public_ip}")
-
-  # Other settings
-  $heat_password = hiera('ntnuopenstack::heat::keystone::password')
-  $region = hiera('ntnuopenstack::region')
+  $heat_admin    = lookup('ntnuopenstack::heat::endpoint::admin',
+                              Stdlib::Httpurl)
+  $heat_internal = lookup('ntnuopenstack::heat::endpoint::internal',
+                              Stdlib::Httpurl)
+  $heat_public   = lookup('ntnuopenstack::heat::endpoint::public',
+                              Stdlib::Httpurl)
 
   require ::ntnuopenstack::repo
 
   class  { '::heat::keystone::auth':
-    password     => $heat_password,
+    password     => $password,
     public_url   => "${heat_public}:8004/v1/%(tenant_id)s",
     internal_url => "${heat_internal}:8004/v1/%(tenant_id)s",
     admin_url    => "${heat_admin}:8004/v1/%(tenant_id)s",
@@ -29,7 +21,7 @@ class ntnuopenstack::heat::endpoint {
   }
 
   class { '::heat::keystone::auth_cfn':
-    password     => $heat_password,
+    password     => $password,
     service_name => 'heat-cfn',
     region       => $region,
     public_url   => "${heat_public}:8000/v1",
