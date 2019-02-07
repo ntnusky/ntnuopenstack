@@ -1,13 +1,7 @@
 # Configures the firewall to accept incoming traffic to the glance registry API. 
 class ntnuopenstack::glance::firewall::server::registry {
-  $managementnet = hiera('profile::networks::management::ipv4::prefix')
-
-  require ::profile::baseconfig::firewall
-
-  firewall { '500 accept Glance Registry':
-    source => $managementnet,
-    proto  => 'tcp',
-    dport  => '9191',
-    action => 'accept',
+  ::profile::baseconfig::firewall::service::infra { 'Glance-Registry':
+    protocol => 'tcp',
+    port     => 9191,
   }
 }

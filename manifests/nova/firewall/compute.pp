@@ -1,51 +1,15 @@
 # Configures firewall rules specific for compute nodes
 class ntnuopenstack::nova::firewall::compute {
-  $managementv4 = hiera('profile::networks::management::ipv4::prefix', false)
-  $managementv6 = hiera('profile::networks::management::ipv6::prefix', false)
-
-  require ::profile::baseconfig::firewall
-
-  if($managementv4) {
-    firewall { '500 accept libvirtd connection for migration':
-      source => $managementv4,
-      proto  => 'tcp',
-      dport  => '16509',
-      action => 'accept',
-    }
-    firewall { '501 accept qemu migration ports':
-      source => $managementv4,
-      proto  => 'tcp',
-      dport  => '49152-49215',
-      action => 'accept',
-    }
-    firewall { '502 accept remote console from the vncproxies':
-      source => $managementv4,
-      proto  => 'tcp',
-      dport  => '5900-5999',
-      action => 'accept',
-    }
+  ::profile::baseconfig::firewall::service::infra { 'Libvirt-migration':
+    protocol => 'tcp',
+    port     => 16509,
   }
-  if($managementv6) {
-    firewall { '500 ipv6 accept libvirtd connection for migration':
-      source   => $managementv6,
-      proto    => 'tcp',
-      dport    => '16509',
-      action   => 'accept',
-      provider => 'ip6tables',
-    }
-    firewall { '501 ipv6 accept qemu migration ports':
-      source   => $managementv6,
-      proto    => 'tcp',
-      dport    => '49152-49215',
-      action   => 'accept',
-      provider => 'ip6tables',
-    }
-    firewall { '501 ipv6 accept remote console from the vncproxies':
-      source   => $managementv6,
-      proto    => 'tcp',
-      dport    => '5900-5999',
-      action   => 'accept',
-      provider => 'ip6tables',
-    }
+  ::profile::baseconfig::firewall::service::infra { 'QEMU-migration':
+    protocol => 'tcp',
+    port     => '49152-49215',
+  }
+  ::profile::baseconfig::firewall::service::infra { 'QEMU-VNC':
+    protocol => 'tcp',
+    port     => '5900-5999',
   }
 }

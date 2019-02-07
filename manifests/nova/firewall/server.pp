@@ -1,28 +1,16 @@
 # Configures the firewall to accept incoming traffic to the nova API. 
 class ntnuopenstack::nova::firewall::server {
-  $managementnet = hiera('profile::networks::management::ipv4::prefix')
-
-  require ::profile::baseconfig::firewall
-
-  firewall { '500 accept Nova API':
-    source => $managementnet,
-    proto  => 'tcp',
-    dport  => '8774',
-    action => 'accept',
+  ::profile::baseconfig::firewall::service::infra { 'Nova-API':
+    protocol => 'tcp',
+    port     => 8774,
   }
-
-  firewall { '500 accept Nova Metadata':
-    source => $managementnet,
-    proto  => 'tcp',
-    dport  => '8775',
-    action => 'accept',
+  ::profile::baseconfig::firewall::service::infra { 'Nova-Metadata':
+    protocol => 'tcp',
+    port     => 8775,
   }
-
-  firewall { '500 accept Nova placement API':
-    source => $managementnet,
-    proto  => 'tcp',
-    dport  => '8778',
-    action => 'accept',
+  ::profile::baseconfig::firewall::service::infra { 'Nova-Placement':
+    protocol => 'tcp',
+    port     => 8778,
   }
 
   firewall { '511 nova-api-INPUT':
