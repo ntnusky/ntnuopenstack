@@ -1,6 +1,6 @@
 # Configures a haproxy server for horizon.
 class ntnuopenstack::horizon::haproxy::backend {
-  $if = hiera('profile::interfaces::management')
+  $if = lookup('profile::interfaces::management')
   $ip = $::facts['networking']['interfaces'][$if]['ip']
 
   profile::services::haproxy::tools::register { "Horizon-${::hostname}":
