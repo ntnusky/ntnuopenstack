@@ -1,9 +1,12 @@
 # Configures the keystone endpoint
 class ntnuopenstack::keystone::endpoint {
   $region            = lookup('ntnuopenstack::region', String)
-  $admin_endpoint    = lookup('ntnuopenstack::endpoint::admin', Stdlib::Httpurl)
-  $internal_endpoint = lookup('ntnuopenstack::endpoint::internal', Stdlib::Httpurl)
-  $public_endpoint   = lookup('ntnuopenstack::endpoint::public', Stdlib::Httpurl)
+  $admin_endpoint    = lookup('ntnuopenstack::keystone::endpoint::admin',
+                                Stdlib::Httpurl)
+  $internal_endpoint = lookup('ntnuopenstack::keystone::endpoint::internal',
+                                Stdlib::Httpurl)
+  $public_endpoint   = lookup('ntnuopenstack::keystone::endpoint::public',
+                                Stdlib::Httpurl)
 
   $swift = lookup('ntnuopenstack::swift::keystone::password', {
     'default_value' => false,

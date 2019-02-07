@@ -10,7 +10,7 @@ class ntnuopenstack::keystone::base {
   $admin_token = lookup('ntnuopenstack::keystone::admin_token', String)
 
   $mysql_password = lookup('ntnuopenstack::keystone::mysql::password', String)
-  $mysql_ip = lookup('ntnuopenstack::keystone::database::ip', Stdlib::IP::Address)
+  $mysql_ip = lookup('ntnuopenstack::keystone::mysql::ip', Stdlib::IP::Address)
   $db_con = "mysql://keystone:${mysql_password}@${mysql_ip}/keystone"
 
   $cache_servers = lookup('profile::memcache::servers', {

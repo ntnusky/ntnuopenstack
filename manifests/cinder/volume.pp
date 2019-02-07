@@ -1,7 +1,7 @@
 # Configures ceph to facilitate for cinder, and for cinder to use ceph for
 # storage.
 class ntnuopenstack::cinder::volume {
-  $ceph_uuid = hiera('ntnuopenstack::nova::ceph::uuid')
+  $ceph_uuid = lookup('ntnuopenstack::nova::ceph::uuid', String)
 
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::clients
@@ -27,6 +27,11 @@ class ntnuopenstack::cinder::volume {
   }
 
   cinder_type {'Fast':
+    ensure     => present,
+    properties => ['volume_backend_name=rbd-images'],
+  }
+
+  cinder_type {'VeryFast':
     ensure     => present,
     properties => ['volume_backend_name=rbd-images'],
   }

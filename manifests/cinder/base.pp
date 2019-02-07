@@ -1,15 +1,16 @@
 # Configures the base cinder config
 class ntnuopenstack::cinder::base {
   # Determine where the database resides 
-  $mysql_pass = hiera('ntnuopenstack::cinder::mysql::password')
-  $mysql_old = hiera('profile::mysql::ip', undef)
-  $mysql_new = hiera('profile::haproxy::management::ipv4', undef)
-  $mysql_ip = pick($mysql_new, $mysql_old)
+  $mysql_pass = lookup('ntnuopenstack::keystone::mysql::password', String)
+  $mysql_ip = lookup('ntnuopenstack::cinder::mysql::ip', Stdlib::IP::Address)
   $database_connection = "mysql://cinder:${mysql_pass}@${mysql_ip}/cinder"
 
   # Credentials for the messagequeue
-  $transport_url = hiera('ntnuopenstack::transport::url')
-  $rabbitservers = hiera('profile::rabbitmq::servers', false)
+  $transport_url = lookup('ntnuopenstack::transport::url', String)
+  $rabbitservers = lookup('profile::rabbitmq::servers', {
+    'value_type'    => Variant[Boolean, Array[String]],
+    'default_value' => false,
+  })
 
   if ($rabbitservers) {
     $ha_transport_conf = {

@@ -1,18 +1,17 @@
 # Configures the keystone endpoint for the cinder API
 class ntnuopenstack::cinder::endpoint {
   # Openstack settings
-  $region = hiera('ntnuopenstack::region')
-  $keystone_password = hiera('ntnuopenstack::cinder::keystone::password')
+  $region = lookup('ntnuopenstack::region', String)
+  $keystone_password = lookup('ntnuopenstack::cinder::keystone::password',
+                                String)
 
   # Determine the endpoint addresses
-  $cinder_public_ip = hiera('profile::api::cinder::public::ip', '127.0.0.1')
-  $cinder_admin_ip = hiera('profile::api::cinder::admin::ip', '127.0.0.1')
-  $admin_endpoint = hiera('ntnuopenstack::endpoint::admin', undef)
-  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', undef)
-  $public_endpoint = hiera('ntnuopenstack::endpoint::public', undef)
-  $cinder_admin    = pick($admin_endpoint, "http://${cinder_admin_ip}")
-  $cinder_internal = pick($internal_endpoint, "http://${cinder_admin_ip}")
-  $cinder_public   = pick($public_endpoint, "http://${cinder_public_ip}")
+  $cinder_admin    = lookup('ntnuopenstack::cinder::endpoint::admin',
+                                Stdlib::Httpurl)
+  $cinder_internal = lookup('ntnuopenstack::cinder::endpoint::internal',
+                                Stdlib::Httpurl)
+  $cinder_public   = lookup('ntnuopenstack::cinder::endpoint::public',
+                                Stdlib::Httpurl)
 
   require ::ntnuopenstack::repo
 

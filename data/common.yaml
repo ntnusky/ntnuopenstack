@@ -1,2 +1,17 @@
 ---
-ntnuopenstack::keystone::database::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
+cinder::keystone::authtoken::auth_url: "%{alias('ntnuopenstack::keystone::auth::url')}"
+cinder::keystone::authtoken::auth_uri: "%{alias('ntnuopenstack::keystone::auth::uri')}"
+cinder::keystone::authtoken::memcached_servers: "%{alias('ntnuopenstack::keystone::memcached::servers')}"
+cinder::keystone::authtoken::password: "%{alias('ntnuopenstack::cinder::keystone::password')}"
+cinder::keystone::authtoken::region_name: "%{alias('ntnuopenstack::region')}"
+ntnuopenstack::cinder::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
+ntnuopenstack::cinder::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
+ntnuopenstack::cinder::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
+ntnuopenstack::cinder::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"
+
+ntnuopenstack::keystone::auth::url: "%{lookup('ntnuopenstack::endpoint::admin')}:35357"
+ntnuopenstack::keystone::auth::uri: "%{lookup('ntnuopenstack::endpoint::internal')}:5000/"
+ntnuopenstack::keystone::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
+ntnuopenstack::keystone::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
+ntnuopenstack::keystone::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
+ntnuopenstack::keystone::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"
