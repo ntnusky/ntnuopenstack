@@ -2,7 +2,7 @@
 class ntnuopenstack::glance::api {
   # Determine where the database is
   $mysql_pass= lookup('ntnuopenstack::glance::mysql::password', String)
-  $mysql_ip = lookup('ntnuopenstack::keystone::mysql::ip', Stdlib::IP::Address)
+  $mysql_ip = lookup('ntnuopenstack::glance::mysql::ip', Stdlib::IP::Address)
   $database_connection = "mysql://glance:${mysql_pass}@${mysql_ip}/glance"
 
   # Openstack parameters
