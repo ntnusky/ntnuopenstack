@@ -1,18 +1,23 @@
 # Installs and configures the neutron agents
 class ntnuopenstack::neutron::agents {
-  $adminlb_ip = hiera('ntnuopenstack::endpoint::admin::ipv4', undef)
-  $admin_ip = hiera('profile::api::neutron::admin::ip', undef)
-  $dns_servers = hiera('ntnuopenstack::neutron::dns')
-  $neutron_vrrp_pass = hiera('ntnuopenstack::neutron::vrrp_pass')
-  $nova_metadata_secret = hiera('ntnuopenstack::nova::sharedmetadataproxysecret')
+  $metadata_ip = lookup('ntnuopenstack::endpoint::admin::ipv4', {
+    'value_type' => Stdlib::IP::Address,
+  })
+  $dns_servers = lookup('ntnuopenstack::neutron::dns', {
+    'value_type' => Array[Stdlib::IP::Address],
+    'merge'      => 'unique',
+  })
+  $neutron_vrrp_pass = lookup('ntnuopenstack::neutron::vrrp_pass', String)
+  $metadata_secret = lookup('ntnuopenstack::nova::sharedmetadataproxysecret',
+                            String)
 
   require ::ntnuopenstack::neutron::base
   require ::ntnuopenstack::neutron::firewall::l3agent
   require ::ntnuopenstack::repo
 
   class { '::neutron::agents::metadata':
-    shared_secret => $nova_metadata_secret,
-    metadata_host => pick($adminlb_ip, $admin_ip),
+    shared_secret => $metadata_secret,
+    metadata_host => $metadata_ip,
     enabled       => true,
   }
 

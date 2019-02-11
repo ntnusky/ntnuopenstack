@@ -1,7 +1,7 @@
 # Configures neutron for the appropriate tenant network strategy
 class ntnuopenstack::neutron::tenant {
   $k = 'profile::neutron::tenant::network::type'
-  $tenant_network_strategy = hiera($k)
+  $tenant_network_strategy = lookup($k, String)
 
   if($tenant_network_strategy == 'vlan') {
     include ::ntnuopenstack::neutron::tenant::vlan

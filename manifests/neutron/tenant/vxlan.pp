@@ -1,6 +1,6 @@
 # Configures the neutron ml2 agent to use VXLAN for tenant traffic.
 class ntnuopenstack::neutron::tenant::vxlan {
-  $_tenant_if = hiera('profile::interfaces::tenant')
+  $_tenant_if = lookup('profile::interfaces::tenant')
 
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::neutron::base
@@ -20,8 +20,8 @@ class ntnuopenstack::neutron::tenant::vxlan {
   }
 
   if($_tenant_if == 'vlan') {
-    $tenant_parent = hiera('profile::interfaces::tenant::parentif')
-    $tenant_vlan = hiera('profile::interfaces::tenant::vlanid')
+    $tenant_parent = lookup('profile::interfaces::tenant::parentif')
+    $tenant_vlan = lookup('profile::interfaces::tenant::vlanid')
     $tenant_if = "br-vlan-${tenant_parent}"
   } else {
     $tenant_if = $_tenant_if

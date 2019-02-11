@@ -1,42 +1,38 @@
 # Installs and configures the neutron api
 class ntnuopenstack::neutron::api {
-  # Determine the correct database settings
-  $mysql_password = hiera('ntnuopenstack::neutron::mysql::password')
-  $mysql_old = hiera('profile::mysql::ip', undef)
-  $mysql_new = hiera('profile::haproxy::management::ipv4', undef)
-  $mysql_ip = pick($mysql_new, $mysql_old)
+  # Determine where the database is
+  $mysql_password = lookup('ntnuopenstack::neutron::mysql::password', String)
+  $mysql_ip = lookup('ntnuopenstack::neutron::mysql::ip', Stdlib::IP::Address)
   $database_connection = "mysql://neutron:${mysql_password}@${mysql_ip}/neutron"
 
-  # Retrieve the addresses for the memcached servers.
-  $memcached_ip = hiera('profile::memcache::ip', undef)
-  $memcache_servers = hiera_array('profile::memcache::servers', undef)
-  $memcache_servers_real = pick($memcache_servers, [$memcached_ip])
-  $memcache = $memcache_servers_real.map | $server | {
+  # Create a list of memceche-servers.
+  $cache_servers = lookup('profile::memcache::servers', {
+    'value_type' => Array[Stdlib::IP::Address],
+    'merge'      => 'unique',
+  })
+  $memcache = $cache_servers.map | $server | {
     "${server}:11211"
   }
 
-  # Retrieve service IP Addresses
-  $keystone_admin_ip  = hiera('profile::api::keystone::admin::ip', '127.0.0.1')
-  $keystone_public_ip = hiera('profile::api::keystone::public::ip', '127.0.0.1')
+  # Determine where the keystone service is located.
+  $keystone_admin = lookup('ntnuopenstack::keystone::endpoint::admin', Stdlib::Httpurl)
+  $keystone_internal = lookup('ntnuopenstack::keystone::endpoint::internal', Stdlib::Httpurl)
 
-  # Retrieve api urls, if they exist. 
-  $admin_endpoint    = hiera('ntnuopenstack::endpoint::admin', undef)
-  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', undef)
-  $public_endpoint   = hiera('ntnuopenstack::endpoint::public', undef)
-
-  # Determine which endpoint to use
-  $keystone_admin    = pick($admin_endpoint, "http://${keystone_admin_ip}")
-  $keystone_internal = pick($internal_endpoint, "http://${keystone_admin_ip}")
-
-  # Openstack settings
-  $nova_password = hiera('ntnuopenstack::nova::keystone::password')
-  $neutron_password = hiera('ntnuopenstack::neutron::keystone::password')
-  $service_providers = hiera('ntnuopenstack::neutron::service_providers')
-  $region = hiera('ntnuopenstack::region')
-  $enable_ipv6_pd = hiera('ntnuopenstack::neutron::tenant::dhcpv6pd', false)
-
-  # Should haproxy be configured?
-  $confhaproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
+  # Openstack parameters
+  $region = lookup('ntnuopenstack::region', String)
+  $nova_password = lookup('ntnuopenstack::nova::keystone::password', String)
+  $neutron_password = lookup('ntnuopenstack::neutron::keystone::password', String)
+  $service_providers = lookup('ntnuopenstack::neutron::service_providers', {
+    'value_type' => Array[String],
+  })
+  $enable_ipv6_pd = lookup('ntnuopenstack::neutron::tenant::dhcpv6pd', {
+    'value_type'    => Boolean,
+    'default_value' => false,
+  })
+  $confhaproxy = lookup('ntnuopenstack::haproxy::configure::backend', {
+    'value_type'    => Boolean,
+    'default_value' => true,
+  })
 
   require ::ntnuopenstack::neutron::base
   include ::ntnuopenstack::neutron::firewall::api
@@ -47,12 +43,8 @@ class ntnuopenstack::neutron::api {
     contain ::ntnuopenstack::neutron::ipv6::config
   }
 
-  if($keystone_admin_ip != '127.0.0.1') {
-    contain ::ntnuopenstack::neutron::keepalived
-  }
-
   if($confhaproxy) {
-    contain ::ntnuopenstack::neutron::haproxy::backend::server
+    contain ::ntnuopenstack::neutron::haproxy::backend
   }
 
   # Configure how neutron communicates with keystone

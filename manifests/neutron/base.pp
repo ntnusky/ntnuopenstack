@@ -1,9 +1,17 @@
 # Installs the base neutron services.
 class ntnuopenstack::neutron::base {
-  $service_plugins = hiera('ntnuopenstack::neutron::service_plugins')
-  $mtu = hiera('ntnuopenstack::neutron::mtu', undef)
-  $rabbitservers = hiera('profile::rabbitmq::servers', false)
-  $transport_url = hiera('ntnuopenstack::transport::url')
+  $service_plugins = lookup('ntnuopenstack::neutron::service_plugins', {
+    'value_type' => Array[String],
+  })
+  $mtu = lookup('ntnuopenstack::neutron::mtu', {
+    'value_type'    => Variant[Undef, Integer],
+    'default_value' => undef,
+  })
+  $transport_url = lookup('ntnuopenstack::transport::url', String)
+  $rabbitservers = lookup('profile::rabbitmq::servers', {
+    'value_type'    => Variant[Boolean, Array[String]],
+    'default_value' => false,
+  })
 
   require ::ntnuopenstack::repo
   include ::ntnuopenstack::neutron::sudo

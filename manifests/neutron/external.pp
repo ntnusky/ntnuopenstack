@@ -1,14 +1,18 @@
 # Configures neutron to connect to the external networks defined in the hiera
 # files.
 class ntnuopenstack::neutron::external {
-  $external_networks = hiera_array('profile::neutron::external::networks', [])
+  $external_networks = lookup('profile::neutron::external::networks', {
+    'default_value' => [],
+    'value_type'    => Array[String],
+    'merge'         => 'unique',
+  })
 
   require ::vswitch::ovs
 
   $external = $external_networks.each |$net| {
-    $vlanid = hiera("profile::neutron::external::${net}::vlanid")
-    $bridge = hiera("profile::neutron::external::${net}::bridge")
-    $interface = hiera("profile::neutron::external::${net}::interface")
+    $vlanid = lookup("profile::neutron::external::${net}::vlanid", Integer)
+    $bridge = lookup("profile::neutron::external::${net}::bridge", String)
+    $interface = lookup("profile::neutron::external::${net}::interface", String)
 
     if($vlanid == 0) {
       vs_port { $interface:
