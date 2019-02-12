@@ -6,7 +6,7 @@ class ntnuopenstack::nova::compute {
     'default_value' => 6080,
     'value_type'    => Integer,
   })
-  $cert = hiera('ntnuopenstack::endpoint::public::cert', {
+  $cert = lookup('ntnuopenstack::endpoint::public::cert', {
     'default_value' => false,
   })
 

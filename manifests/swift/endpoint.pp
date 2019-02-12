@@ -5,7 +5,7 @@ class ntnuopenstack::swift::endpoint {
   $endpoint_public = lookup('ntnuopenstack::endpoint::public')
 
   $keystone_password = lookup('ntnuopenstack::swift::keystone::password')
-  $region = hiera('ntnuopenstack::region')
+  $region = lookup('ntnuopenstack::region')
 
   $swiftname = lookup('ntnuopenstack::swift::dns::name', {
     'default_value' => false,
