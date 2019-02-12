@@ -6,7 +6,7 @@ class ntnuopenstack::nova::services {
   contain ::ntnuopenstack::nova::vncproxy
 
   $discover_interval = lookup('ntnuopenstack::nova::discover_hosts_interval', {
-    'dedault_value' => 3600,
+    'default_value' => 3600,
     'value_type'    => Integer,
   })
 
