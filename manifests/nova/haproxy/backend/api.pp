@@ -1,6 +1,6 @@
 # Exports a server-definition to be collected by the haproxy backends.
 class ntnuopenstack::nova::haproxy::backend::api {
-  $if = hiera('profile::interfaces::management')
+  $if = lookup('profile::interfaces::management')
   $ip = $::facts['networking']['interfaces'][$if]['ip']
 
   profile::services::haproxy::tools::register { "NovaPublic-${::hostname}":

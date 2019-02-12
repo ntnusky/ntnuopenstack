@@ -2,7 +2,7 @@
 class ntnuopenstack::nova::ceph {
   require ::profile::ceph::client
 
-  $nova_key = hiera('ntnuopenstack::cinder::ceph::key')
+  $nova_key = lookup('ntnuopenstack::cinder::ceph::key')
 
   exec { '/usr/bin/ceph osd pool create volumes 32' :
     unless => '/usr/bin/ceph osd pool get volumes size',

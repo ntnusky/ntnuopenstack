@@ -1,6 +1,9 @@
 # Installs and configures Placement API
 class ntnuopenstack::nova::api::placement {
-  $confhaproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
+  $confhaproxy = lookup('ntnuopenstack::haproxy::configure::backend', {
+    'value_type'    => Boolean,
+    'default_value' => true,
+  })
 
   if($confhaproxy) {
     contain ::ntnuopenstack::nova::haproxy::backend::placement

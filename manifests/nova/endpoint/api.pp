@@ -1,20 +1,16 @@
 # Registers the nova api endpoint in keystone
 class ntnuopenstack::nova::endpoint::api {
-  $nova_password = hiera('ntnuopenstack::nova::keystone::password')
-  $region = hiera('ntnuopenstack::region')
+  # Openstack settings
+  $region = lookup('ntnuopenstack::region', String)
+  $nova_password = lookup('ntnuopenstack::nova::keystone::password', String)
 
-  $nova_public_ip = hiera('profile::api::nova::public::ip', '127.0.0.1')
-  $nova_admin_ip = hiera('profile::api::nova::admin::ip', '127.0.0.1')
-  $keystone_public_ip = hiera('profile::api::keystone::public::ip', '127.0.0.1')
-  $keystone_admin_ip = hiera('profile::api::keystone::admin::ip', '127.0.0.1')
-
-  $admin_endpoint = hiera('ntnuopenstack::endpoint::admin', undef)
-  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', undef)
-  $public_endpoint = hiera('ntnuopenstack::endpoint::public', undef)
-
-  $nova_admin    = pick($admin_endpoint, "http://${nova_admin_ip}")
-  $nova_internal = pick($internal_endpoint, "http://${nova_admin_ip}")
-  $nova_public   = pick($public_endpoint, "http://${nova_public_ip}")
+  # Determine the endpoint addresses
+  $nova_admin    = lookup('ntnuopenstack::nova::endpoint::admin',
+                                Stdlib::Httpurl)
+  $nova_internal = lookup('ntnuopenstack::nova::endpoint::internal',
+                                Stdlib::Httpurl)
+  $nova_public   = lookup('ntnuopenstack::nova::endpoint::public',
+                                Stdlib::Httpurl)
 
   require ::ntnuopenstack::repo
 

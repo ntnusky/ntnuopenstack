@@ -1,23 +1,22 @@
 # Configures nova to use neutron for networking.
 class ntnuopenstack::nova::neutron {
-  $neutron_password = hiera('ntnuopenstack::neutron::keystone::password')
-  $region = hiera('ntnuopenstack::region')
+  $region = lookup('ntnuopenstack::region', String)
+  $neutron_password = lookup('ntnuopenstack::neutron::keystone::password', String)
 
-  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', undef)
+  $keystone_internal = lookup('ntnuopenstack::keystone::endpoint::internal',
+                                Stdlib::Httpurl)
+  $neutron_internal = lookup('ntnuopenstack::neutron::endpoint::internal',
+                                Stdlib::Httpurl)
 
-  $keystone_admin_ip = hiera('profile::api::keystone::admin::ip', '127.0.0.1')
-  $keystone_internal = pick($internal_endpoint, "http://${keystone_admin_ip}")
-
-  $neutron_admin_ip = hiera('profile::api::neutron::admin::ip', '127.0.0.1')
-  $neutron_internal = pick($internal_endpoint, "http://${neutron_admin_ip}")
-
-  $default_floating_pool = hiera('ntnuopenstack::neutron::default::floatingpool',
-      'ntnu-internal')
+  $floating_pool = lookup('ntnuopenstack::neutron::default::floatingpool', {
+    'default_value' => 'ntnu-internal',
+    'value_type'    => String,
+  })
 
   require ::ntnuopenstack::repo
 
   class { '::nova::network::neutron':
-    default_floating_pool => $default_floating_pool,
+    default_floating_pool => $floating_pool,
     neutron_region_name   => $region,
     neutron_password      => $neutron_password,
     neutron_url           => "${neutron_internal}:9696",

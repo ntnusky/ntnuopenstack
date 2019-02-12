@@ -5,7 +5,10 @@ class ntnuopenstack::nova::services {
   contain ::ntnuopenstack::nova::neutron
   contain ::ntnuopenstack::nova::vncproxy
 
-  $discover_interval = hiera('ntnuopenstack::nova::discover_hosts_interval', 3600)
+  $discover_interval = lookup('ntnuopenstack::nova::discover_hosts_interval', {
+    'dedault_value' => 3600,
+    'value_type'    => Integer,
+  })
 
   class { [
     '::nova::consoleauth',

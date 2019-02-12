@@ -27,3 +27,8 @@ ntnuopenstack::neutron::endpoint::internal: "%{alias('ntnuopenstack::endpoint::i
 ntnuopenstack::neutron::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"
 ntnuopenstack::neutron::metadata::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 ntnuopenstack::neutron::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
+
+ntnuopenstack::nova::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
+ntnuopenstack::nova::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
+ntnuopenstack::nova::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"
+ntnuopenstack::nova::vncproxy::host: "%{alias('ntnuopenstack::horizon::server_name')}"
