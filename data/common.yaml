@@ -32,3 +32,4 @@ ntnuopenstack::nova::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')
 ntnuopenstack::nova::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
 ntnuopenstack::nova::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"
 ntnuopenstack::nova::vncproxy::host: "%{alias('ntnuopenstack::horizon::server_name')}"
+ntnuopenstack::nova::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"

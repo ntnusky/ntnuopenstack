@@ -11,7 +11,7 @@ class ntnuopenstack::nova::base {
 
   # Retrieve mysql session
   $mysql_password = lookup('ntnuopenstack::nova::mysql::password')
-  $mysql_ip = lookup('profile::haproxy::management::ipv4', {
+  $mysql_ip = lookup('ntnuopenstack::nova::mysql::ip', {
       'value_type' => Stdlib::IP::Address,
   })
   $db_con = "mysql://nova:${mysql_password}@${mysql_ip}/nova"
