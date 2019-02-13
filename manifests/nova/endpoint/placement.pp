@@ -9,12 +9,10 @@ class ntnuopenstack::nova::endpoint::placement {
                                 Stdlib::Httpurl)
   $nova_internal = lookup('ntnuopenstack::nova::endpoint::internal',
                                 Stdlib::Httpurl)
-  $nova_public   = lookup('ntnuopenstack::nova::endpoint::public',
-                                Stdlib::Httpurl)
 
   class { '::nova::keystone::auth_placement':
     password     => $password,
-    public_url   => "${nova_public}:8778/placement",
+    public_url   => "${nova_internal}:8778/placement",
     internal_url => "${nova_internal}:8778/placement",
     admin_url    => "${nova_admin}:8778/placement",
     region       => $region,
