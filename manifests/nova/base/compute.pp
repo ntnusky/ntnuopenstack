@@ -13,7 +13,7 @@ class ntnuopenstack::nova::base::compute {
   })
   $transport_url = lookup('ntnuopenstack::transport::url', String)
 
-  $placement_password = lookup('ntnuopenstack::nova::placement::keysone::password')
+  $placement_password = lookup('ntnuopenstack::nova::placement::keystone::password')
   $region = lookup('ntnuopenstack::region')
 
   require ::ntnuopenstack::repo
