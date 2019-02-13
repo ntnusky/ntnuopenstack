@@ -20,6 +20,7 @@ class ntnuopenstack::cinder::api {
 
   class { '::cinder::api':
     enabled                      => false,
+    service_name                 => 'httpd',
     default_volume_type          => 'Normal',
     enable_proxy_headers_parsing => $confhaproxy,
   }
