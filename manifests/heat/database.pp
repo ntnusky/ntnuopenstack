@@ -1,11 +1,14 @@
 # Creates the database for heat
 class ntnuopenstack::heat::database {
-  $mysql_pass = hiera('ntnuopenstack::heat::mysql::password')
-  $allowed_hosts = hiera('ntnuopenstack::mysql::allowed_hosts')
+  $password = lookup('ntnuopenstack::heat::mysql::password', String)
+  $allowed_hosts = lookup('ntnuopenstack::mysql::allowed_hosts', {
+    'value_type' => Array[String],
+    'merge'      => 'first',
+  })
 
   class { '::heat::db::mysql':
     user          => 'heat',
-    password      => $mysql_pass,
+    password      => $password,
     allowed_hosts => $allowed_hosts,
     dbname        => 'heat',
   }

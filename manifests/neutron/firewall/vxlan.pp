@@ -1,6 +1,6 @@
 # Allow incoming VXLAN tunnels.
 class ntnuopenstack::neutron::firewall::vxlan {
-  $tenantnet = hiera('profile::networks::tenant::ipv4::prefix')
+  $tenantnet = lookup('profile::networks::tenant::ipv4::prefix')
 
   require ::profile::baseconfig::firewall
 

@@ -1,6 +1,6 @@
 # Configures the haproxy backends for swift
 class ntnuopenstack::swift::haproxy::backend {
-  $if = hiera('profile::interfaces::management')
+  $if = lookup('profile::interfaces::management')
   $ip = $::facts['networking']['interfaces'][$if]['ip']
 
   profile::services::haproxy::tools::register { "SwiftPublic-${::hostname}":

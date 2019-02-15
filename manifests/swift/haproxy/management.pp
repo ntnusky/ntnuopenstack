@@ -10,59 +10,33 @@ class ntnuopenstack::swift::haproxy::management {
 
     include ::ntnuopenstack::swift::firewall::haproxy
 
-    $ipv4 = hiera('ntnuopenstack::endpoint::admin::ipv4')
-    $ipv6 = hiera('ntnuopenstack::endpoint::admin::ipv6', false)
-    $certificate = hiera('ntnuopenstack::endpoint::admin::cert', false)
-    $certfile = hiera('ntnuopenstack::endpoint::admin::cert::path',
-                      '/etc/ssl/private/haproxy.managementapi.pem')
-
+    $certificate = lookup('ntnuopenstack::endpoint::admin::cert', {
+      'default_value' => false,
+    })
     if($certificate) {
-      $ssl = ['ssl', 'crt', $certfile]
-      $proto = 'X-Forwarded-Proto:\ https'
+      $certfile = lookup('ntnuopenstack::endpoint::admin::cert::path', {
+        'value_type'    => String,
+        'default_value' => '/etc/ssl/private/haproxy.managementapi.pem'
+      })
     } else {
-      $ssl = []
-      $proto = 'X-Forwarded-Proto:\ http'
+      $certfile = false
     }
 
-    if($ipv6) {
-      $bind = {
-        "${ipv4}:7480" => $ssl,
-        "${ipv6}:7480" => $ssl,
-      }
-    } else {
-      $bind = {
-        "${ipv4}:7480" => $ssl,
-      }
-    }
-
-    $ft_options = {
-      'default_backend' => 'bk_swift_admin',
-      'reqadd'          => $proto,
-    }
-
-    haproxy::frontend { 'ft_swift_admin':
-      bind    => $bind,
-      mode    => 'http',
-      options => $ft_options,
-    }
-
-    $backend_options = {
-      'balance' => 'source',
-      'option'  => [
-        'httpchk HEAD /',
-        'forwardfor',
-        'http-server-close',
-      ],
-      'timeout' => [
-        'http-keep-alive 500',
-      ],
-    }
-
-    profile::services::haproxy::tools::collect { 'bk_swift_admin': }
-
-    haproxy::backend { 'bk_swift_admin':
-      mode    => 'http',
-      options => $backend_options,
+    ::profile::services::haproxy::frontend { 'swift_admin':
+      profile   => 'management',
+      port      => 7480,
+      certfile  => $certfile,
+      mode      => 'http',
+      bkoptions => {
+        'option'  => [
+          'httpchk HEAD /',
+          'forwardfor',
+          'http-server-close',
+        ],
+        'timeout' => [
+          'http-keep-alive 500',
+        ],
+      },
     }
   }
 }

@@ -1,6 +1,6 @@
 # Configures ceph for swift use
 class ntnuopenstack::swift::ceph {
-  $cephx_key = hiera('ntnuopenstack::swift::ceph::key')
+  $cephx_key = lookup('ntnuopenstack::swift::ceph::key', String)
 
   require ::profile::ceph::client
 

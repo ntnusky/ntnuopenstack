@@ -1,18 +1,16 @@
 # Configures the keystone endpoint
 class ntnuopenstack::keystone::endpoint {
-  $region = hiera('ntnuopenstack::region')
-  $admin_ip = hiera('profile::api::keystone::admin::ip', '127.0.0.1')
-  $public_ip = hiera('profile::api::keystone::public::ip', '127.0.0.1')
-
-  $admin_endpoint = hiera('ntnuopenstack::endpoint::admin',
-      "http://${admin_ip}")
-  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal',
-      "http://${admin_ip}")
-  $public_endpoint = hiera('ntnuopenstack::endpoint::public',
-      "http://${public_ip}")
+  $region            = lookup('ntnuopenstack::region', String)
+  $admin_endpoint    = lookup('ntnuopenstack::keystone::endpoint::admin',
+                                Stdlib::Httpurl)
+  $internal_endpoint = lookup('ntnuopenstack::keystone::endpoint::internal',
+                                Stdlib::Httpurl)
+  $public_endpoint   = lookup('ntnuopenstack::keystone::endpoint::public',
+                                Stdlib::Httpurl)
 
   $swift = lookup('ntnuopenstack::swift::keystone::password', {
     'default_value' => false,
+    'value_type'    => Variant[Boolean, String],
   })
 
   # We need to define the endpoints on the keystone hosts, so include the other

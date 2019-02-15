@@ -1,6 +1,6 @@
 # Configures neutron to use VLAN's for tenant networks
 class ntnuopenstack::neutron::tenant::vlan {
-  $tenant_if = hiera('profile::interfaces::tenant')
+  $tenant_if = lookup('profile::interfaces::tenant')
 
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::neutron::base

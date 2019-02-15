@@ -1,7 +1,10 @@
 # Creates the database for keystone
 class ntnuopenstack::keystone::database {
-  $password = hiera('ntnuopenstack::keystone::mysql::password')
-  $allowed_hosts = hiera('ntnuopenstack::mysql::allowed_hosts')
+  $password = lookup('ntnuopenstack::keystone::mysql::password', String)
+  $allowed_hosts = lookup('ntnuopenstack::mysql::allowed_hosts', {
+    'value_type' => Array[String],
+    'merge'      => 'first',
+  })
 
   require ::ntnuopenstack::repo
 

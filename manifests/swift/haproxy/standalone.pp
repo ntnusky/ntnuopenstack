@@ -6,48 +6,24 @@ class ntnuopenstack::swift::haproxy::standalone {
 
   include ::ntnuopenstack::swift::firewall::haproxy
 
-  $ipv4 = hiera('ntnuopenstack::endpoint::public::ipv4')
-  $ipv6 = hiera('ntnuopenstack::endpoint::public::ipv6', false)
-  $certificate = hiera('ntnuopenstack::endpoint::public::cert', false)
-  $certfile = hiera('ntnuopenstack::endpoint::public::cert::certfile',
-                    '/etc/ssl/private/haproxy.servicesapi.pem')
-
+  $certificate = lookup('ntnuopenstack::endpoint::public::cert', {
+    'default_value' => false,
+  })
   if($certificate) {
-    $ssl = ['ssl', 'crt', $certfile]
-    $proto = 'X-Forwarded-Proto:\ https'
+    $certfile = lookup('ntnuopenstack::endpoint::public::cert::path', {
+      'value_type'    => String,
+      'default_value' => '/etc/ssl/private/haproxy.servicesapi.pem'
+    })
   } else {
-    $ssl = []
-    $proto = 'X-Forwarded-Proto:\ http'
+    $certfile = false
   }
 
-  $ft_options = {
-    'default_backend' => 'bk_swift_public',
-    'reqadd'          => $proto,
-  }
-
-  if($ipv6) {
-    $bind = {
-      "${ipv4}:7480" => $ssl,
-      "${ipv6}:7480" => $ssl,
-    }
-  } else {
-    $bind = {
-      "${ipv4}:7480" => $ssl,
-    }
-  }
-
-  haproxy::frontend { 'ft_swift_public':
-    bind    => $bind,
-    mode    => 'http',
-    options => $ft_options,
-  }
-
-  profile::services::haproxy::tools::collect { 'bk_swift_public': }
-
-  haproxy::backend { 'bk_swift_public':
-    mode    => 'http',
-    options => {
-      'balance' => 'source',
+  ::profile::services::haproxy::frontend { 'swift_public':
+    profile   => 'management',
+    port      => 7480,
+    certfile  => $certfile,
+    mode      => 'http',
+    bkoptions => {
       'option'  => [
         'httpchk HEAD /',
         'forwardfor',

@@ -4,11 +4,19 @@ class ntnuopenstack::nova::vncproxy {
   include ::ntnuopenstack::nova::firewall::vncproxy
   require ::ntnuopenstack::repo
 
-  $cert = hiera('ntnuopenstack::endpoint::public::cert', false)
-  $host = hiera('ntnuopenstack::horizon::server_name')
-  $port = hiera('ntnuopenstack::nova::vncproxy::port', 6080)
+  $host = lookup('ntnuopenstack::nova::vncproxy::host')
+  $port = lookup('ntnuopenstack::nova::vncproxy::port', {
+    'default_value' => 6080,
+    'value_type'    => Integer,
+  })
+  $cert = lookup('ntnuopenstack::endpoint::public::cert', {
+    'default_value' => false,
+  })
 
-  $confhaproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
+  $confhaproxy = lookup('ntnuopenstack::haproxy::configure::backend', {
+    'value_type'    => Boolean,
+    'default_value' => true,
+  })
 
   if($confhaproxy) {
     include ::ntnuopenstack::nova::haproxy::backend::vnc

@@ -4,13 +4,17 @@ class ntnuopenstack::neutron::ovs (
   $local_ip         = undef,
   $tunnel_types     = undef,
 ) {
-  $external_networks = hiera_array('profile::neutron::external::networks', [])
+  $external_networks = lookup('profile::neutron::external::networks', {
+    'default_value' => [],
+    'value_type'    => Array[String],
+    'merge'         => 'unique',
+  })
 
   require ::ntnuopenstack::neutron::base
   require ::ntnuopenstack::repo
 
   $external = $external_networks.map |$net| {
-    $bridge = hiera("profile::neutron::external::${net}::bridge")
+    $bridge = lookup("profile::neutron::external::${net}::bridge", String)
     "${net}:${bridge}"
   }
 

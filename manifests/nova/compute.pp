@@ -1,15 +1,18 @@
 # This class installs and configures nova for a compute-node.
 class ntnuopenstack::nova::compute {
   # Determine the VNCProxy-settings
-  $nova_public = hiera('profile::api::nova::public::ip', '127.0.0.1')
-  $host = hiera('ntnuopenstack::horizon::server_name', undef)
-  $vncproxy_host = pick($host, $nova_public)
-  $port = hiera('ntnuopenstack::nova::vncproxy::port', 6080)
-  $cert = hiera('ntnuopenstack::endpoint::public::cert', false)
+  $host = lookup('ntnuopenstack::nova::vncproxy::host')
+  $port = lookup('ntnuopenstack::nova::vncproxy::port', {
+    'default_value' => 6080,
+    'value_type'    => Integer,
+  })
+  $cert = lookup('ntnuopenstack::endpoint::public::cert', {
+    'default_value' => false,
+  })
 
-  $management_if = hiera('profile::interfaces::management')
+  $management_if = lookup('profile::interfaces::management')
   $management_ip = getvar("::ipaddress_${management_if}")
-  $nova_uuid = hiera('ntnuopenstack::nova::ceph::uuid')
+  $nova_uuid = lookup('ntnuopenstack::nova::ceph::uuid')
 
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::nova::base::compute
@@ -28,7 +31,7 @@ class ntnuopenstack::nova::compute {
     enabled                          => true,
     vnc_enabled                      => true,
     vncserver_proxyclient_address    => $management_ip,
-    vncproxy_host                    => $vncproxy_host,
+    vncproxy_host                    => $host,
     vncproxy_protocol                => $protocol,
     vncproxy_port                    => $port,
     resume_guests_state_on_host_boot => true,

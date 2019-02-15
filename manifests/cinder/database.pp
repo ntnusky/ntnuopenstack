@@ -1,7 +1,10 @@
 # Sets up the cinder database, and lets cinder populate it 
 class ntnuopenstack::cinder::database {
-  $password = hiera('ntnuopenstack::cinder::mysql::password')
-  $allowed_hosts = hiera('ntnuopenstack::mysql::allowed_hosts')
+  $password = lookup('ntnuopenstack::cinder::mysql::password', String)
+  $allowed_hosts = lookup('ntnuopenstack::mysql::allowed_hosts' {
+    'value_type' => Array[String],
+    'merge'      => 'first',
+  })
 
   require ::ntnuopenstack::repo
 

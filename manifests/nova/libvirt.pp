@@ -1,9 +1,9 @@
 # This class installs and configures libvirt for nova's use.
 class ntnuopenstack::nova::libvirt {
-  $nova_libvirt_type = hiera('ntnuopenstack::nova::libvirt_type')
-  $nova_libvirt_model = hiera('ntnuopenstack::nova::libvirt_model')
+  $nova_libvirt_type = lookup('ntnuopenstack::nova::libvirt_type')
+  $nova_libvirt_model = lookup('ntnuopenstack::nova::libvirt_model')
 
-  $management_if = hiera('profile::interfaces::management')
+  $management_if = lookup('profile::interfaces::management')
   $management_ip = getvar("::ipaddress_${management_if}")
 
   require ::ntnuopenstack::repo

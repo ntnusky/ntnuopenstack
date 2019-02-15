@@ -1,7 +1,9 @@
 # Installs and configures the cinder API
 class ntnuopenstack::cinder::api {
-  $confhaproxy = hiera('ntnuopenstack::haproxy::configure::backend', true)
-  $keystone_admin_ip = hiera('profile::api::keystone::admin::ip', false)
+  $confhaproxy = lookup('ntnuopenstack::haproxy::configure::backend', {
+    'default_value' => true,
+    'value_type'    => Boolean,
+  })
 
   include ::cinder::db::sync
   require ::ntnuopenstack::repo
@@ -9,12 +11,8 @@ class ntnuopenstack::cinder::api {
   contain ::ntnuopenstack::cinder::firewall::server
   include ::profile::services::memcache::pythonclient
 
-  if($keystone_admin_ip) {
-    contain ::ntnuopenstack::cinder::keepalived
-  }
-
   if($confhaproxy) {
-    contain ::ntnuopenstack::cinder::haproxy::backend::server
+    contain ::ntnuopenstack::cinder::haproxy::backend
     $logformat = 'forwarded'
   } else {
     $logformat = false
@@ -22,6 +20,7 @@ class ntnuopenstack::cinder::api {
 
   class { '::cinder::api':
     enabled                      => false,
+    service_name                 => 'httpd',
     default_volume_type          => 'Normal',
     enable_proxy_headers_parsing => $confhaproxy,
   }

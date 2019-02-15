@@ -1,7 +1,10 @@
 # Glance rabbit configuration 
 class ntnuopenstack::glance::rabbit {
-  $transport_url = hiera('ntnuopenstack::transport::url')
-  $rabbitservers = hiera('profile::rabbitmq::servers', false)
+  $transport_url = lookup('ntnuopenstack::transport::url', String)
+  $rabbitservers = lookup('profile::rabbitmq::servers', {
+    'value_type'    => Variant[Boolean, Array[String]],
+    'default_value' => false,
+  })
 
   if ($rabbitservers) {
     $ha_transport_conf = {

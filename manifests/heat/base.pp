@@ -1,47 +1,32 @@
 # Perfomes basic heat configuration
 class ntnuopenstack::heat::base {
-  # Retrieve service IP Addresses
-  $keystone_admin_ip  = hiera('profile::api::keystone::admin::ip', '127.0.0.1')
+  # Openstack settings
+  $region = lookup('ntnuopenstack::region', String)
+  $keystone_admin  = lookup('ntnuopenstack::keystone::endpoint::admin', Stdlib::Httpurl)
+  $keystone_internal = lookup('ntnuopenstack::keystone::endpoint::internal', Stdlib::Httpurl)
 
-  # Retrieve api urls, if they exist. 
-  $admin_endpoint    = hiera('ntnuopenstack::endpoint::admin', undef)
-  $internal_endpoint = hiera('ntnuopenstack::endpoint::internal', undef)
-
-  # Determine which endpoint to use
-  $keystone_admin    = pick($admin_endpoint, "http://${keystone_admin_ip}")
-  $keystone_internal = pick($internal_endpoint, "http://${keystone_admin_ip}")
-
-  # Misc other settings
-  $region = hiera('ntnuopenstack::region')
-
-  # Determine memcahce-server-addresses
-  $memcached_ip = hiera('profile::memcache::ip', undef)
-  $memcache_servers = hiera_array('profile::memcache::servers', undef)
-  $memcache_servers_real = pick($memcache_servers, [$memcached_ip])
-  $memcache = $memcache_servers_real.map | $server | {
+  # Memcached servers
+  $cache_servers = lookup('profile::memcache::servers', {
+    'value_type'    => Array[String],
+    'merge'         => 'unique',
+  })
+  $memcache = $cache_servers.map | $server | {
     "${server}:11211"
   }
 
-  # Transport url
-  $transport_url = hiera('ntnuopenstack::transport::url')
-  $rabbitservers = hiera('profile::rabbitmq::servers', false)
+  # Rabbitmq servers
+  $transport_url = lookup('ntnuopenstack::transport::url', String)
+  $rabbitservers = lookup('profile::rabbitmq::servers', {
+    'value_type'    => Variant[Boolean, Array[String]],
+    'default_value' => false,
+  })
 
   # Database-connection
-  $mysql_pass = hiera('ntnuopenstack::heat::mysql::password')
-  $mysql_old = hiera('profile::mysql::ip', undef)
-  $mysql_new = hiera('profile::haproxy::management::ipv4', undef)
-  $mysql_ip = pick($mysql_new, $mysql_old)
+  $mysql_pass = lookup('ntnuopenstack::heat::mysql::password', String)
+  $mysql_ip = lookup('ntnuopenstack::heat::mysql::ip', Stdlib::IP::Address)
   $database_connection = "mysql://heat:${mysql_pass}@${mysql_ip}/heat"
 
   require ::ntnuopenstack::repo
-
-  # If heat is behind a proxy, make sure to parse the headers from the proxy to
-  # create correct urls internally.
-  if $keystone_admin =~ /^https.*/ {
-    $extra_options = { 'enable_proxy_headers_parsing' => true, }
-  } else {
-    $extra_options = {}
-  }
 
   if ($rabbitservers) {
     $ha_transport_conf = {
@@ -53,9 +38,10 @@ class ntnuopenstack::heat::base {
   }
 
   class { '::heat':
-    database_connection   => $database_connection,
-    default_transport_url => $transport_url,
-    region_name           => $region,
-    *                     => $extra_options + $ha_transport_conf,
+    database_connection          => $database_connection,
+    default_transport_url        => $transport_url,
+    region_name                  => $region,
+    enable_proxy_headers_parsing => true,
+    *                            => $ha_transport_conf,
   }
 }
