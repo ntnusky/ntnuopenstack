@@ -20,7 +20,7 @@ class ntnuopenstack::nova::base {
   # Nova placement configuration
   $region = lookup('ntnuopenstack::region')
   $placement_password = lookup('ntnuopenstack::nova::placement::keystone::password')
-  $keystone_admin = lookup('ntnuopenstack::endpoint::admin') 
+  $keystone_admin = lookup('ntnuopenstack::endpoint::admin')
   $internal_endpoint = lookup('ntnuopenstack::endpoint::internal')
 
   # RabbitMQ connection-information
