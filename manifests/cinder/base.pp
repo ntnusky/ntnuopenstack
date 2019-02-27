@@ -12,6 +12,10 @@ class ntnuopenstack::cinder::base {
     'default_value' => false,
   })
 
+  # Get the internal url to the glance API:
+  $glance_internal = lookup('ntnuopenstack::glance::endpoint::internal',
+                              Stdlib::Httpurl)
+
   if ($rabbitservers) {
     $ha_transport_conf = {
       rabbit_ha_queues    => true,
@@ -28,5 +32,9 @@ class ntnuopenstack::cinder::base {
     database_connection   => $database_connection,
     default_transport_url => $transport_url,
     *                     => $ha_transport_conf,
+  }
+
+  class { '::cinder::glance':
+    glance_api_servers => "${glance_internal}:9292",
   }
 }
