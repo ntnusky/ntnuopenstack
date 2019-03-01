@@ -1,6 +1,6 @@
 # Configures neutron for the appropriate tenant network strategy
 class ntnuopenstack::neutron::tenant {
-  $k = 'profile::neutron::tenant::network::type'
+  $k = 'ntnuopenstack::neutron::tenant::isolation::type'
   $tenant_network_strategy = lookup($k, String)
 
   if($tenant_network_strategy == 'vlan') {
