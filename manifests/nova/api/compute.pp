@@ -13,7 +13,11 @@ class ntnuopenstack::nova::api::compute {
   # Retrieve openstack parameters
   $nova_password = lookup('ntnuopenstack::nova::keystone::password')
   $nova_secret = lookup('ntnuopenstack::nova::sharedmetadataproxysecret')
-  $sync_db = lookup('ntnuopenstack::nova::sync_db')
+  $sync_db = lookup('ntnuopenstack::nova::sync_db', {
+    'value_type'    => Boolean,
+    'default_value' => false,   # One of your nodes need to have this key set to
+                                # true to automaticly populate the databases.
+  })
   $region = lookup('ntnuopenstack::region')
 
   $admin_endpoint    = lookup('ntnuopenstack::endpoint::admin')

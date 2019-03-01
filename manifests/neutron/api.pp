@@ -23,7 +23,11 @@ class ntnuopenstack::neutron::api {
   $nova_password = lookup('ntnuopenstack::nova::keystone::password', String)
   $neutron_password = lookup('ntnuopenstack::neutron::keystone::password', String)
   $service_providers = lookup('ntnuopenstack::neutron::service_providers', {
-    'value_type' => Array[String],
+    'value_type'    => Array[String],
+    'default_value' => [
+      'FIREWALL:Iptables:neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver:default',
+      'LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default',
+    ],
   })
   $enable_ipv6_pd = lookup('ntnuopenstack::neutron::tenant::dhcpv6pd', {
     'value_type'    => Boolean,
