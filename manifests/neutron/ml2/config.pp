@@ -1,6 +1,6 @@
 # Configures neutron for the ML2 plugin.
 class ntnuopenstack::neutron::ml2::config {
-  $k = 'ntnuopenstack::neutron::tenant::isolation::type' 
+  $k = 'ntnuopenstack::neutron::tenant::isolation::type'
   $tenant_network_strategy = lookup($k)
 
   if($tenant_network_strategy == 'vlan') {

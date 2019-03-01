@@ -4,22 +4,20 @@ class ntnuopenstack::neutron::ovs (
   $local_ip         = undef,
   $tunnel_types     = undef,
 ) {
-  $external_networks = lookup('profile::neutron::external::networks', {
-    'default_value' => [],
-    'value_type'    => Array[String],
-    'merge'         => 'unique',
+  $connections = lookup('ntnuopenstack::neutron::external::connections', {
+    'value_type'    => Hash[String, String],
+    'default_value' => {},
   })
 
   require ::ntnuopenstack::neutron::base
   require ::ntnuopenstack::repo
 
-  $external = $external_networks.map |$net| {
-    $bridge = lookup("profile::neutron::external::${net}::bridge", String)
-    "${net}:${bridge}"
+  $external_mappings = $connections.map | $key, $value | {
+    "${key}:br-${key}"
   }
 
   $bridge_mappings = [ $tenant_mapping ]
-  $mappings = concat($bridge_mappings, $external)
+  $mappings = concat($bridge_mappings, $external_mappings)
 
   class { '::neutron::agents::ml2::ovs':
     bridge_mappings => $mappings,

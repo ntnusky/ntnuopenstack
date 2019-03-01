@@ -89,8 +89,9 @@ ntnuopenstack::neutron::keystone::password: '<password>'
 ntnuopenstack::neutron::mtu: 1500
 ntnuopenstack::neutron::mysql::password: '<password>'
 ntnuopenstack::neutron::networks::external:
- - 'network1'
- - 'network2'
+  'network1':
+    'name': 'External network'
+    'vlanid': 55
 ntnuopenstack::neutron::tenant::dhcpv6pd: <true|false>
 ntnuopenstack::neutron::tenant::isolation::type: '<vlan|vxlan>'
 ntnuopenstack::neutron::vlan_high: <vlan_id:high>
