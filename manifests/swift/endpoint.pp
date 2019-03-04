@@ -25,11 +25,11 @@ class ntnuopenstack::swift::endpoint {
     }
 
     $public = "${proto}://${swiftname}/swift/v1/%(project_id)s"
-    $admin = "${proto}://${swiftname}/swift/v1"
+    $admin = "${proto}://${swiftname}/swift/v1/%(project_id)s"
     $internal = "${proto}://${swiftname}/swift/v1/%(project_id)s"
   } else {
     $public = "${endpoint_public}:7480/swift/v1/%(project_id)s"
-    $admin = "${endpoint_admin}:7480/swift/v1"
+    $admin = "${endpoint_admin}:7480/swift/v1/%(project_id)s"
     $internal = "${endpoint_internal}:7480/swift/v1/%(project_id)s"
   }
 
