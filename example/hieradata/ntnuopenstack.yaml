@@ -94,8 +94,8 @@ ntnuopenstack::neutron::networks::external:
     'vlanid': 55
 ntnuopenstack::neutron::tenant::dhcpv6pd: <true|false>
 ntnuopenstack::neutron::tenant::isolation::type: '<vlan|vxlan>'
-ntnuopenstack::neutron::vlan_high: <vlan_id:high>
-ntnuopenstack::neutron::vlan_low: <vlan_id:low>
+ntnuopenstack::neutron::tenant::isolation::id::low: <vlanID|VNI Low>
+ntnuopenstack::neutron::tenant::isolation::id::high: <vlanID|VNI High>
 ntnuopenstack::neutron::vrrp_pass: '<password>'
 
 ntnuopenstack::nova::ceph::uuid: '<uuid>'
