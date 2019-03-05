@@ -1,0 +1,115 @@
+---
+# This file contains an example of the hiera-values needed by this puppet
+# module, and some information how these bits of information can be created.
+#
+# Each line that have a value written inside triangular brackets '< >' should be
+# substituted with a reasonable value. Reasonable values would be:
+#  - <password> should be substitutted with a unique generated password (you
+#               could use the command "pwgen -s -1 32"
+#  - <ceph_key> are cephx keys used to access the ceph-cluster. These keys can
+#               be generated with the command "ceph-authtool --gen-print-key"
+#  - <fernet_key> are fernet-keys which can be created with a python oneliner:
+#                 python3 -c "from cryptography.fernet import Fernet; print(Fernet.generate_key())"
+#  - <region_name> Is simply a name you create for your openstack installation.
+
+# First there are some keys used to configure the puppet-openstack modules. They
+# can be populated with information from other values within this file.
+cinder::keystone::authtoken::auth_url: "%{alias('ntnuopenstack::keystone::auth::url')}"
+cinder::keystone::authtoken::auth_uri: "%{alias('ntnuopenstack::keystone::auth::uri')}"
+cinder::keystone::authtoken::memcached_servers: "%{alias('ntnuopenstack::keystone::memcached::servers')}"
+cinder::keystone::authtoken::password: "%{lookup('ntnuopenstack::cinder::keystone::password')}"
+cinder::keystone::authtoken::region_name: "%{lookup('ntnuopenstack::region')}"
+heat::keystone::authtoken::auth_url: "%{alias('ntnuopenstack::keystone::auth::url')}"
+heat::keystone::authtoken::auth_uri: "%{alias('ntnuopenstack::keystone::auth::uri')}"
+heat::keystone::authtoken::memcached_servers: "%{alias('ntnuopenstack::keystone::memcached::servers')}"
+heat::keystone::authtoken::password: "%{lookup('ntnuopenstack::heat::keystone::password')}"
+heat::keystone::authtoken::region_name: "%{lookup('ntnuopenstack::region')}"
+
+# Next up are all the values that needs to be set by us:
+ntnuopenstack::cinder::ceph::key: '<ceph-key>'
+ntnuopenstack::cinder::keystone::password: '<password>'
+ntnuopenstack::cinder::mysql::password: '<password>'
+
+ntnuopenstack::endpoint::admin::cert: "%{alias('profile::haproxy::management::apicert')}"
+ntnuopenstack::endpoint::admin: 'https://adminapi.fqdn.example.com'
+ntnuopenstack::endpoint::internal: 'https://internalapi.fqdn.example.com'
+ntnuopenstack::endpoint::public: 'https://api.fqdn.example.com'
+ntnuopenstack::endpoint::public::cert: "%{alias('profile::haproxy::services::apicert')}"
+# If anycast is used, the following values will work:
+ntnuopenstack::endpoint::admin::ipv4: "%{alias('profile::anycast::management::ipv4')}"
+ntnuopenstack::endpoint::admin::ipv6: "%{alias('profile::anycast::management::ipv6')}"
+ntnuopenstack::endpoint::public::ipv4: "%{alias('profile::anycast::services::ipv4')}"
+ntnuopenstack::endpoint::public::ipv6: "%{alias('profile::anycast::services::ipv6')}"
+# If keepalived is used, the following values will work:
+ntnuopenstack::endpoint::admin::ipv4: "%{alias('profile::haproxy::management::ipv4')}"
+ntnuopenstack::endpoint::admin::ipv6: "%{alias('profile::haproxy::management::ipv6')}"
+ntnuopenstack::endpoint::public::ipv4: "%{alias('profile::haproxy::services::ipv4')}"
+ntnuopenstack::endpoint::public::ipv6: "%{alias('profile::haproxy::services::ipv6')}"
+
+ntnuopenstack::glance::ceph::key: '<ceph-key>'
+ntnuopenstack::glance::keystone::password: '<password>'
+ntnuopenstack::glance::mysql::password: '<password>'
+
+ntnuopenstack::heat::auth_encryption_key: '<password>'
+ntnuopenstack::heat::keystone::password: '<password>'
+ntnuopenstack::heat::mysql::password: '<password>'
+
+ntnuopenstack::horizon::django_secret: '<password>'
+ntnuopenstack::horizon::server_name: 'fqdn.example.com'
+
+ntnuopenstack::keystone::admin_email: 'post@localhost'
+ntnuopenstack::keystone::admin_password: '<password>'
+ntnuopenstack::keystone::admin_token: '<password>'
+ntnuopenstack::keystone::credential::keys:
+  '/etc/keystone/credential-keys/0':
+    content: '<fernet-key>'
+  '/etc/keystone/credential-keys/1':
+    content: '<fernet-key>'
+ntnuopenstack::keystone::fernet::keys:
+  '/etc/keystone/fernet-keys/0':
+    content: '<fernet-key>'
+  '/etc/keystone/fernet-keys/1':
+    content: '<fernet-key>'
+ntnuopenstack::keystone::ldap_backend::group_filter: 'LDAP syntax group filter' 
+ntnuopenstack::keystone::ldap_backend::group_tree_dn: 'OU=groups,DC=foo,DC=bar'
+ntnuopenstack::keystone::ldap_backend::name: 'FOO'
+ntnuopenstack::keystone::ldap_backend::password: '<password>'
+ntnuopenstack::keystone::ldap_backend::suffix: 'DC=foo,DC=bar' 
+ntnuopenstack::keystone::ldap_backend::url: 'ldaps://<ldapserver.foo.bar>,ldaps://<ldapserver2.foo.bar>' 
+ntnuopenstack::keystone::ldap_backend::user_filter: '<LDAP syntax user filter>' 
+ntnuopenstack::keystone::ldap_backend::user: '<uid=user,ou=users,dc=foo,dc=bar>' 
+ntnuopenstack::keystone::ldap_backend::user_tree_dn: 'OU=users,DC=foo,DC=bar' 
+ntnuopenstack::keystone::mysql::password: '<password>' 
+
+ntnuopenstack::mysql::allowed_hosts:
+ - '<mysql-allowed-host-filter-for-your-infrastructure-network(s)>'
+ - '192.168.0.%'
+
+ntnuopenstack::neutron::keystone::password: '<password>'
+ntnuopenstack::neutron::mtu: 1500
+ntnuopenstack::neutron::mysql::password: '<password>'
+ntnuopenstack::neutron::networks::external:
+  'network1':
+    'name': 'External network'
+    'vlanid': 55
+ntnuopenstack::neutron::tenant::dhcpv6pd: <true|false>
+ntnuopenstack::neutron::tenant::isolation::type: '<vlan|vxlan>'
+ntnuopenstack::neutron::tenant::isolation::id::low: <vlanID|VNI Low>
+ntnuopenstack::neutron::tenant::isolation::id::high: <vlanID|VNI High>
+ntnuopenstack::neutron::vrrp_pass: '<password>'
+
+ntnuopenstack::nova::ceph::uuid: '<uuid>'
+ntnuopenstack::nova::keystone::password: '<password>'
+ntnuopenstack::nova::libvirt_model: 'core2duo'
+ntnuopenstack::nova::libvirt_type: 'kvm'
+ntnuopenstack::nova::mysql::password: '<password>'
+ntnuopenstack::nova::placement::keystone::password: '<password>'
+ntnuopenstack::nova::sharedmetadataproxysecret: '<password>'
+
+ntnuopenstack::region: '<region_name>'
+
+ntnuopenstack::swift::ceph::key: '<ceph_key>'
+ntnuopenstack::swift::keystone::password: "<password>"
+ntnuopenstack::swift::dns::name: 'swift.fqdn.example.com'
+
+ntnuopenstack::transport::url: 'rabbit://<rabbit_user>:<rabbit_password>@<rabbitserver1>,rabbit://<rabbit_user>:<rabbit_password>@<rabbitserver2>'

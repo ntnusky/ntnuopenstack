@@ -32,6 +32,11 @@ class ntnuopenstack::keystone::base {
     'merge'      => 'hash',
   })
 
+  $token_expiration = lookup('ntnuopenstack::keystone::token::expiration', {
+    'value_type'    => Integer,
+    'default_value' => 14400,   # Default token lifetime is 14400 seconds (4h)
+  })
+
   require ::ntnuopenstack::repo
 
   if($cache_servers) {
@@ -71,6 +76,7 @@ class ntnuopenstack::keystone::base {
     enable_credential_setup      => true,
     enable_proxy_headers_parsing => $confhaproxy,
     using_domain_config          => true,
+    token_expiration             => $token_expiration,
     *                            => $keystone_opts,
   }
 

@@ -1,29 +1,24 @@
 # Configures neutron for the ML2 plugin.
 class ntnuopenstack::neutron::ml2::config {
-  $k = 'profile::neutron::tenant::network::type'
-  $tenant_network_strategy = lookup($k)
+  $low = lookup('ntnuopenstack::neutron::tenant::isolation::id::low', Integer)
+  $high = lookup('ntnuopenstack::neutron::tenant::isolation::id::high', Integer)
+  $strategy = lookup('ntnuopenstack::neutron::tenant::isolation::type', {
+    'value_type' => Enum['vlan', 'vxlan'],
+  })
 
-  if($tenant_network_strategy == 'vlan') {
-    $vlan_low = lookup('ntnuopenstack::neutron::vlan_low', Integer)
-    $vlan_high = lookup('ntnuopenstack::neutron::vlan_high', Integer)
-
+  if($strategy == 'vlan') {
     class { '::neutron::plugins::ml2':
       type_drivers         => ['vlan', 'flat'],
       tenant_network_types => ['vlan'],
       mechanism_drivers    => ['openvswitch', 'l2population'],
-      network_vlan_ranges  => ["physnet-vlan:${vlan_low}:${vlan_high}"],
+      network_vlan_ranges  => ["physnet-vlan:${low}:${high}"],
     }
-  } elsif($tenant_network_strategy == 'vxlan') {
-    $vni_low = lookup('ntnuopenstack::neutron::vni_low', Integer)
-    $vni_high = lookup('ntnuopenstack::neutron::vni_high', Integer)
-
+  } elsif($strategy == 'vxlan') {
     class { '::neutron::plugins::ml2':
       type_drivers         => ['vxlan', 'flat'],
       tenant_network_types => ['vxlan'],
       mechanism_drivers    => ['openvswitch', 'l2population'],
-      vni_ranges           => "${vni_low}:${vni_high}"
+      vni_ranges           => "${low}:${high}"
     }
-  } else {
-    fail("The hiera key ${k} can only be 'vlan' or 'vxlan'")
   }
 }

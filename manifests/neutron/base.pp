@@ -1,7 +1,12 @@
 # Installs the base neutron services.
 class ntnuopenstack::neutron::base {
   $service_plugins = lookup('ntnuopenstack::neutron::service_plugins', {
-    'value_type' => Array[String],
+    'value_type'    => Array[String],
+    'default_value' => [
+      'router',
+      'firewall',
+      'neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2',
+    ],
   })
   $mtu = lookup('ntnuopenstack::neutron::mtu', {
     'value_type'    => Variant[Undef, Integer],
