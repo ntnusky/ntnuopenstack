@@ -112,6 +112,7 @@ ntnuopenstack::nova::mysql::password: '<password>'
 ntnuopenstack::nova::placement::keystone::password: '<password>'
 ntnuopenstack::nova::sharedmetadataproxysecret: '<password>'
 
+ntnuopenstack::octavia::certs::server::passphrase: '<32-char-password>'
 ntnuopenstack::octavia::certs::serverca::passphrase: '<password>'
 ntnuopenstack::octavia::flavor::id: '<uuid-from-openstack>'
 ntnuopenstack::octavia::heartbeat::key: '<password>'
