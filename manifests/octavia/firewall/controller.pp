@@ -9,13 +9,13 @@ class ntnuopenstack::octavia::firewall::controller {
   $health_port = lookup('ntnuopenstack::octavia::heartbeat::port', Stdlib::Port)
 
   ::profile::baseconfig::firewall::service::custom { 'amphorae heartbeats':
-    protocol => 'udp'
+    protocol => 'udp',
     port     => $health_port,
     v4source => $octavia_management,
   }
 
   ::profile::baseconfig::firewall::service::infra { 'octavia API':
-    protocol => 'tcp'
+    protocol => 'tcp',
     port     => $api_port,
   }
 }
