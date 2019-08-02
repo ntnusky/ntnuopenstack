@@ -19,7 +19,7 @@ class ntnuopenstack::octavia::haproxy::services {
   }
 
   ::profile::services::haproxy::frontend { 'octavia_public':
-    profile   => 'management',
+    profile   => 'services',
     port      => $port,
     certfile  => $certfile,
     mode      => 'http',
