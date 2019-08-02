@@ -28,7 +28,7 @@ octavia::db::database_connection: "mysql://octavia:%{lookup('ntnuopenstack::octa
 octavia::keystone::authtoken::auth_url: "%{alias('ntnuopenstack::keystone::auth::url')}"
 octavia::keystone::authtoken::auth_uri: "%{alias('ntnuopenstack::keystone::auth::uri')}"
 octavia::keystone::authtoken::memcached_servers: "%{alias('ntnuopenstack::keystone::memcached::servers')}"
-octavia::keystone::authtoken::password: "%{lookup('ntnuopenstack::heat::keystone::password')}"
+octavia::keystone::authtoken::password: "%{lookup('ntnuopenstack::octavia::keystone::password')}"
 octavia::keystone::authtoken::region_name: "%{lookup('ntnuopenstack::region')}"
 
 # Next up are all the values that needs to be set by us:
