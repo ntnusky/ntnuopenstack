@@ -13,6 +13,11 @@ class ntnuopenstack::keystone::endpoint {
     'value_type'    => Variant[Boolean, String],
   })
 
+  $octavia = lookup('ntnuopenstack::octavia::keystone::password', {
+    'default_value' => false,
+    'value_type'    => Variant[Boolean, String],
+  })
+
   # We need to define the endpoints on the keystone hosts, so include the other
   # endpoints here.
   include ::ntnuopenstack::cinder::endpoint
@@ -25,6 +30,11 @@ class ntnuopenstack::keystone::endpoint {
   # If there is a password for swift in hiera, define an endpoint for swift.
   if($swift) {
     include ::ntnuopenstack::swift::endpoint
+  }
+
+  # If there is a password for octavia in hiera, define an endpoint for octavia.
+  if($octavia) {
+    include ::ntnuopenstack::octavia::endpoint
   }
 
   # Defining the keystone endpoint

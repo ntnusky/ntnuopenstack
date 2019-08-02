@@ -1,0 +1,13 @@
+# Certificates for octavia is created using this guide:
+#   https://docs.openstack.org/octavia/latest/admin/guides/certificates.html
+ntnuopenstack::octavia::certs::serverca::cert: |
+  -----BEGIN CERTIFICATE-----
+  -----END CERTIFICATE-----
+
+ntnuopenstack::octavia::certs::serverca::key: |
+  -----BEGIN RSA PRIVATE KEY-----
+  -----END RSA PRIVATE KEY-----
+
+ntnuopenstack::octavia::certs::clientca::cert: |
+  -----BEGIN CERTIFICATE-----
+  -----END CERTIFICATE-----
