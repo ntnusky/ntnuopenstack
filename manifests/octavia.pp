@@ -28,8 +28,9 @@ class ntnuopenstack::octavia {
   require ::ntnuopenstack::repo
 
   class { '::octavia::api':
-    port    => $api_port,
-    sync_db => $dbsync,
+    port           => $api_port,
+    sync_db        => $dbsync,
+    api_v1_enabled => false,
   }
 
   class { '::octavia::controller':
