@@ -23,6 +23,8 @@ class ntnuopenstack::octavia {
   $client_cert = lookup('ntnuopenstack::octavia::certs::client::cert')
 
   include ::ntnuopenstack::octavia::base
+  include ::ntnuopenstack::octavia::firewall::controller
+  include ::ntnuopenstack::octavia::haproxy::backend
   require ::ntnuopenstack::repo
 
   class { '::octavia::api':

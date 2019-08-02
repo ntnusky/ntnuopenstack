@@ -22,7 +22,7 @@ class ntnuopenstack::octavia::haproxy::backend {
     backendname => 'bk_octavia_admin',
   }
 
-  @@haproxy::balancermember { "nova-admin-${::fqdn}":
+  @@haproxy::balancermember { "octavia-admin-${::fqdn}":
     listening_service => 'bk_octavia_admin',
     server_names      => $::hostname,
     ipaddresses       => $ip,
