@@ -43,6 +43,12 @@ class ntnuopenstack::octavia {
     amp_boot_network_list => [$network_id],
     loadbalancer_topology => 'ACTIVE_STANDBY',
     amp_ssh_key_name      => $keypair,
+    before                => Class['::octavia::worker'],
+  }
+
+  class { '::octavia::worker':
+    manage_nova_flavor => false,
+    amp_project_name   => 'services',
   }
 
   class { '::octavia::service_auth':
@@ -82,4 +88,5 @@ class ntnuopenstack::octavia {
     client_cert                 => '/etc/octavia/certs/client.cert.pem',
     client_cert_data            => $client_cert,
   }
+
 }
