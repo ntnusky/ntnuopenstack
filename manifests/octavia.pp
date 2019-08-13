@@ -22,6 +22,9 @@ class ntnuopenstack::octavia {
   $client_ca_cert = lookup('ntnuopenstack::octavia::certs::clientca::cert')
   $client_cert = lookup('ntnuopenstack::octavia::certs::client::cert')
 
+  $keystone_password = lookup('ntnuopenstack::octavia::keystone::password')
+  $internal_endpoint = lookup('ntnuopenstack::endpoint::internal')
+
   include ::ntnuopenstack::octavia::base
   include ::ntnuopenstack::octavia::firewall::controller
   include ::ntnuopenstack::octavia::haproxy::backend
@@ -40,6 +43,16 @@ class ntnuopenstack::octavia {
     amp_boot_network_list => [$network_id],
     loadbalancer_topology => 'ACTIVE_STANDBY',
     amp_ssh_key_name      => $keypair,
+  }
+
+  class { '::octavia::service_auth':
+    auth_url            => "${internal_endpoint}:35357/v3",
+    username            => 'octavia',
+    project_name        => 'services',
+    password            => $keystone_password,
+    user_domain_name    => 'default',
+    project_domain_name => 'default', 
+    auth_type           => 'password',
   }
 
   class { '::octavia::health_manager':
