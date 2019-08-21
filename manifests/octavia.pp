@@ -41,7 +41,7 @@ class ntnuopenstack::octavia {
     amp_image_tag         => $image_tag,
     amp_secgroup_list     => [$secgroup_id],
     amp_boot_network_list => [$network_id],
-    loadbalancer_topology => 'ACTIVE_STANDBY',
+    loadbalancer_topology => 'SINGLE',
     amp_ssh_key_name      => $keypair,
   }
 
