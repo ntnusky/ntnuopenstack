@@ -43,7 +43,6 @@ class ntnuopenstack::octavia {
     amp_boot_network_list => [$network_id],
     loadbalancer_topology => 'ACTIVE_STANDBY',
     amp_ssh_key_name      => $keypair,
-    before                => Class['::octavia::worker'],
   }
 
   class { '::octavia::worker':
