@@ -14,6 +14,13 @@ class ntnuopenstack::octavia {
                         Array[String])
   $spare_pool_size = lookup('ntnuopenstack::octavia::amphora::spares', Integer,
       'first', 0)
+  $management_if = lookup('profile::interfaces::management', String)
+  $mip = $facts['networking']['interfaces'][$management_if]['ip']
+  $management_ipv4 = lookup(
+    "profile::baseconfig::network::interfaces.${management_if}.ipv4.address", {
+      'value_type'    => Stdlib::IP::Address::V4,
+      'default_value' => $mip,
+  })
 
   $server_ca_cert = lookup('ntnuopenstack::octavia::certs::serverca::cert')
   $server_ca_key = lookup('ntnuopenstack::octavia::certs::serverca::key')
@@ -68,6 +75,7 @@ class ntnuopenstack::octavia {
   }
 
   class { '::octavia::health_manager':
+    ip            => $management_ipv4,
     heartbeat_key => $heartbeat_key,
   }
 
