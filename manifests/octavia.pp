@@ -10,6 +10,8 @@ class ntnuopenstack::octavia {
   $network_id = lookup('ntnuopenstack::octavia::network::id', String)
   $keypair = lookup('ntnuopenstack::octavia::ssh::keypair::name', String)
   $heartbeat_key = lookup('ntnuopenstack::octavia::heartbeat::key', String)
+  $health_managers = lookup('ntnuopenstack::octavia::health::managers',
+                        Array[String])
   $spare_pool_size = lookup('ntnuopenstack::octavia::amphora::spares', Integer,
       'first', 0)
 
@@ -45,6 +47,11 @@ class ntnuopenstack::octavia {
     amp_ssh_key_name      => $keypair,
   }
 
+  $controller_ip_port_list = join($health_managers, ', ')
+  octavia_config {
+    'health_manager/controller_ip_port_list': value => $controller_ip_port_list;
+  }
+
   class { '::octavia::worker':
     manage_nova_flavor => false,
     amp_project_name   => 'services',
@@ -56,7 +63,7 @@ class ntnuopenstack::octavia {
     project_name        => 'services',
     password            => $keystone_password,
     user_domain_name    => 'default',
-    project_domain_name => 'default', 
+    project_domain_name => 'default',
     auth_type           => 'password',
   }
 
