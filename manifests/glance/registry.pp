@@ -4,5 +4,6 @@ class ntnuopenstack::glance::registry {
   class { '::glance::registry':
     package_ensure => 'absent',
     enabled        => false,
+    auth_strategy  => '',
   }
 }
