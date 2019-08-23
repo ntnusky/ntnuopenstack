@@ -80,7 +80,7 @@ class ntnuopenstack::octavia {
   }
 
   class { '::octavia::housekeeping':
-    spare_amphorae_pool_size => $spare_pool_size,
+    spare_amphora_pool_size => $spare_pool_size,
   }
 
   class { '::octavia::certificates':
