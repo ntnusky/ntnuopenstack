@@ -1,9 +1,9 @@
 ---
 ntnuopenstack::db::sync: false 
 
+ntnuopenstack::cinder::db::sync: "%{alias('ntnuopenstack::db::sync')}"
 ntnuopenstack::cinder::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
 ntnuopenstack::cinder::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
-ntnuopenstack::cinder::db::sync: "%{alias('ntnuopenstack::db::sync')}"
 ntnuopenstack::cinder::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"
 ntnuopenstack::cinder::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 
