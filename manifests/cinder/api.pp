@@ -4,8 +4,12 @@ class ntnuopenstack::cinder::api {
     'default_value' => true,
     'value_type'    => Boolean,
   })
+  $db_sync = lookup('ntnuopenstack::cinder::db::sync', Boolean)
 
-  include ::cinder::db::sync
+  if ($db_sync) {
+    include ::cinder::db::sync
+  }
+
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::cinder::base
   contain ::ntnuopenstack::cinder::firewall::server
