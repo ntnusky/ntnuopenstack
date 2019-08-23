@@ -10,7 +10,7 @@ class ntnuopenstack::glance::registry {
   $keystone_password = lookup('ntnuopenstack::glance::keystone::password', String)
 
   # Determine where the keystone service is located.
-  $keystone_admin  = lookup('ntnuopenstack::keystone::endpoint::admin', Stdlib::Httpurl)
+  $keystone_internal = lookup('ntnuopenstack::keystone::endpoint::internal', Stdlib::Httpurl)
   $keystone_public = lookup('ntnuopenstack::keystone::endpoint::public', Stdlib::Httpurl)
 
   # Retrieve addresses for the memcached servers, either the old IP or the new
@@ -51,10 +51,10 @@ class ntnuopenstack::glance::registry {
   }
 
   class { '::glance::registry::authtoken':
-    password          => $keystone_password,
-    auth_url          => "${keystone_admin}:35357",
-    auth_uri          => "${keystone_public}:5000",
-    memcached_servers => $memcache,
-    region_name       => $region,
+    password             => $keystone_password,
+    auth_url             => "${keystone_internal}:5000",
+    www_authenticate_uri => "${keystone_public}:5000",
+    memcached_servers    => $memcache,
+    region_name          => $region,
   }
 }
