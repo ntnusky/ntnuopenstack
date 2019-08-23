@@ -19,4 +19,8 @@ class ntnuopenstack::glance::ceph {
       'allow class-read object_prefix rbd_children, allow rwx pool=images',
     inject  => true,
   }
+
+  class { '::glance::backend::rbd' :
+    rbd_store_user => 'glance',
+  }
 }

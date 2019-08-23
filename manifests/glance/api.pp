@@ -50,7 +50,6 @@ class ntnuopenstack::glance::api {
     enable_proxy_headers_parsing => $confhaproxy,
     stores                       => ['glance.store.rbd.Store'],
     os_region_name               => $region,
-    registry_host                => '127.0.0.1',
     show_image_direct_url        => true,
     show_multiple_locations      => true,
   }
