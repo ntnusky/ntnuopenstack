@@ -4,6 +4,7 @@ class ntnuopenstack::glance::api {
   $mysql_pass= lookup('ntnuopenstack::glance::mysql::password', String)
   $mysql_ip = lookup('ntnuopenstack::glance::mysql::ip', Stdlib::IP::Address)
   $database_connection = "mysql://glance:${mysql_pass}@${mysql_ip}/glance"
+  $db_sync = lookup('ntnuopenstack::glance::db::sync', Boolean)
 
   # Openstack parameters
   $region = lookup('ntnuopenstack::region', String)
@@ -52,6 +53,7 @@ class ntnuopenstack::glance::api {
     os_region_name               => $region,
     show_image_direct_url        => true,
     show_multiple_locations      => true,
+    sync_db                      => $db_sync,
   }
 
   class { '::glance::api::authtoken':
