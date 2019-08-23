@@ -3,7 +3,7 @@ class ntnuopenstack::cinder::base {
   # Determine where the database resides 
   $mysql_pass = lookup('ntnuopenstack::cinder::mysql::password', String)
   $mysql_ip = lookup('ntnuopenstack::cinder::mysql::ip', Stdlib::IP::Address)
-  $database_connection = "mysql://cinder:${mysql_pass}@${mysql_ip}/cinder"
+  $database_connection = "mysql+pymysql://cinder:${mysql_pass}@${mysql_ip}/cinder"
 
   # Credentials for the messagequeue
   $transport_url = lookup('ntnuopenstack::transport::url', String)
