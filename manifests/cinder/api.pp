@@ -6,10 +6,6 @@ class ntnuopenstack::cinder::api {
   })
   $db_sync = lookup('ntnuopenstack::cinder::db::sync', Boolean)
 
-  if ($db_sync) {
-    include ::cinder::db::sync
-  }
-
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::cinder::base
   contain ::ntnuopenstack::cinder::firewall::server
@@ -27,6 +23,7 @@ class ntnuopenstack::cinder::api {
     service_name                 => 'httpd',
     default_volume_type          => 'Normal',
     enable_proxy_headers_parsing => $confhaproxy,
+    sync_db                      => $db_sync,
   }
 
   class { '::cinder::wsgi::apache':
