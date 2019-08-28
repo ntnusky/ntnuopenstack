@@ -28,6 +28,6 @@ class ntnuopenstack::neutron::agents {
   class { '::neutron::agents::l3':
     ha_enabled            => true,
     ha_vrrp_auth_password => $neutron_vrrp_pass,
-    extensions            => 'fwaas',
+    extensions            => 'fwaas,port_forwarding',
   }
 }

@@ -6,6 +6,7 @@ class ntnuopenstack::neutron::base {
       'router',
       'firewall',
       'neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2',
+      'port_forwarding',
     ],
   })
   $mtu = lookup('ntnuopenstack::neutron::mtu', {
