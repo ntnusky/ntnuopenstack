@@ -31,6 +31,8 @@ class ntnuopenstack::nova::services {
   }
 
   class { '::nova::consoleauth':
+    enabled        => false,
+    manage_service => false,
     ensure_package => 'purged',
   }
 
