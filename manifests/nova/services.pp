@@ -27,7 +27,6 @@ class ntnuopenstack::nova::services {
   })
 
   class { [
-    '::nova::consoleauth',
     '::nova::conductor'
   ]:
     enabled => true,
