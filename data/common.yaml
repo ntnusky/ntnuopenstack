@@ -35,6 +35,7 @@ ntnuopenstack::neutron::endpoint::public: "%{alias('ntnuopenstack::endpoint::pub
 ntnuopenstack::neutron::metadata::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 ntnuopenstack::neutron::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 
+ntnuopenstack::nova::db::sync: "%{alias('ntnuopenstack::db::sync')}"
 ntnuopenstack::nova::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
 ntnuopenstack::nova::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
 ntnuopenstack::nova::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"

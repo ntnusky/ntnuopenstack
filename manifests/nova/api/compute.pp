@@ -13,7 +13,7 @@ class ntnuopenstack::nova::api::compute {
   # Retrieve openstack parameters
   $nova_password = lookup('ntnuopenstack::nova::keystone::password')
   $nova_secret = lookup('ntnuopenstack::nova::sharedmetadataproxysecret')
-  $sync_db = lookup('ntnuopenstack::nova::sync_db', {
+  $sync_db = lookup('ntnuopenstack::nova::db::sync', {
     'value_type'    => Boolean,
     'default_value' => false,   # One of your nodes need to have this key set to
                                 # true to automaticly populate the databases.
@@ -33,11 +33,11 @@ class ntnuopenstack::nova::api::compute {
   contain ::ntnuopenstack::nova::haproxy::backend::metadata
 
   class { '::nova::keystone::authtoken':
-    auth_url          => "${admin_endpoint}:35357/",
-    auth_uri          => "${internal_endpoint}:5000/",
-    password          => $nova_password,
-    memcached_servers => $memcache,
-    region_name       => $region,
+    auth_url             => "${admin_endpoint}:35357/",
+    www_authenticate_uri => "${internal_endpoint}:5000/",
+    password             => $nova_password,
+    memcached_servers    => $memcache,
+    region_name          => $region,
   }
 
   class { '::nova::api':
