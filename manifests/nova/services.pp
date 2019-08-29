@@ -26,10 +26,12 @@ class ntnuopenstack::nova::services {
     'value_type'    => Integer,
   })
 
-  class { [
-    '::nova::conductor'
-  ]:
+  class { '::nova::conductor':
     enabled => true,
+  }
+
+  class { '::nova::consoleauth':
+    ensure_package => 'purged',
   }
 
   class { '::nova::scheduler':
