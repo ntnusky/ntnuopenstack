@@ -19,6 +19,10 @@ class ntnuopenstack::horizon {
     'default_value' => 7200,
   })
   $keystone = lookup('ntnuopenstack::keystone::endpoint::internal', Stdlib::Httpurl)
+  $help_url = lookup('ntnuopenstack::horizon::help_url', {
+    'value_type'    => Stdlib::Httpurl,
+    'default_value' => 'https://docs.openstack.org',
+  })
 
   # Try to retrieve memcache addresses.
   $memcache_servers = lookup('profile::memcache::servers', {
@@ -60,11 +64,12 @@ class ntnuopenstack::horizon {
     allowed_hosts                  => [$::fqdn, $server_name],
     default_theme                  => 'default',
     enable_secure_proxy_ssl_header => $haproxy,
+    help_url                       => $help_url,
     keystone_default_domain        => $ldap_name,
     keystone_multidomain_support   => true,
     keystone_url                   => "${keystone}:5000",
     keystone_domain_choices        => [
-      {'name' => $ldap_name, 'display' => $description},
+      {'name'                      => $ldap_name, 'display' => $description},
       {'name' => 'default',  'display' => 'Openstack accounts'},
     ],
     neutron_options                => {
