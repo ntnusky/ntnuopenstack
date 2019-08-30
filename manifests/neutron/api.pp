@@ -80,4 +80,7 @@ class ntnuopenstack::neutron::api {
 
   class { 'neutron::services::lbaas':
   }
+
+  class { 'neutron::services::fwaas':
+  }
 }
