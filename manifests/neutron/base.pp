@@ -4,7 +4,7 @@ class ntnuopenstack::neutron::base {
     'value_type'    => Array[String],
     'default_value' => [
       'router',
-      'firewall',
+      'firewall_v2',
       'neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2',
       'port_forwarding',
     ],
