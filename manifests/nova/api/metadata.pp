@@ -7,7 +7,7 @@ class ntnuopenstack::nova::api::metadata {
   $neutron_secret = lookup('ntnuopenstack::nova::sharedmetadataproxysecret')
 
   if($confhaproxy) {
-    contain ::ntnuopenstack::haproxy::backend::metadata
+    contain ::ntnuopenstack::nova::haproxy::backend::metadata
     $header_parsing = true
     $logformat = 'forwarded'
   } else {
