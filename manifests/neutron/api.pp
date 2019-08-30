@@ -26,7 +26,7 @@ class ntnuopenstack::neutron::api {
   $service_providers = lookup('ntnuopenstack::neutron::service_providers', {
     'value_type'    => Array[String],
     'default_value' => [
-      'FIREWALL:Iptables:neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver:default',
+      'FIREWALL_V2:fwaas_db:neutron_fwaas.services.firewall.service_drivers.agents.agents.FirewallAgentDriver:default',
       'LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default',
     ],
   })
