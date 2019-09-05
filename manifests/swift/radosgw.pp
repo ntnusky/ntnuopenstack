@@ -2,10 +2,12 @@
 class ntnuopenstack::swift::radosgw {
   $endpoint_internal = lookup('ntnuopenstack::endpoint::internal')
   $keystone_password = lookup('ntnuopenstack::swift::keystone::password')
+  $swift_dns_name = lookup('ntnuopenstack::swift::dns::name')
 
   ::ceph::rgw { 'radosgw.main':
-    pkg_radosgw => 'radosgw',
-    user        => 'www-data',
+    pkg_radosgw  => 'radosgw',
+    rgw_dns_name => $swift_dns_name,
+    user         => 'www-data',
   }
 
   ::ceph::rgw::keystone { 'radosgw.main':
