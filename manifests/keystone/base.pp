@@ -13,7 +13,7 @@ class ntnuopenstack::keystone::base {
   $mysql_ip = lookup('ntnuopenstack::keystone::mysql::ip', Stdlib::IP::Address)
   $db_con = "mysql://keystone:${mysql_password}@${mysql_ip}/keystone"
 
-  $sync_db = lookup('ntnuopenstack::keyston::db::sync', Boolean)
+  $sync_db = lookup('ntnuopenstack::keystone::db::sync', Boolean)
 
   $cache_servers = lookup('profile::memcache::servers', {
     'value_type'    => Variant[Array[String], Boolean],
