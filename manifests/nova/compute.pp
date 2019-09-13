@@ -56,5 +56,8 @@ class ntnuopenstack::nova::compute {
   if ($install_sensu) {
     sensu::subscription { 'os-compute': }
   }
+  ensure_package( ['python3-pymysql'] , {
+    'ensure' => 'present',
+  })
 }
 
