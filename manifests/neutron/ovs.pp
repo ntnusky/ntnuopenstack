@@ -24,4 +24,8 @@ class ntnuopenstack::neutron::ovs (
     local_ip        => $local_ip,
     tunnel_types    => $tunnel_types,
   }
+
+  neutron_agent_ovs { 'ovs/ovsdb_timeout':
+    value => 60,
+  }
 }
