@@ -10,6 +10,10 @@ class ntnuopenstack::neutron::agents {
   $neutron_vrrp_pass = lookup('ntnuopenstack::neutron::vrrp_pass', String)
   $metadata_secret = lookup('ntnuopenstack::nova::sharedmetadataproxysecret',
                             String)
+  $bgp_routerID = lookup('ntnuopenstack::neutron::bgp::router::id', {
+    'value_type'    => Stdlib::IP::Address,
+    'default_value' => '0.0.0.0',
+  })
 
   require ::ntnuopenstack::neutron::base
   require ::ntnuopenstack::neutron::firewall::l3agent
@@ -29,5 +33,11 @@ class ntnuopenstack::neutron::agents {
     ha_enabled            => true,
     ha_vrrp_auth_password => $neutron_vrrp_pass,
     extensions            => 'fwaas_v2,port_forwarding',
+  }
+
+  if($bgp_routerID != '0.0.0.0') {
+    ::neutron::agents::bgp_dragent {
+      bgp_router_id => $bgp_routerID,
+    }
   }
 }
