@@ -2,5 +2,4 @@
 # the SkyHiGh architecture
 class ntnuopenstack::glance {
   contain ::ntnuopenstack::glance::api
-  contain ::ntnuopenstack::glance::registry
 }
