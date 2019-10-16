@@ -3,8 +3,5 @@ class ntnuopenstack::cinder::scheduler {
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::cinder::base
 
-  class { '::cinder::scheduler':
-    enabled          => true,
-  }
-
+  class { '::cinder::scheduler': }
 }
