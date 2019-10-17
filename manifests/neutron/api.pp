@@ -55,7 +55,7 @@ class ntnuopenstack::neutron::api {
   # Configure how neutron communicates with keystone
   class { '::neutron::keystone::authtoken':
     password             => $neutron_password,
-    auth_url             => "${keystone_admin}:35357/",
+    auth_url             => "${keystone_admin}:5000/",
     www_authenticate_uri => "${keystone_internal}:5000/",
     memcached_servers    => $memcache,
     region_name          => $region,
@@ -74,7 +74,7 @@ class ntnuopenstack::neutron::api {
   # Configure nova notifications system
   class { '::neutron::server::notifications':
     password    => $nova_password,
-    auth_url    => "${keystone_admin}:35357",
+    auth_url    => "${keystone_admin}:5000",
     region_name => $region,
   }
 
