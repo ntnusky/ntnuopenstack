@@ -31,7 +31,7 @@ class ntnuopenstack::nova::api::compute {
   contain ::ntnuopenstack::nova::haproxy::backend::api
 
   class { '::nova::keystone::authtoken':
-    auth_url             => "${admin_endpoint}:35357/",
+    auth_url             => "${admin_endpoint}:5000/",
     www_authenticate_uri => "${internal_endpoint}:5000/",
     password             => $nova_password,
     memcached_servers    => $memcache,
