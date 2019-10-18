@@ -12,10 +12,6 @@ class ntnuopenstack::nova::ceph {
     'client.nova/key': value => $nova_key;
   }
 
-  ensure_packages( ['python3-rbd', 'python3-rados'] , {
-    'ensure' => 'present',
-  })
-
   $top = 'allow class-read object_prefix rbd_children'
   $volumes = 'allow rwx pool=volumes'
   $images = 'allow rwx pool=images'
