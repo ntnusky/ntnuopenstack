@@ -14,7 +14,7 @@ class ntnuopenstack::glance::ceph {
 
   ceph::key { 'client.glance':
     secret  => $glance_key,
-    cap_mon => 'allow r, allow command \"osd blacklist\"',
+    cap_mon => 'allow r, allow command "osd blacklist"',
     cap_osd =>
       'allow class-read object_prefix rbd_children, allow rwx pool=images',
     inject  => true,
