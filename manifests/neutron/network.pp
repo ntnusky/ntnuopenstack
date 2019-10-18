@@ -1,10 +1,5 @@
 # Installs and configures a neutron network node
 class ntnuopenstack::neutron::network {
-  $enable_ipv6_pd = lookup('ntnuopenstack::neutron::tenant::dhcpv6pd', {
-    'value_type'    => Boolean,
-    'default_value' => false,
-  })
-
   require ::ntnuopenstack::repo
 
   contain ::ntnuopenstack::neutron::agents
@@ -14,5 +9,7 @@ class ntnuopenstack::neutron::network {
   contain ::ntnuopenstack::neutron::services
   contain ::ntnuopenstack::neutron::tenant
 
+  # This class is to remove the rest of the DHCPv6-pd config. This can be
+  # removed when upgrading to Train.
   contain ::ntnuopenstack::neutron::ipv6::pddisable
 }
