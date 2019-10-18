@@ -14,7 +14,5 @@ class ntnuopenstack::neutron::network {
   contain ::ntnuopenstack::neutron::services
   contain ::ntnuopenstack::neutron::tenant
 
-  if ($enable_ipv6_pd) {
-    contain ::ntnuopenstack::neutron::ipv6::agent
-  }
+  contain ::ntnuopenstack::neutron::ipv6::pddisable
 }
