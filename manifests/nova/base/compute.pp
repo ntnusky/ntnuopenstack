@@ -40,6 +40,6 @@ class ntnuopenstack::nova::base::compute {
   class { '::nova::placement':
     password       => $placement_password,
     auth_url       => "${internal_endpoint}:5000/v3",
-    os_region_name => $region,
+    region_name => $region,
   }
 }
