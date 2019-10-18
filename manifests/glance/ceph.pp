@@ -21,6 +21,7 @@ class ntnuopenstack::glance::ceph {
   }
 
   class { '::glance::backend::rbd' :
-    rbd_store_user => 'glance',
+    rbd_store_user  => 'glance',
+    manage_packages => false,
   }
 }
