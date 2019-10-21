@@ -30,10 +30,6 @@ class ntnuopenstack::neutron::api {
       'LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default',
     ],
   })
-  $enable_ipv6_pd = lookup('ntnuopenstack::neutron::tenant::dhcpv6pd', {
-    'value_type'    => Boolean,
-    'default_value' => false,
-  })
   $confhaproxy = lookup('ntnuopenstack::haproxy::configure::backend', {
     'value_type'    => Boolean,
     'default_value' => true,
@@ -44,9 +40,9 @@ class ntnuopenstack::neutron::api {
   include ::ntnuopenstack::neutron::ml2::config
   include ::profile::services::memcache::pythonclient
 
-  if ($enable_ipv6_pd) {
-    contain ::ntnuopenstack::neutron::ipv6::config
-  }
+  # his class is to remove the rest of the DHCPv6-pd config. This can be removed
+  # when upgrading to Train.
+  contain ::ntnuopenstack::neutron::ipv6::pddisable
 
   if($confhaproxy) {
     contain ::ntnuopenstack::neutron::haproxy::backend
