@@ -12,9 +12,4 @@ class ntnuopenstack::nova::firewall::server {
     protocol => 'tcp',
     port     => 8778,
   }
-
-  firewall { '511 nova-api-INPUT':
-    jump  => 'nova-api-INPUT',
-    proto => 'all',
-  }
 }

@@ -26,11 +26,14 @@ class ntnuopenstack::nova::services {
     'value_type'    => Integer,
   })
 
-  class { [
-    '::nova::consoleauth',
-    '::nova::conductor'
-  ]:
+  class { '::nova::conductor':
     enabled => true,
+  }
+
+  class { '::nova::consoleauth':
+    enabled        => false,
+    manage_service => false,
+    ensure_package => 'purged',
   }
 
   class { '::nova::scheduler':
@@ -39,5 +42,10 @@ class ntnuopenstack::nova::services {
 
   class { '::nova::scheduler::filter':
     scheduler_default_filters => $default_filters_real,
+  }
+
+  nova_config {
+    'filter_scheduler/build_failure_weight_multiplier':
+      value => 0;
   }
 }

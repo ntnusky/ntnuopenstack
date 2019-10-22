@@ -28,17 +28,4 @@ class ntnuopenstack::glance::haproxy::backend {
     ports             => '9292',
     options           => 'check inter 2000 rise 2 fall 5',
   }
-
-  profile::services::haproxy::tools::register { "GlanceRegistry-${::hostname}":
-    servername  => $::hostname,
-    backendname => 'bk_glance_registry',
-  }
-
-  @@haproxy::balancermember { "glance-registry-${::fqdn}":
-    listening_service => 'bk_glance_registry',
-    server_names      => $::hostname,
-    ipaddresses       => $ip,
-    ports             => '9191',
-    options           => 'check inter 2000 rise 2 fall 5',
-  }
 }

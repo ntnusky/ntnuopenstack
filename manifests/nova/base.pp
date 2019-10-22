@@ -14,8 +14,8 @@ class ntnuopenstack::nova::base {
   $mysql_ip = lookup('ntnuopenstack::nova::mysql::ip', {
       'value_type' => Stdlib::IP::Address,
   })
-  $db_con = "mysql://nova:${mysql_password}@${mysql_ip}/nova"
-  $api_db_con = "mysql://nova_api:${mysql_password}@${mysql_ip}/nova_api"
+  $db_con = "mysql+pymysql://nova:${mysql_password}@${mysql_ip}/nova"
+  $api_db_con = "mysql+pymysql://nova_api:${mysql_password}@${mysql_ip}/nova_api"
 
   # Nova placement configuration
   $region = lookup('ntnuopenstack::region')

@@ -2,4 +2,5 @@
 class ntnuopenstack::nova::api {
   contain ::ntnuopenstack::nova::api::compute
   contain ::ntnuopenstack::nova::api::placement
+  contain ::ntnuopenstack::nova::api::metadata
 }

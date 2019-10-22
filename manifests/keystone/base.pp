@@ -13,6 +13,8 @@ class ntnuopenstack::keystone::base {
   $mysql_ip = lookup('ntnuopenstack::keystone::mysql::ip', Stdlib::IP::Address)
   $db_con = "mysql://keystone:${mysql_password}@${mysql_ip}/keystone"
 
+  $sync_db = lookup('ntnuopenstack::keystone::db::sync', Boolean)
+
   $cache_servers = lookup('profile::memcache::servers', {
     'value_type'    => Variant[Array[String], Boolean],
     'default_value' => false,
@@ -77,6 +79,7 @@ class ntnuopenstack::keystone::base {
     enable_proxy_headers_parsing => $confhaproxy,
     using_domain_config          => true,
     token_expiration             => $token_expiration,
+    sync_db                      => $sync_db,
     *                            => $keystone_opts,
   }
 
