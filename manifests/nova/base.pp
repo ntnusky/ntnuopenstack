@@ -53,9 +53,9 @@ class ntnuopenstack::nova::base {
   }
 
   class { '::nova::placement':
-    password       => $placement_password,
-    auth_url       => "${keystone_admin}:35357/v3",
-    os_region_name => $region,
+    password    => $placement_password,
+    auth_url    => "${keystone_admin}:5000/v3",
+    region_name => $region,
   }
 
   class { '::nova::cache' :

@@ -4,6 +4,6 @@
 class ntnuopenstack::keystone::firewall::server {
   ::profile::baseconfig::firewall::service::infra { 'Keystone-API':
     protocol => 'tcp',
-    port     => [5000,35357],
+    port     => 5000,
   }
 }

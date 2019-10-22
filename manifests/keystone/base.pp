@@ -47,10 +47,10 @@ class ntnuopenstack::keystone::base {
     }
 
     $keystone_opts = {
-      'memcache_servers' => $memcache,
-      'cache_backend'    => 'dogpile.cache.memcached',
-      'cache_enabled'    => true,
-      'token_caching'    => true,
+      'cache_memcache_servers' => $memcache,
+      'cache_backend'          => 'dogpile.cache.memcached',
+      'cache_enabled'          => true,
+      'token_caching'          => true,
     }
   } else {
     $keystone_opts = {}
@@ -69,7 +69,7 @@ class ntnuopenstack::keystone::base {
     enabled                      => false,
     service_name                 => 'httpd',
     admin_bind_host              => '0.0.0.0',
-    admin_endpoint               => "${admin_endpoint}:35357/",
+    admin_endpoint               => "${admin_endpoint}:5000/",
     public_endpoint              => "${public_endpoint}:5000/",
     token_provider               => 'fernet',
     fernet_keys                  => $fernet_keys,
@@ -94,4 +94,7 @@ class ntnuopenstack::keystone::base {
     ssl               => false,
     access_log_format => $logformat,
   }
+  ensure_packages( ['python3-mysqldb', 'python3-ldappool'] , {
+    'ensure' => 'present',
+  })
 }
