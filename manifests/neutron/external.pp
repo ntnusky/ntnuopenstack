@@ -19,6 +19,7 @@ class ntnuopenstack::neutron::external {
       # present at a certain VLAN on a certain vswitch bridge.
       if($data['type'] == 'vswitch') {
         $n = "Connection between ${data['bridge']} and br-${netname}"
+        ::profile::infrastructure::ovs::bridge { "br-${netname}" : }
         ::profile::infrastructure::ovs::patch::vlan { $n:
           source_bridge      => $data['bridge'],
           source_vlan        => $data['vlan'],
