@@ -6,7 +6,7 @@ class ntnuopenstack::neutron::ovs (
   $tunnel_types   = undef,
 ) {
   $connections = lookup('ntnuopenstack::neutron::external::connections', {
-    'value_type'    => Hash[String, String],
+    'value_type'    => Hash[String, Variant[String, Hash]],
     'default_value' => {},
   })
 
