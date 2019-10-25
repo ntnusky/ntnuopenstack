@@ -20,6 +20,7 @@ class ntnuopenstack::neutron::tenant::vlan {
 
     class { '::ntnuopenstack::neutron::ovs':
       tenant_mapping => "physnet-vlan:${tenant_bridge}",
+      manage_vswitch => false,
     }
 
   # If the tenant-VLANS are connected to a physical if; create the bridge
