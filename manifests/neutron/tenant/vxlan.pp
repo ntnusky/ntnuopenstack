@@ -45,7 +45,7 @@ class ntnuopenstack::neutron::tenant::vxlan {
 
   # If the vxlan-endpoint should be connected to a certain VLAN at an already
   # existing vswitch:
-  elsif ($tenant_if == 'vswitch')
+  } elsif ($tenant_if == 'vswitch') {
     $bridge = lookup('ntnuopenstack::tenant::bridge', String)
     $vlan = lookup('ntnuopenstack::tenant::vlan', Integer)
 
