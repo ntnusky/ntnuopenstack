@@ -19,9 +19,16 @@ class ntnuopenstack::neutron::tenant::vxlan {
     $local_ip = '169.254.254.254'
   }
 
+  if($tenant_if == 'vswitch') {
+    $manage_vswitch = false
+  } else {
+    $manage_vswitch = true
+  }
+
   class { '::ntnuopenstack::neutron::ovs':
-    tenant_mapping => 'provider:br-provider',
     local_ip       => $local_ip,
+    manage_vswitch => $manage_vswitch,
+    tenant_mapping => 'provider:br-provider',
     tunnel_types   => ['vxlan'],
   }
 
@@ -49,6 +56,7 @@ class ntnuopenstack::neutron::tenant::vxlan {
     $bridge = lookup('ntnuopenstack::tenant::bridge', String)
     $vlan = lookup('ntnuopenstack::tenant::vlan', Integer)
 
+    ::profile::infrastructure::ovs::bridge { 'br-provider': }
     ::profile::infrastructure::ovs::patch::vlan { "br-provider to ${bridge}":
       source_bridge      => $bridge,
       source_vlan        => $vlan,
