@@ -19,10 +19,17 @@ class ntnuopenstack::neutron::tenant::vxlan {
     $local_ip = '169.254.254.254'
   }
 
+  if($tenant_if == 'vswitch') {
+    $managevswitch = false
+  } else {
+    $managevswitch = true
+  }
+
   class { '::ntnuopenstack::neutron::ovs':
     tenant_mapping => 'provider:br-provider',
     local_ip       => $local_ip,
     tunnel_types   => ['vxlan'],
+    manage_vswitch => $managevswitch,
   }
 
   # If the vxlan-endpoint is a VLAN on a physical interface, connect a patch
