@@ -21,6 +21,7 @@ class ntnuopenstack::neutron::tenant::vxlan {
 
   if($tenant_if == 'vswitch') {
     $managevswitch = false
+    ::profile::infrastructure::ovs::bridge { 'br-provider' : }
   } else {
     $managevswitch = true
   }
