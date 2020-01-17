@@ -1,9 +1,9 @@
 # Installs various nova services.
 class ntnuopenstack::nova::services {
-  require ::ntnuopenstack::repo
   require ::ntnuopenstack::nova::base
   contain ::ntnuopenstack::nova::neutron
   contain ::ntnuopenstack::nova::vncproxy
+  require ::ntnuopenstack::repo
 
   $default_filters = [
     'AggregateImagePropertiesIsolation',
