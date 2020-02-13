@@ -21,7 +21,7 @@
     { "name":"openstack/vswitch","version_requirement":">= 8.4.0 < 9.0.0" },
     { "name":"puppetlabs/stdlib","version_requirement":">= 4.25.0 < 6.0.0" },
     { "name":"puppetlabs/inifile","version_requirement":">= 1.5.0 < 2.0.0" },
-    { "name":"ntnusky/profile","version_requirement":">= 1.6.0 < 2.0.0 " }
+    { "name":"ntnusky/profile","version_requirement":">= 1.11.7 < 2.0.0 " }
   ],
   "data_provider": "hiera",
   "operatingsystem_support": [

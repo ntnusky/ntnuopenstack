@@ -10,6 +10,11 @@ class ntnuopenstack::neutron::ovs (
     'default_value' => {},
   })
 
+  $ovsdb_timeout = lookup('ntnuopenstack::neutron::ovs::db::timeout', {
+    'value_type'    => Integer,
+    'default_value' => 60,
+  })
+
   require ::ntnuopenstack::neutron::base
   require ::ntnuopenstack::repo
 
@@ -22,12 +27,9 @@ class ntnuopenstack::neutron::ovs (
 
   class { '::neutron::agents::ml2::ovs':
     bridge_mappings => $mappings,
-    manage_vswitch  => $manage_vswitch,
     local_ip        => $local_ip,
+    manage_vswitch  => $manage_vswitch,
+    ovsdb_timeout   => $ovsdb_timeout,
     tunnel_types    => $tunnel_types,
-  }
-
-  neutron_agent_ovs { 'ovs/ovsdb_timeout':
-    value => 60,
   }
 }

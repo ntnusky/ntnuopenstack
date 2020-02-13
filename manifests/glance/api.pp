@@ -36,6 +36,7 @@ class ntnuopenstack::glance::api {
   include ::ntnuopenstack::glance::sudo
   include ::ntnuopenstack::glance::rabbit
   include ::profile::services::memcache::pythonclient
+  include ::profile::monitoring::munin::plugin::glance
 
   # If this server should be placed behind haproxy, export a haproxy
   # configuration snippet.

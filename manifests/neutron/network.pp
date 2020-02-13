@@ -8,6 +8,7 @@ class ntnuopenstack::neutron::network {
   contain ::ntnuopenstack::neutron::lbaas
   contain ::ntnuopenstack::neutron::services
   contain ::ntnuopenstack::neutron::tenant
+  contain ::profile::monitoring::munin::plugin::neutronnet
 
   # This class is to remove the rest of the DHCPv6-pd config. This can be
   # removed when upgrading to Train.
