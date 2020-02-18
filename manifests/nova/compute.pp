@@ -48,5 +48,16 @@ class ntnuopenstack::nova::compute {
     libvirt_rbd_secret_uuid => $nova_uuid,
     manage_ceph_client      => false,
   }
+
+  $install_sensu = lookup('profile::sensu::install', {
+    'default_value' => true,
+    'value_type'    => Boolean,
+  })
+  if ($install_sensu) {
+    sensu::subscription { 'os-compute': }
+  }
+  ensure_packages( ['python3-pymysql'] , {
+    'ensure' => 'present',
+  })
 }
 

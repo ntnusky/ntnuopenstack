@@ -3,7 +3,8 @@ class ntnuopenstack::neutron::api {
   # Determine where the database is
   $mysql_password = lookup('ntnuopenstack::neutron::mysql::password', String)
   $mysql_ip = lookup('ntnuopenstack::neutron::mysql::ip', Stdlib::IP::Address)
-  $database_connection = "mysql://neutron:${mysql_password}@${mysql_ip}/neutron"
+  $database_connection = "mysql+pymysql://neutron:${mysql_password}@${mysql_ip}/neutron"
+  $sync_db = lookup('ntnuopenstack::neutron::db::sync', Boolean)
 
   # Create a list of memceche-servers.
   $cache_servers = lookup('profile::memcache::servers', {
@@ -25,13 +26,9 @@ class ntnuopenstack::neutron::api {
   $service_providers = lookup('ntnuopenstack::neutron::service_providers', {
     'value_type'    => Array[String],
     'default_value' => [
-      'FIREWALL:Iptables:neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver:default',
+      'FIREWALL_V2:fwaas_db:neutron_fwaas.services.firewall.service_drivers.agents.agents.FirewallAgentDriver:default',
       'LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default',
     ],
-  })
-  $enable_ipv6_pd = lookup('ntnuopenstack::neutron::tenant::dhcpv6pd', {
-    'value_type'    => Boolean,
-    'default_value' => false,
   })
   $confhaproxy = lookup('ntnuopenstack::haproxy::configure::backend', {
     'value_type'    => Boolean,
@@ -42,10 +39,11 @@ class ntnuopenstack::neutron::api {
   include ::ntnuopenstack::neutron::firewall::api
   include ::ntnuopenstack::neutron::ml2::config
   include ::profile::services::memcache::pythonclient
+  include ::profile::monitoring::munin::plugin::neutronapi
 
-  if ($enable_ipv6_pd) {
-    contain ::ntnuopenstack::neutron::ipv6::config
-  }
+  # his class is to remove the rest of the DHCPv6-pd config. This can be removed
+  # when upgrading to Train.
+  contain ::ntnuopenstack::neutron::ipv6::pddisable
 
   if($confhaproxy) {
     contain ::ntnuopenstack::neutron::haproxy::backend
@@ -53,17 +51,17 @@ class ntnuopenstack::neutron::api {
 
   # Configure how neutron communicates with keystone
   class { '::neutron::keystone::authtoken':
-    password          => $neutron_password,
-    auth_url          => "${keystone_admin}:35357/",
-    auth_uri          => "${keystone_internal}:5000/",
-    memcached_servers => $memcache,
-    region_name       => $region,
+    password             => $neutron_password,
+    auth_url             => "${keystone_admin}:5000/",
+    www_authenticate_uri => "${keystone_internal}:5000/",
+    memcached_servers    => $memcache,
+    region_name          => $region,
   }
 
   # Install the neutron api
   class { '::neutron::server':
     database_connection              => $database_connection,
-    sync_db                          => true,
+    sync_db                          => $sync_db,
     allow_automatic_l3agent_failover => true,
     allow_automatic_dhcp_failover    => true,
     service_providers                => $service_providers,
@@ -73,10 +71,13 @@ class ntnuopenstack::neutron::api {
   # Configure nova notifications system
   class { '::neutron::server::notifications':
     password    => $nova_password,
-    auth_url    => "${keystone_admin}:35357",
+    auth_url    => "${keystone_admin}:5000",
     region_name => $region,
   }
 
   class { 'neutron::services::lbaas':
+  }
+
+  class { 'neutron::services::fwaas':
   }
 }

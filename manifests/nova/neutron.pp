@@ -19,8 +19,7 @@ class ntnuopenstack::nova::neutron {
     default_floating_pool => $floating_pool,
     neutron_region_name   => $region,
     neutron_password      => $neutron_password,
-    neutron_url           => "${neutron_internal}:9696",
-    neutron_auth_url      => "${keystone_internal}:35357/v3",
+    neutron_auth_url      => "${keystone_internal}:5000/v3",
     vif_plugging_is_fatal => false,
     vif_plugging_timeout  => '0',
   }

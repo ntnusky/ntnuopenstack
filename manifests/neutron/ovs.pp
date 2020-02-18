@@ -1,12 +1,18 @@
 # This class configures the neutron ml2 ovs agent.
 class ntnuopenstack::neutron::ovs (
   $tenant_mapping,
-  $local_ip         = undef,
-  $tunnel_types     = undef,
+  $manage_vswitch = true,
+  $local_ip       = undef,
+  $tunnel_types   = undef,
 ) {
   $connections = lookup('ntnuopenstack::neutron::external::connections', {
-    'value_type'    => Hash[String, String],
+    'value_type'    => Hash[String, Variant[String, Hash]],
     'default_value' => {},
+  })
+
+  $ovsdb_timeout = lookup('ntnuopenstack::neutron::ovs::db::timeout', {
+    'value_type'    => Integer,
+    'default_value' => 60,
   })
 
   require ::ntnuopenstack::neutron::base
@@ -22,6 +28,8 @@ class ntnuopenstack::neutron::ovs (
   class { '::neutron::agents::ml2::ovs':
     bridge_mappings => $mappings,
     local_ip        => $local_ip,
+    manage_vswitch  => $manage_vswitch,
+    ovsdb_timeout   => $ovsdb_timeout,
     tunnel_types    => $tunnel_types,
   }
 }

@@ -1,11 +1,9 @@
-# Configures the haproxy frontend for the internal and admin glance API and the
-# glance registry
+# Configures the haproxy frontend for the internal and admin glance API
 class ntnuopenstack::glance::haproxy::management {
   require ::profile::services::haproxy
   require ::profile::services::haproxy::certs::manageapi
 
   include ::ntnuopenstack::glance::firewall::haproxy::api
-  include ::ntnuopenstack::glance::firewall::haproxy::registry
 
   $certificate = lookup('ntnuopenstack::endpoint::admin::cert', {
     'default_value' => false,
@@ -29,19 +27,6 @@ class ntnuopenstack::glance::haproxy::management {
         'tcplog',
         'tcpka',
         'httpchk',
-      ],
-    },
-  }
-
-  ::profile::services::haproxy::frontend { 'glance_registry':
-    profile   => 'management',
-    port      => 9191,
-    certfile  => $certfile,
-    mode      => 'http',
-    bkoptions => {
-      'option'  => [
-        'tcplog',
-        'tcpka',
       ],
     },
   }

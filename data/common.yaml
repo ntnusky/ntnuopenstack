@@ -1,19 +1,25 @@
 ---
+ntnuopenstack::db::sync: false 
+
+ntnuopenstack::cinder::db::sync: "%{alias('ntnuopenstack::db::sync')}"
 ntnuopenstack::cinder::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
 ntnuopenstack::cinder::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
 ntnuopenstack::cinder::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"
 ntnuopenstack::cinder::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 
+ntnuopenstack::glance::db::sync: "%{alias('ntnuopenstack::db::sync')}"
 ntnuopenstack::glance::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
 ntnuopenstack::glance::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
 ntnuopenstack::glance::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"
 ntnuopenstack::glance::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 
+ntnuopenstack::heat::db::sync: "%{alias('ntnuopenstack::db::sync')}"
 ntnuopenstack::heat::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
 ntnuopenstack::heat::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
 ntnuopenstack::heat::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"
 ntnuopenstack::heat::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 
+ntnuopenstack::keystone::db::sync: "%{alias('ntnuopenstack::db::sync')}"
 ntnuopenstack::keystone::auth::url: "%{lookup('ntnuopenstack::endpoint::admin')}:35357"
 ntnuopenstack::keystone::auth::uri: "%{lookup('ntnuopenstack::endpoint::internal')}:5000/"
 ntnuopenstack::keystone::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
@@ -21,6 +27,7 @@ ntnuopenstack::keystone::endpoint::internal: "%{alias('ntnuopenstack::endpoint::
 ntnuopenstack::keystone::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"
 ntnuopenstack::keystone::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 
+ntnuopenstack::neutron::db::sync: "%{alias('ntnuopenstack::db::sync')}"
 ntnuopenstack::neutron::dns: "%{alias('profile::dns::resolvers')}"
 ntnuopenstack::neutron::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
 ntnuopenstack::neutron::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
@@ -28,6 +35,7 @@ ntnuopenstack::neutron::endpoint::public: "%{alias('ntnuopenstack::endpoint::pub
 ntnuopenstack::neutron::metadata::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 ntnuopenstack::neutron::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 
+ntnuopenstack::nova::db::sync: "%{alias('ntnuopenstack::db::sync')}"
 ntnuopenstack::nova::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
 ntnuopenstack::nova::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
 ntnuopenstack::nova::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"

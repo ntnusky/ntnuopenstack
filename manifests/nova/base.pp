@@ -1,5 +1,7 @@
 # Performs basic nova configuration.
 class ntnuopenstack::nova::base {
+  contain ::ntnuopenstack::common::pydb
+
   # Retrieve memcache configuration
   $memcache_servers = lookup('profile::memcache::servers', {
     'value_type'    => Array[Stdlib::IP::Address],
@@ -14,8 +16,8 @@ class ntnuopenstack::nova::base {
   $mysql_ip = lookup('ntnuopenstack::nova::mysql::ip', {
       'value_type' => Stdlib::IP::Address,
   })
-  $db_con = "mysql://nova:${mysql_password}@${mysql_ip}/nova"
-  $api_db_con = "mysql://nova_api:${mysql_password}@${mysql_ip}/nova_api"
+  $db_con = "mysql+pymysql://nova:${mysql_password}@${mysql_ip}/nova"
+  $api_db_con = "mysql+pymysql://nova_api:${mysql_password}@${mysql_ip}/nova_api"
 
   # Nova placement configuration
   $region = lookup('ntnuopenstack::region')
@@ -53,9 +55,9 @@ class ntnuopenstack::nova::base {
   }
 
   class { '::nova::placement':
-    password       => $placement_password,
-    auth_url       => "${keystone_admin}:35357/v3",
-    os_region_name => $region,
+    password    => $placement_password,
+    auth_url    => "${keystone_admin}:5000/v3",
+    region_name => $region,
   }
 
   class { '::nova::cache' :
