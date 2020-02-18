@@ -17,6 +17,7 @@ class ntnuopenstack::octavia::base {
 
   $transport_url = lookup('ntnuopenstack::transport::url')
 
+  include ::ntnuopenstack::octavia::auth
   require ::ntnuopenstack::repo
 
   class { '::octavia':
