@@ -12,6 +12,7 @@ class ntnuopenstack::octavia {
   $heartbeat_key = lookup('ntnuopenstack::octavia::heartbeat::key', String)
   $health_managers = lookup('ntnuopenstack::octavia::health::managers',
                         Array[String])
+  $controller_ip_port_list = join($health_managers, ', ')
   $spare_pool_size = lookup('ntnuopenstack::octavia::amphora::spares', Integer,
       'first', 0)
   $management_if = lookup('profile::interfaces::management', String)
@@ -46,17 +47,13 @@ class ntnuopenstack::octavia {
   }
 
   class { '::octavia::controller':
-    amp_flavor_id         => $flavor_id,
-    amp_image_tag         => $image_tag,
-    amp_secgroup_list     => [$secgroup_id],
-    amp_boot_network_list => [$network_id],
-    loadbalancer_topology => 'SINGLE',
-    amp_ssh_key_name      => $keypair,
-  }
-
-  $controller_ip_port_list = join($health_managers, ', ')
-  octavia_config {
-    'health_manager/controller_ip_port_list': value => $controller_ip_port_list;
+    amp_boot_network_list   => [$network_id],
+    amp_flavor_id           => $flavor_id,
+    amp_image_tag           => $image_tag,
+    amp_secgroup_list       => [$secgroup_id],
+    amp_ssh_key_name        => $keypair,
+    controller_ip_port_list => $controller_ip_port_list,
+    loadbalancer_topology   => 'SINGLE',
   }
 
   class { '::octavia::worker':
