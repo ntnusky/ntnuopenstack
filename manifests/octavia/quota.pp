@@ -22,10 +22,10 @@ class ntnuopenstack::octavia::quota {
   )
 
   class { '::octavia::quota':
-    load_balancer_quota  = $load_balancer_quota,
-    listener_quota       = $listener_quota,
-    member_quota         = $member_quota,
-    pool_quota           = $pool_quota,
-    health_monitor_quota = $health_monitor_quota,
+    load_balancer_quota  => $load_balancer_quota,
+    listener_quota       => $listener_quota,
+    member_quota         => $member_quota,
+    pool_quota           => $pool_quota,
+    health_monitor_quota => $health_monitor_quota,
   }
 }
