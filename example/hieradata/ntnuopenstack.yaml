@@ -24,7 +24,7 @@ heat::keystone::authtoken::auth_uri: "%{alias('ntnuopenstack::keystone::auth::ur
 heat::keystone::authtoken::memcached_servers: "%{alias('ntnuopenstack::keystone::memcached::servers')}"
 heat::keystone::authtoken::password: "%{lookup('ntnuopenstack::heat::keystone::password')}"
 heat::keystone::authtoken::region_name: "%{lookup('ntnuopenstack::region')}"
-octavia::db::database_connection: "mysql://octavia:%{lookup('ntnuopenstack::octavia::mysql::password')}@%{lookup('ntnuopenstack::nova::mysql::ip')}/octavia"
+octavia::db::database_connection: "mysql+pymysql://octavia:%{lookup('ntnuopenstack::octavia::mysql::password')}@%{lookup('ntnuopenstack::nova::mysql::ip')}/octavia"
 octavia::keystone::authtoken::auth_url: "%{alias('ntnuopenstack::keystone::auth::url')}"
 octavia::keystone::authtoken::auth_uri: "%{alias('ntnuopenstack::keystone::auth::uri')}"
 octavia::keystone::authtoken::memcached_servers: "%{alias('ntnuopenstack::keystone::memcached::servers')}"
