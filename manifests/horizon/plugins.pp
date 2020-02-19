@@ -17,5 +17,7 @@ class ntnuopenstack::horizon::plugins {
 
   # If the octavia keystone-password is in hiera, we assume octavia to be
   # present, and is thus installing the octavia dashboard:
-  horizon::dashboard { 'octavia': }
+  if($octavia) {
+    horizon::dashboard { 'octavia': }
+  }
 }
