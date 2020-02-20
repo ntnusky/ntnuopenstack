@@ -39,7 +39,7 @@ class ntnuopenstack::neutron::api {
   include ::ntnuopenstack::neutron::firewall::api
   include ::ntnuopenstack::neutron::ml2::config
   include ::profile::services::memcache::pythonclient
-  include ::profile::monitoring::munin::plugin::neutronapi
+  include ::profile::monitoring::munin::plugin::openstack::neutronapi
 
   # his class is to remove the rest of the DHCPv6-pd config. This can be removed
   # when upgrading to Train.
