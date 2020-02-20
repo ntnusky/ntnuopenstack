@@ -23,6 +23,7 @@ class ntnuopenstack::octavia::controller {
   include ::ntnuopenstack::octavia::base
   include ::ntnuopenstack::octavia::firewall::controller
   require ::ntnuopenstack::repo
+  include ::profile::monitoring::munin::plugin::openstack::octavia
 
   class { '::octavia::controller':
     amp_boot_network_list   => [$network_id],
