@@ -22,7 +22,6 @@ class ntnuopenstack::octavia::controller {
 
   include ::ntnuopenstack::octavia::base
   include ::ntnuopenstack::octavia::firewall::controller
-  include ::ntnuopenstack::octavia::policy
   require ::ntnuopenstack::repo
   include ::profile::monitoring::munin::plugin::openstack::octavia
 
