@@ -20,7 +20,6 @@ class ntnuopenstack::barbican::api {
     $ha_transport_conf = {}
   }
 
-  include ::ntnuopenstack::barbican::endpoint
   include ::ntnuopenstack::barbican::firewall::api
   include ::ntnuopenstack::barbican::haproxy::backend
 

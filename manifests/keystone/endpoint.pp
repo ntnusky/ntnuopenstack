@@ -13,6 +13,11 @@ class ntnuopenstack::keystone::endpoint {
     'value_type'    => Variant[Boolean, String],
   })
 
+  $barbican = lookup('ntnuopenstack::barbican::keystone::password', {
+    'default_value' => false,
+    'value_type'    => Variant[Boolean, String],
+  })
+
   # We need to define the endpoints on the keystone hosts, so include the other
   # endpoints here.
   include ::ntnuopenstack::cinder::endpoint
@@ -25,6 +30,11 @@ class ntnuopenstack::keystone::endpoint {
   # If there is a password for swift in hiera, define an endpoint for swift.
   if($swift) {
     include ::ntnuopenstack::swift::endpoint
+  }
+
+  # If there is a password for barbican in hiera, define an endpoint for swift.
+  if($barbican) {
+    include ::ntnuopenstack::barbican::endpoint
   }
 
   # Defining the keystone endpoint
