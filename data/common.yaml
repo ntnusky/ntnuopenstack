@@ -1,7 +1,7 @@
 ---
-ntnuopenstack::db::sync: false 
+ntnuopenstack::db::sync: false
 
-ntnuopenstack::barbican::db:sync: "%{alias('ntnuopenstack::db::sync')}"
+ntnuopenstack::barbican::db::sync: "%{alias('ntnuopenstack::db::sync')}"
 
 ntnuopenstack::cinder::db::sync: "%{alias('ntnuopenstack::db::sync')}"
 ntnuopenstack::cinder::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
