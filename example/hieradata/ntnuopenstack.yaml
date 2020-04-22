@@ -35,7 +35,7 @@ heat::keystone::authtoken::region_name: "%{lookup('ntnuopenstack::region')}"
 # Next up are all the values that needs to be set by us:
 ntnuopenstack::barbican::keystone::password: '<password>'
 ntnuopenstack::barbican::mysql::password: '<password>'
-ntnuopenstack::barbican::simple_crypto::kek: '<32 characters, base64 encoded>
+ntnuopenstack::barbican::simple_crypto::kek: '<32 characters, base64 encoded>'
 
 ntnuopenstack::cinder::ceph::key: '<ceph-key>'
 ntnuopenstack::cinder::keystone::password: '<password>'
