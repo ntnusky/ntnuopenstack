@@ -10,7 +10,7 @@ class ntnuopenstack::keystone {
   contain ::ntnuopenstack::keystone::firewall::server
   contain ::ntnuopenstack::keystone::ldap
   require ::ntnuopenstack::repo
-  include ::profile::monitoring::munin::plugin::keystone
+  include ::profile::monitoring::munin::plugin::openstack::keystone
 
   # If this server should be placed behind haproxy, export a haproxy
   # configuration snippet.

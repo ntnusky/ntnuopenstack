@@ -6,7 +6,7 @@ class ntnuopenstack::nova::munin::compute {
   })
 
   if($installmunin) {
-    include ::profile::monitoring::munin::plugin::compute
+    include ::profile::monitoring::munin::plugin::openstack::compute
   }
 }
 

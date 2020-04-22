@@ -6,6 +6,11 @@ class ntnuopenstack::clients {
     'default_value' => false,
     'value_type'    => Variant[Boolean, String],
   })
+  
+  $octavia = lookup('ntnuopenstack::octavia::keystone::password', {
+    'default_value' => false,
+    'value_type'    => Variant[Boolean, String],
+  })
 
   include ::keystone::client
   include ::cinder::client
@@ -16,5 +21,9 @@ class ntnuopenstack::clients {
 
   if($barbican) {
     include ::barbican::client
+  }
+
+  if($octavia) {
+    include ::octavia::client
   }
 }
