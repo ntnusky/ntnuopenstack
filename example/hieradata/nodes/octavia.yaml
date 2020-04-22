@@ -1,0 +1,5 @@
+ntnuopenstack::octavia::certs::client::cert: |
+  -----BEGIN RSA PRIVATE KEY-----
+  -----END RSA PRIVATE KEY-----
+  -----BEGIN CERTIFICATE-----
+  -----END CERTIFICATE-----

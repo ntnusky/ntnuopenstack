@@ -24,6 +24,12 @@ heat::keystone::authtoken::auth_uri: "%{alias('ntnuopenstack::keystone::auth::ur
 heat::keystone::authtoken::memcached_servers: "%{alias('ntnuopenstack::keystone::memcached::servers')}"
 heat::keystone::authtoken::password: "%{lookup('ntnuopenstack::heat::keystone::password')}"
 heat::keystone::authtoken::region_name: "%{lookup('ntnuopenstack::region')}"
+octavia::db::database_connection: "mysql+pymysql://octavia:%{lookup('ntnuopenstack::octavia::mysql::password')}@%{lookup('ntnuopenstack::nova::mysql::ip')}/octavia"
+octavia::keystone::authtoken::auth_url: "%{alias('ntnuopenstack::keystone::auth::url')}"
+octavia::keystone::authtoken::auth_uri: "%{alias('ntnuopenstack::keystone::auth::uri')}"
+octavia::keystone::authtoken::memcached_servers: "%{alias('ntnuopenstack::keystone::memcached::servers')}"
+octavia::keystone::authtoken::password: "%{lookup('ntnuopenstack::octavia::keystone::password')}"
+octavia::keystone::authtoken::region_name: "%{lookup('ntnuopenstack::region')}"
 
 # Next up are all the values that needs to be set by us:
 ntnuopenstack::cinder::ceph::key: '<ceph-key>'
@@ -105,6 +111,16 @@ ntnuopenstack::nova::libvirt_type: 'kvm'
 ntnuopenstack::nova::mysql::password: '<password>'
 ntnuopenstack::nova::placement::keystone::password: '<password>'
 ntnuopenstack::nova::sharedmetadataproxysecret: '<password>'
+
+ntnuopenstack::octavia::certs::server::passphrase: '<32-char-password>'
+ntnuopenstack::octavia::certs::serverca::passphrase: '<password>'
+ntnuopenstack::octavia::flavor::id: '<uuid-from-openstack>'
+ntnuopenstack::octavia::heartbeat::key: '<password>'
+ntnuopenstack::octavia::keystone::password: '<password>'
+ntnuopenstack::octavia::mysql::password: '<password>'
+ntnuopenstack::octavia::network::id: '<uuid-from-openstack>'
+ntnuopenstack::octavia::secgroup::id: '<uuid-from-openstack>'
+ntnuopenstack::octavia::ssh::keypair::name: '<name>'
 
 ntnuopenstack::region: '<region_name>'
 
