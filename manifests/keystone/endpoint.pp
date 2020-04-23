@@ -32,7 +32,7 @@ class ntnuopenstack::keystone::endpoint {
     include ::ntnuopenstack::swift::endpoint
   }
 
-  # If there is a password for barbican in hiera, define an endpoint for swift.
+  # If there is a password for barbican in hiera, define an endpoint for barbican.
   if($barbican) {
     include ::ntnuopenstack::barbican::endpoint
   }
