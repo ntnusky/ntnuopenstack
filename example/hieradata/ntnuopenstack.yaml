@@ -14,6 +14,13 @@
 
 # First there are some keys used to configure the puppet-openstack modules. They
 # can be populated with information from other values within this file.
+barbican::db::database_connection: "mysql+pymysql://barbican:%{lookup('ntnuopenstack::barbican::mysql::password')}@%{lookup('ntnuopenstack::nova::mysql::ip')}/barbican"
+barbican::keystone::authtoken::auth_url: "%{alias('ntnuopenstack::keystone::auth::url')}"
+barbican::keystone::authtoken::www_authenticate_uri: "%{alias('ntnuopenstack::keystone::auth::uri')}"
+barbican::keystone::authtoken::memcached_servers: "%{alias('ntnuopenstack::keystone::memcached::servers')}"
+barbican::keystone::authtoken::password: "%{lookup('ntnuopenstack::barbican::keystone::password')}"
+barbican::keystone::authtoken::region_name: "%{lookup('ntnuopenstack::region')}"
+
 cinder::keystone::authtoken::auth_url: "%{alias('ntnuopenstack::keystone::auth::url')}"
 cinder::keystone::authtoken::auth_uri: "%{alias('ntnuopenstack::keystone::auth::uri')}"
 cinder::keystone::authtoken::memcached_servers: "%{alias('ntnuopenstack::keystone::memcached::servers')}"
@@ -32,6 +39,10 @@ octavia::keystone::authtoken::password: "%{lookup('ntnuopenstack::octavia::keyst
 octavia::keystone::authtoken::region_name: "%{lookup('ntnuopenstack::region')}"
 
 # Next up are all the values that needs to be set by us:
+ntnuopenstack::barbican::keystone::password: '<password>'
+ntnuopenstack::barbican::mysql::password: '<password>'
+ntnuopenstack::barbican::simple_crypto::kek: '<32 characters, base64 encoded>'
+
 ntnuopenstack::cinder::ceph::key: '<ceph-key>'
 ntnuopenstack::cinder::keystone::password: '<password>'
 ntnuopenstack::cinder::mysql::password: '<password>'

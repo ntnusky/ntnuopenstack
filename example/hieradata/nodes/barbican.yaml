@@ -1,0 +1,3 @@
+---
+apache::mod::wsgi::package_name: 'libapache2-mod-wsgi-py3'
+apache::mod::wsgi::mod_path: '/usr/lib/apache2/modules/mod_wsgi.so'

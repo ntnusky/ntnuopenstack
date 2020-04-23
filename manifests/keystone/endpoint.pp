@@ -13,6 +13,11 @@ class ntnuopenstack::keystone::endpoint {
     'value_type'    => Variant[Boolean, String],
   })
 
+  $barbican = lookup('ntnuopenstack::barbican::keystone::password', {
+    'default_value' => false,
+    'value_type'    => Variant[Boolean, String],
+  })
+  
   $octavia = lookup('ntnuopenstack::octavia::keystone::password', {
     'default_value' => false,
     'value_type'    => Variant[Boolean, String],
@@ -30,6 +35,11 @@ class ntnuopenstack::keystone::endpoint {
   # If there is a password for swift in hiera, define an endpoint for swift.
   if($swift) {
     include ::ntnuopenstack::swift::endpoint
+  }
+
+  # If there is a password for barbican in hiera, define an endpoint for barbican.
+  if($barbican) {
+    include ::ntnuopenstack::barbican::endpoint
   }
 
   # If there is a password for octavia in hiera, define an endpoint for octavia.

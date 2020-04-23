@@ -7,11 +7,20 @@ class ntnuopenstack::databases {
   include ::ntnuopenstack::neutron::database
   include ::ntnuopenstack::nova::database
 
+  $barbican = lookup('ntnuopenstack::barbican::mysql::password', {
+    'value_type'    => Variant[Boolean, String],
+    'default_value' => false,
+  })
+
   $octavia = lookup('ntnuopenstack::octavia::mysql::password', {
     'value_type'    => Variant[Boolean, String],
     'default_value' => false,
   })
 
+  if($barbican) {
+    include ::ntnuopenstack::barbican::database
+  }
+  
   if($octavia) {
     include ::ntnuopenstack::octavia::database
   }
