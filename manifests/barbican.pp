@@ -2,6 +2,6 @@
 class ntnuopenstack::barbican {
   include ::ntnuopenstack::barbican::api
   include ::ntnuopenstack::barbican::crypto
-  include ::ntnuopenstack::barbican::worker
+  include ::barbican::worker
   require ::ntnuopenstack::repo
 }
