@@ -6,8 +6,13 @@ class ntnuopenstack::clients {
     'default_value' => false,
     'value_type'    => Variant[Boolean, String],
   })
-  
+
   $octavia = lookup('ntnuopenstack::octavia::keystone::password', {
+    'default_value' => false,
+    'value_type'    => Variant[Boolean, String],
+  })
+
+  $magnum = lookup('ntnuopenstack::magnum::keystone::password', {
     'default_value' => false,
     'value_type'    => Variant[Boolean, String],
   })
@@ -25,5 +30,9 @@ class ntnuopenstack::clients {
 
   if($octavia) {
     include ::octavia::client
+  }
+
+  if($magnum) {
+    include ::magnum::client
   }
 }
