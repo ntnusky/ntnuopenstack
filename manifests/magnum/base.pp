@@ -1,6 +1,6 @@
 # Baseconfig for all magnum services
 class ntnuopenstack::magnum::base {
-  $domain_password = lookuup('ntnuopenstack::magnum::domain_password', String)
+  $domain_password = lookup('ntnuopenstack::magnum::domain_password', String)
   $rabbitservers = lookup('profile::rabbitmq::servers', {
     'value_type'    => Variant[Array[String], Boolean],
     'default_value' => false,
