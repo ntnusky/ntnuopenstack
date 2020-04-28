@@ -29,4 +29,5 @@ class ntnuopenstack::magnum::base {
     manage_user     => false,
     manage_role     => false,
     domain_password => $domain_password,
+  }
 }
