@@ -17,8 +17,13 @@ class ntnuopenstack::keystone::endpoint {
     'default_value' => false,
     'value_type'    => Variant[Boolean, String],
   })
-  
+
   $octavia = lookup('ntnuopenstack::octavia::keystone::password', {
+    'default_value' => false,
+    'value_type'    => Variant[Boolean, String],
+  })
+
+  $magnum = lookup('ntnuopenstack::magnum::keystone::password', {
     'default_value' => false,
     'value_type'    => Variant[Boolean, String],
   })
@@ -47,6 +52,12 @@ class ntnuopenstack::keystone::endpoint {
     include ::ntnuopenstack::octavia::endpoint
   }
 
+  # If there is a password for magnum in hiera, define an endpoint and a domain
+  # for magnum
+  if($magnum) {
+    include ::ntnuopenstack::magnum::endpoint
+    include ::ntnuopenstack::magnum::domain
+  }
   # Defining the keystone endpoint
   class { '::keystone::endpoint':
     public_url   => "${public_endpoint}:5000",

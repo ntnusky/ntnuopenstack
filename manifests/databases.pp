@@ -17,11 +17,19 @@ class ntnuopenstack::databases {
     'default_value' => false,
   })
 
+  $magnum = lookup('ntnuopenstack::magnum::mysql::password', {
+    'value_type'    => Variant[Boolean, String],
+    'default_value' => false,
+  })
   if($barbican) {
     include ::ntnuopenstack::barbican::database
   }
-  
+
   if($octavia) {
     include ::ntnuopenstack::octavia::database
+  }
+
+  if($magnum) {
+    include ::ntnuopenstack::magnum::database
   }
 }
