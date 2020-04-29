@@ -33,7 +33,7 @@ heat::keystone::authtoken::password: "%{lookup('ntnuopenstack::heat::keystone::p
 heat::keystone::authtoken::region_name: "%{lookup('ntnuopenstack::region')}"
 magnum::db::database_connection: "mysql+pymysql://magnum:%{lookup('ntnuopenstack::magnum::mysql::password')}@%{lookup('ntnuopenstack::nova::mysql::ip')}/magnum"
 magnum::keystone::authtoken::auth_url: "%{alias('ntnuopenstack::keystone::auth::url')}"
-magnum::keystone::authtoken::www_authenticate_uri: "%{alias('ntnuopenstack::keystone::auth::uri')}"
+magnum::keystone::authtoken::www_authenticate_uri: "%{lookup('ntnuopenstack::keystone::auth::uri')}v3"
 magnum::keystone::authtoken::memcached_servers: "%{alias('ntnuopenstack::keystone::memcached::servers')}"
 magnum::keystone::authtoken::password: "%{lookup('ntnuopenstack::magnum::keystone::password')}"
 magnum::keystone::authtoken::region_name: "%{lookup('ntnuopenstack::region')}"
