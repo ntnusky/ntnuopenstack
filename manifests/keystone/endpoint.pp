@@ -37,6 +37,11 @@ class ntnuopenstack::keystone::endpoint {
   include ::ntnuopenstack::nova::endpoint::api
   include ::ntnuopenstack::nova::endpoint::placement
 
+  # Include domain config for heat
+  class { '::ntnuopenstack::heat::domain':
+    create_domain => true,
+  }
+
   # If there is a password for swift in hiera, define an endpoint for swift.
   if($swift) {
     include ::ntnuopenstack::swift::endpoint

@@ -46,4 +46,8 @@ class ntnuopenstack::heat::base {
     sync_db                      => $db_sync,
     *                            => $ha_transport_conf,
   }
+
+  class { '::ntnuopenstack::heat::domain':
+    create_domain => false,
+  }
 }

@@ -76,6 +76,7 @@ ntnuopenstack::glance::mysql::password: '<password>'
 ntnuopenstack::heat::auth_encryption_key: '<password>'
 ntnuopenstack::heat::keystone::password: '<password>'
 ntnuopenstack::heat::mysql::password: '<password>'
+ntnuopenstack::heat::domain_password: '<password>'
 
 ntnuopenstack::horizon::django_secret: '<password>'
 ntnuopenstack::horizon::server_name: 'fqdn.example.com'
