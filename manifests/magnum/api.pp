@@ -8,6 +8,7 @@ class ntnuopenstack::magnum::api {
   $transport_url = lookup('ntnuopenstack::transport::url')
 
   require ::ntnuopenstack::magnum::base
+  include ::ntnuopenstack::magnum::clients
   include ::ntnuopenstack::magnum::firewall::api
   include ::ntnuopenstack::magnum::haproxy::backend
 
