@@ -25,10 +25,11 @@ class ntnuopenstack::magnum::base {
   }
 
   class { '::magnum::keystone::domain':
-    manage_domain   => false,
-    manage_user     => false,
-    manage_role     => false,
-    domain_password => $domain_password,
+    cluster_user_trust => true,
+    manage_domain      => false,
+    manage_user        => false,
+    manage_role        => false,
+    domain_password    => $domain_password,
   }
 
   magnum_config {
