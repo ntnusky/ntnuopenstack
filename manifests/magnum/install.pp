@@ -14,14 +14,28 @@ class ntnuopenstack::magnum::install {
     require => Package['magnum'],
   }
 
+  file { '/var/lib/magnum':
+    ensure => 'directory',
+    owner  => 'magnum',
+    group  => 'magnum',
+  }
+
+  file { '/var/log/magnum':
+    ensure => 'directory',
+    owner  => 'magnum',
+    group  => 'magnum',
+  }
+
   file { '/etc/init.d/magnum-conductor':
     ensure => 'file',
     source => 'puppet:///modules/ntnuopenstack/openstack/magnum/services/magnum-conductor',
+    mode   => '0755',
   }
 
   file { '/usr/bin':
     ensure  => 'directory',
     recurse => remote,
+    mode    => '0755',
     source  => 'puppet:///modules/ntnuopenstack/openstack/magnum/bin',
   }
 
