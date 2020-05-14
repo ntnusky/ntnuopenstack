@@ -7,7 +7,7 @@ class ntnuopenstack::magnum::install {
   }
 
   file { '/etc/magnum':
-    ensure => 'directory',
-    after  => Package['magnum'],
+    ensure   => 'directory',
+    require  => Package['magnum'],
   }
 }
