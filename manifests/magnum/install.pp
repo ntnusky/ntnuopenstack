@@ -5,4 +5,9 @@ class ntnuopenstack::magnum::install {
     provider => 'pip3',
     tag      => ['openstack', 'magnum-package'],
   }
+
+  file { '/etc/magnum':
+    ensure => 'directory',
+    after  => Package['magnum'],
+  }
 }
