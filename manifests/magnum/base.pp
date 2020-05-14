@@ -18,8 +18,10 @@ class ntnuopenstack::magnum::base {
   $transport_url = lookup('ntnuopenstack::transport::url')
 
   require ::ntnuopenstack::repo
+  require ::ntnuopenstack::magnum::install
 
   class { '::magnum':
+    package_ensure        => 'absent',
     default_transport_url => $transport_url,
     *                     => $ha_transport_conf,
   }

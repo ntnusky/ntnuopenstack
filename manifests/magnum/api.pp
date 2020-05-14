@@ -13,10 +13,11 @@ class ntnuopenstack::magnum::api {
   include ::ntnuopenstack::magnum::haproxy::backend
 
   class { '::magnum::api':
-    enabled      => false,
-    service_name => 'httpd',
-    sync_db      => $sync_db,
-    enabled_ssl  => false,
+    enabled        => false,
+    package_ensure => 'absent',
+    service_name   => 'httpd',
+    sync_db        => $sync_db,
+    enabled_ssl    => false,
   }
 
   class { '::magnum::wsgi::apache':
