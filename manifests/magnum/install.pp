@@ -9,6 +9,12 @@ class ntnuopenstack::magnum::install {
     tag             => ['openstack', 'magnum-package'],
   }
 
+  user { 'magnum':
+    ensure => 'present',
+    home   => '/var/lib/magnum',
+    system => true,
+  }
+
   file { '/etc/magnum':
     ensure  => 'directory',
     require => Package['magnum'],
