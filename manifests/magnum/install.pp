@@ -13,20 +13,15 @@ class ntnuopenstack::magnum::install {
   }
 
   user { 'magnum':
-    ensure => 'present',
-    home   => '/var/lib/magnum',
-    system => true,
+    ensure     => 'present',
+    home       => '/var/lib/magnum',
+    managehome => true,
+    system     => true,
   }
 
   file { '/etc/magnum':
     ensure  => 'directory',
     require => Package['magnum'],
-  }
-
-  file { '/var/lib/magnum':
-    ensure => 'directory',
-    owner  => 'magnum',
-    group  => 'magnum',
   }
 
   file { '/var/log/magnum':
