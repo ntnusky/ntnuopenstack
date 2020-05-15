@@ -45,6 +45,11 @@ class ntnuopenstack::magnum::install {
     source  => 'puppet:///modules/ntnuopenstack/openstack/magnum/bin',
   }
 
+  file { '/etc/magnum/api-paste.ini':
+    ensure => 'file',
+    source => 'https://raw.githubusercontent.com/openstack/magnum/stable/stein/etc/magnum/api-paste.ini',
+  }
+
   systemd::unit_file { 'magnum-conductor.service':
     source => 'puppet:///modules/ntnuopenstack/openstack/magnum/services/magnum-conductor.service',
   }
