@@ -27,7 +27,7 @@ cinder::keystone::authtoken::memcached_servers: "%{alias('ntnuopenstack::keyston
 cinder::keystone::authtoken::password: "%{lookup('ntnuopenstack::cinder::keystone::password')}"
 cinder::keystone::authtoken::region_name: "%{lookup('ntnuopenstack::region')}"
 heat::keystone::authtoken::auth_url: "%{alias('ntnuopenstack::keystone::auth::url')}"
-heat::keystone::authtoken::auth_uri: "%{alias('ntnuopenstack::keystone::auth::uri')}"
+heat::keystone::authtoken::www_authenticate_uri: "%{lookup('ntnuopenstack::keystone::auth::uri')}v3"
 heat::keystone::authtoken::memcached_servers: "%{alias('ntnuopenstack::keystone::memcached::servers')}"
 heat::keystone::authtoken::password: "%{lookup('ntnuopenstack::heat::keystone::password')}"
 heat::keystone::authtoken::region_name: "%{lookup('ntnuopenstack::region')}"
