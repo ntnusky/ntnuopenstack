@@ -2,6 +2,9 @@
 # And hack together all binaries and services
 # They are stolen from the deb-packages
 class ntnuopenstack::magnum::install {
+
+  require ::ntnuopenstack::common::pymemcache
+
   package { 'magnum':
     ensure          => '8.2.0',
     provider        => 'pip3',
