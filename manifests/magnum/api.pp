@@ -1,9 +1,5 @@
 # Installs the Magnum API
 class ntnuopenstack::magnum::api {
-  $rabbitservers = lookup('profile::rabbitmq::servers', {
-    'value_type'    => Variant[Array[String], Boolean],
-    'default_value' => false,
-  })
   $sync_db = lookup('ntnuopenstack::magnum::db::sync', Boolean)
 
   require ::ntnuopenstack::magnum::base
