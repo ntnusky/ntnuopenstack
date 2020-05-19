@@ -5,7 +5,6 @@ class ntnuopenstack::magnum::api {
     'default_value' => false,
   })
   $sync_db = lookup('ntnuopenstack::magnum::db::sync', Boolean)
-  $transport_url = lookup('ntnuopenstack::transport::url')
 
   require ::ntnuopenstack::magnum::base
   include ::ntnuopenstack::magnum::clients
