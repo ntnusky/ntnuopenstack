@@ -12,6 +12,12 @@ class ntnuopenstack::magnum::install {
     tag             => ['openstack', 'magnum-package'],
   }
 
+  package { 'python-openstackclient':
+    ensure   => '3.18.1',
+    provider => 'pip3',
+    require  => Package['magnum'],
+  }
+
   user { 'magnum':
     ensure     => 'present',
     home       => '/var/lib/magnum',
