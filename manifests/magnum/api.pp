@@ -6,6 +6,7 @@ class ntnuopenstack::magnum::api {
   include ::ntnuopenstack::magnum::clients
   include ::ntnuopenstack::magnum::firewall::api
   include ::ntnuopenstack::magnum::haproxy::backend
+  include ::profile::monitoring::munin::plugin::openstack::magnum
 
   class { '::magnum::api':
     enabled        => false,
