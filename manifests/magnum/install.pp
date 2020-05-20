@@ -1,6 +1,9 @@
 # Install magnum with pip3
 # And hack together all binaries and services
 # They are stolen from the deb-packages
+
+# All of this should be reverted back to apt and puppet-magnum
+# when UCA decides to include a newer version than 8.0.0 of magnum
 class ntnuopenstack::magnum::install {
 
   require ::ntnuopenstack::common::pymemcache
