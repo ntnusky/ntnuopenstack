@@ -21,6 +21,18 @@ class ntnuopenstack::magnum::install {
     require  => Package['magnum'],
   }
 
+  package { 'keystoneauth1':
+    ensure   => '3.13.1',
+    provider => 'pip3',
+    require  => Package['python-openstackclient'],
+  }
+
+  package { 'keystonemiddleware':
+    ensure   => '6.0.0',
+    provider => 'pip3',
+    require  => Package['python-openstackclient'],
+  }
+
   user { 'magnum':
     ensure     => 'present',
     home       => '/var/lib/magnum',
