@@ -56,7 +56,14 @@ class ntnuopenstack::nova::compute {
   if ($install_sensu) {
     sensu::subscription { 'os-compute': }
   }
-  ensure_packages( ['python3-pymysql'] , {
+
+  $pymysql_pkg = $::osfamily ? {
+    'RedHat' => 'python2-PyMySQL',
+    'Debian' => 'python3-pymysql',
+    default  => '',
+  }
+
+  ensure_packages( [$pymysql_pkg] , {
     'ensure' => 'present',
   })
 }
