@@ -12,7 +12,7 @@ class ntnuopenstack::repo {
       }
     }
   } elsif ($::osfamily == 'RedHat') {
-    class { '::openstack_extras::repo::redhat:redhat':
+    class { '::openstack_extras::repo::redhat::redhat':
       package_require => true,
     }
   } else {
