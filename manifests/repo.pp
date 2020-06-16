@@ -11,6 +11,10 @@ class ntnuopenstack::repo {
         package_require => true,
       }
     }
+  } elsif ($::osfamily == 'RedHat') {
+    class { '::openstack_extras::repo::redhat:redhat':
+      package_require => true,
+    }
   } else {
     fail("Operating system family ${::osfamily} is not supported.")
   }
