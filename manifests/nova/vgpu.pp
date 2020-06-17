@@ -1,8 +1,6 @@
 # Configure nova-compute to expose a vGPU
+# This is just a mechanism to ensure that this key is actually defined,
+# and otherwise fail the puppet run.
 class ntnuopenstack::nova::vgpu {
-  $vgpu_type = lookup('ntnuopenstack::nova::vgpu::type', String)
-
-  class { '::nova::compute::vgpu':
-    enabled_vgpu_types => $vgpu_type,
-  }
+  $vgpu_type = lookup('nova::compute::vgpu::enabled_vgpu_types', String)
 }
