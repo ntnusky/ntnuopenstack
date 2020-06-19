@@ -69,6 +69,11 @@ class ntnuopenstack::magnum::pip {
     source => 'puppet:///modules/ntnuopenstack/openstack/magnum/conf/api-paste.ini',
   }
 
+  file { '/etc/logrotate.d/magnum':
+    ensure => 'file',
+    source => 'puppet:///modules/ntnuopenstack/openstack/magnum/magnum-lograte'
+  }
+
   systemd::unit_file { 'magnum-conductor.service':
     source => 'puppet:///modules/ntnuopenstack/openstack/magnum/services/magnum-conductor.service',
   }
