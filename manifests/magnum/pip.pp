@@ -4,7 +4,7 @@
 
 # All of this should be reverted back to apt and puppet-magnum
 # when UCA decides to include a newer version than 8.0.0 of magnum
-class ntnuopenstack::magnum::install {
+class ntnuopenstack::magnum::pip {
 
   require ::ntnuopenstack::common::pymemcache
 

@@ -2,7 +2,11 @@
 class ntnuopenstack::magnum {
   require ::ntnuopenstack::repo
   include ::ntnuopenstack::magnum::api
+  include ::ntnuopenstack::magnum::params
+
+  $package_ensure = $::ntnuopenstack::magnum::params::package_ensure
+
   class { '::magnum::conductor':
-    package_ensure => 'absent',
+    package_ensure => $package_ensure,
   }
 }
