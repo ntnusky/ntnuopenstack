@@ -40,10 +40,6 @@ class ntnuopenstack::magnum::base {
     domain_password    => $domain_password,
   }
 
-  class { '::magnum::client':
-    package_ensure => $package_ensure,
-  }
-
   magnum_config {
     'cinder/default_docker_volume_type': value => 'Normal';
   }
