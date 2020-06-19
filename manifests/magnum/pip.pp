@@ -71,7 +71,7 @@ class ntnuopenstack::magnum::pip {
 
   file { '/etc/logrotate.d/magnum':
     ensure => 'file',
-    source => 'puppet:///modules/ntnuopenstack/openstack/magnum/magnum-lograte'
+    source => 'puppet:///modules/ntnuopenstack/openstack/magnum/magnum-logrotate'
   }
 
   systemd::unit_file { 'magnum-conductor.service':
