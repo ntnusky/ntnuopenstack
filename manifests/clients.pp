@@ -33,10 +33,14 @@ class ntnuopenstack::clients {
   }
 
   if($magnum) {
-    package { 'python-magnumclient':
-      ensure   => '3.0.0',
-      provider => 'pip3',
-      tag      => 'openstack',
+    if($::osfamily == 'Debian') {
+      package { 'python-magnumclient':
+        ensure   => '3.0.0',
+        provider => 'pip3',
+        tag      => 'openstack',
+      }
+    } else {
+      include ::magnum::client
     }
   }
 }
