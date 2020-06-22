@@ -17,7 +17,7 @@ class ntnuopenstack::neutron::api {
 
   # Determine where the keystone service is located.
   $keystone_admin = lookup('ntnuopenstack::keystone::endpoint::admin', Stdlib::Httpurl)
-  $keystone_internal = lookup('ntnuopenstack::keystone::endpoint::internal', Stdlib::Httpurl)
+  $keystone_public = lookup('ntnuopenstack::keystone::endpoint::public', Stdlib::Httpurl)
 
   # Openstack parameters
   $region = lookup('ntnuopenstack::region', String)
@@ -53,7 +53,7 @@ class ntnuopenstack::neutron::api {
   class { '::neutron::keystone::authtoken':
     password             => $neutron_password,
     auth_url             => "${keystone_admin}:5000/",
-    www_authenticate_uri => "${keystone_internal}:5000/",
+    www_authenticate_uri => "${keystone_public}:5000/",
     memcached_servers    => $memcache,
     region_name          => $region,
   }

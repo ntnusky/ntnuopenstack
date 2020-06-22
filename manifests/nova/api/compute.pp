@@ -20,7 +20,7 @@ class ntnuopenstack::nova::api::compute {
   $region = lookup('ntnuopenstack::region')
 
   $admin_endpoint    = lookup('ntnuopenstack::endpoint::admin')
-  $internal_endpoint = lookup('ntnuopenstack::endpoint::internal')
+  $public_endpoint = lookup('ntnuopenstack::endpoint::public')
 
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::nova::base
@@ -32,7 +32,7 @@ class ntnuopenstack::nova::api::compute {
 
   class { '::nova::keystone::authtoken':
     auth_url             => "${admin_endpoint}:5000/",
-    www_authenticate_uri => "${internal_endpoint}:5000/",
+    www_authenticate_uri => "${public_endpoint}:5000/",
     password             => $nova_password,
     memcached_servers    => $memcache,
     region_name          => $region,

@@ -27,10 +27,16 @@ cinder::keystone::authtoken::memcached_servers: "%{alias('ntnuopenstack::keyston
 cinder::keystone::authtoken::password: "%{lookup('ntnuopenstack::cinder::keystone::password')}"
 cinder::keystone::authtoken::region_name: "%{lookup('ntnuopenstack::region')}"
 heat::keystone::authtoken::auth_url: "%{alias('ntnuopenstack::keystone::auth::url')}"
-heat::keystone::authtoken::auth_uri: "%{alias('ntnuopenstack::keystone::auth::uri')}"
+heat::keystone::authtoken::www_authenticate_uri: "%{lookup('ntnuopenstack::keystone::auth::uri')}v3"
 heat::keystone::authtoken::memcached_servers: "%{alias('ntnuopenstack::keystone::memcached::servers')}"
 heat::keystone::authtoken::password: "%{lookup('ntnuopenstack::heat::keystone::password')}"
 heat::keystone::authtoken::region_name: "%{lookup('ntnuopenstack::region')}"
+magnum::db::database_connection: "mysql+pymysql://magnum:%{lookup('ntnuopenstack::magnum::mysql::password')}@%{lookup('ntnuopenstack::nova::mysql::ip')}/magnum"
+magnum::keystone::authtoken::auth_url: "%{alias('ntnuopenstack::keystone::auth::url')}"
+magnum::keystone::authtoken::www_authenticate_uri: "%{lookup('ntnuopenstack::keystone::auth::uri')}v3"
+magnum::keystone::authtoken::memcached_servers: "%{alias('ntnuopenstack::keystone::memcached::servers')}"
+magnum::keystone::authtoken::password: "%{lookup('ntnuopenstack::magnum::keystone::password')}"
+magnum::keystone::authtoken::region_name: "%{lookup('ntnuopenstack::region')}"
 octavia::db::database_connection: "mysql+pymysql://octavia:%{lookup('ntnuopenstack::octavia::mysql::password')}@%{lookup('ntnuopenstack::nova::mysql::ip')}/octavia"
 octavia::keystone::authtoken::auth_url: "%{alias('ntnuopenstack::keystone::auth::url')}"
 octavia::keystone::authtoken::auth_uri: "%{alias('ntnuopenstack::keystone::auth::uri')}"
@@ -70,6 +76,7 @@ ntnuopenstack::glance::mysql::password: '<password>'
 ntnuopenstack::heat::auth_encryption_key: '<password>'
 ntnuopenstack::heat::keystone::password: '<password>'
 ntnuopenstack::heat::mysql::password: '<password>'
+ntnuopenstack::heat::domain_password: '<password>'
 
 ntnuopenstack::horizon::django_secret: '<password>'
 ntnuopenstack::horizon::server_name: 'fqdn.example.com'
@@ -96,11 +103,16 @@ ntnuopenstack::keystone::ldap_backend::url: 'ldaps://<ldapserver.foo.bar>,ldaps:
 ntnuopenstack::keystone::ldap_backend::user_filter: '<LDAP syntax user filter>' 
 ntnuopenstack::keystone::ldap_backend::user: '<uid=user,ou=users,dc=foo,dc=bar>' 
 ntnuopenstack::keystone::ldap_backend::user_tree_dn: 'OU=users,DC=foo,DC=bar' 
+ntnuopenstack::keystone::memcached::servers: "%{alias('profile::memcache::servers')}"
 ntnuopenstack::keystone::mysql::password: '<password>' 
 
 ntnuopenstack::mysql::allowed_hosts:
  - '<mysql-allowed-host-filter-for-your-infrastructure-network(s)>'
  - '192.168.0.%'
+
+ntnuopenstack::magnum::mysql::password: '<password>'
+ntnuopenstack::magnum::keystone::password: '<password>'
+ntnuopenstack::magnum::domain_password: '<password>'
 
 ntnuopenstack::neutron::keystone::password: '<password>'
 ntnuopenstack::neutron::mtu: 1500
