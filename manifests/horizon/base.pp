@@ -33,6 +33,7 @@ class ntnuopenstack::horizon::base {
 
   include ::profile::services::apache::firewall
   require ::ntnuopenstack::repo
+  require ::ntnuopenstack::common
 
   # If this server should be placed behind haproxy, make sure to configure it.
   if($haproxy) {
