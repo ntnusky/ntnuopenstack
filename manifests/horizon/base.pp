@@ -77,6 +77,7 @@ class ntnuopenstack::horizon::base {
       create_volume => false,
     },
     password_retrieve              => true,
+    root_url                       => '/horizon',
     secret_key                     => $django_secret,
     server_aliases                 => [$::fqdn, $server_name],
     servername                     => $server_name,
