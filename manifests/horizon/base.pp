@@ -69,6 +69,7 @@ class ntnuopenstack::horizon::base {
       {'name' => $ldap_name, 'display' => $description},
       {'name' => 'default',  'display' => 'Openstack accounts'},
     ],
+    manage_memcache_package        => false,
     neutron_options                => {
       enable_firewall => true,
       enable_lb       => true,
