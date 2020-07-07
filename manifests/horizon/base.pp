@@ -33,6 +33,7 @@ class ntnuopenstack::horizon::base {
 
   include ::profile::services::apache::firewall
   require ::ntnuopenstack::repo
+  require ::ntnuopenstack::common
 
   # If this server should be placed behind haproxy, make sure to configure it.
   if($haproxy) {
@@ -68,6 +69,7 @@ class ntnuopenstack::horizon::base {
       {'name' => $ldap_name, 'display' => $description},
       {'name' => 'default',  'display' => 'Openstack accounts'},
     ],
+    manage_memcache_package        => false,
     neutron_options                => {
       enable_firewall => true,
       enable_lb       => true,
@@ -76,6 +78,7 @@ class ntnuopenstack::horizon::base {
       create_volume => false,
     },
     password_retrieve              => true,
+    root_url                       => '/horizon',
     secret_key                     => $django_secret,
     server_aliases                 => [$::fqdn, $server_name],
     servername                     => $server_name,
