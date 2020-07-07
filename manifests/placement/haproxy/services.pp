@@ -18,7 +18,7 @@ class ntnuopenstack::placement::haproxy::services {
   }
 
   ::profile::services::haproxy::frontend { 'placement_public':
-    profile   => 'management',
+    profile   => 'services',
     port      => 8778,
     certfile  => $certfile,
     mode      => 'http',
