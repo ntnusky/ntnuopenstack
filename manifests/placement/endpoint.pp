@@ -9,16 +9,6 @@ class ntnuopenstack::placement::endpoint {
 
   if($standalone) {
     # Determine the endpoint addresses
-    $nova_admin    = lookup('ntnuopenstack::nova::endpoint::admin',
-                                  Stdlib::Httpurl)
-    $nova_internal = lookup('ntnuopenstack::nova::endpoint::internal',
-                                  Stdlib::Httpurl)
-
-    $public   = "${nova_internal}:8778/placement"
-    $internal = "${nova_internal}:8778/placement"
-    $admin    = "${nova_admin}:8778/placement"
-  } else {
-    # Determine the endpoint addresses
     $placement_admin    = lookup('ntnuopenstack::placement::endpoint::admin',
                                   Stdlib::Httpurl)
     $placement_internal = lookup('ntnuopenstack::placement::endpoint::internal',
@@ -28,6 +18,16 @@ class ntnuopenstack::placement::endpoint {
     $public   = "${placement_internal}:8778/placement"
     $internal = "${placement_public}:8778/placement"
     $admin    = "${placement_admin}:8778/placement"
+  } else {
+    # Determine the endpoint addresses
+    $nova_admin    = lookup('ntnuopenstack::nova::endpoint::admin',
+                                  Stdlib::Httpurl)
+    $nova_internal = lookup('ntnuopenstack::nova::endpoint::internal',
+                                  Stdlib::Httpurl)
+
+    $public   = "${nova_internal}:8778/placement"
+    $internal = "${nova_internal}:8778/placement"
+    $admin    = "${nova_admin}:8778/placement"
   }
 
   class { '::placement::keystone::auth':
