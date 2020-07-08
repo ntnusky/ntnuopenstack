@@ -6,6 +6,26 @@ class ntnuopenstack::placement::api {
   })
   $db_sync = lookup('ntnuopenstack::placement::db::sync̈́', Boolean)
 
+  $region = lookup('ntnuopenstack::region', String)
+  $keystone_password = lookup('ntnuopenstack::placement::keystone::password',
+                                String)
+
+  # Determine where the keystone service is located.
+  $keystone_internal = lookup('ntnuopenstack::keystone::endpoint::internal',
+                                Stdlib::Httpurl)
+  $keystone_public = lookup('ntnuopenstack::keystone::endpoint::public',
+                                Stdlib::Httpurl)
+
+  # Retrieve addresses for the memcached servers, either the old IP or the new
+  # list of hosts.
+  $cache_servers = lookup('profile::memcache::servers', {
+    'value_type'    => Array[String],
+    'merge'         => 'unique',
+  })
+  $memcache = $cache_servers.map | $server | {
+    "${server}:11211"
+  }
+
   include ::ntnuopenstack::placement::firewall::server
   include ::ntnuopenstack::placement::haproxy::backend
 
