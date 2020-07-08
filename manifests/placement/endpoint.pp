@@ -26,7 +26,7 @@ class ntnuopenstack::placement::endpoint {
     $placement_public   = lookup('ntnuopenstack::placement::endpoint::public',
                                   Stdlib::Httpurl)
     $public   = "${placement_internal}:8778/placement"
-    $internal = "${placement_internal}:8778/placement"
+    $internal = "${placement_public}:8778/placement"
     $admin    = "${placement_admin}:8778/placement"
   }
 
