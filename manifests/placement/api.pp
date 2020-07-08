@@ -26,8 +26,10 @@ class ntnuopenstack::placement::api {
     "${server}:11211"
   }
 
+  require ::ntnuopenstack::repo
   include ::ntnuopenstack::placement::firewall::server
   include ::ntnuopenstack::placement::haproxy::backend
+
 
   if($confhaproxy) {
     contain ::ntnuopenstack::placement::haproxy::backend
