@@ -33,8 +33,8 @@ class ntnuopenstack::glance::api {
   $horizon_fqdn = lookup('ntnuopenstack::horizon::server_name')
   $horizon_url = "https://${horizon_fqdn}/horizon"
   $upload_mode = lookup('ntnuopenstack::horizon::upload_mode', {
-    'value_type'   => Enum['legacy', 'direct', 'off'],
-    'default_value' => 'legacy',
+    'value_type'   => Enum['"legacy"', '"direct"', '"off"'],
+    'default_value' => '"legacy"',
   })
 
   require ::ntnuopenstack::repo
@@ -76,7 +76,7 @@ class ntnuopenstack::glance::api {
     'DEFAULT/default_store': value => 'rbd';
   }
 
-  if ($upload_mode == 'direct') {
+  if ($upload_mode == '"direct"') {
     glance_api_config {
       'cors/allowed_origin': value => $horizon_url;
     }
