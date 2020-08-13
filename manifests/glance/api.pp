@@ -31,7 +31,7 @@ class ntnuopenstack::glance::api {
   })
 
   $horizon_fqdn = lookup('ntnuopenstack::horizon::server_name')
-  $horizon_url = "https://${horizon_fqdn}/horizon"
+  $horizon_url = "https://${horizon_fqdn}"
   $upload_mode = lookup('ntnuopenstack::horizon::upload_mode', {
     'value_type'   => Enum['legacy', 'direct', 'off'],
     'default_value' => 'legacy',
