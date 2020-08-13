@@ -32,8 +32,8 @@ class ntnuopenstack::horizon::base {
   })
 
   $upload_mode = lookup('ntnuopenstack::horizon::upload_mode', {
-    'value_type'    => Enum['direct', 'legacy', 'off'],
-    'default_value' => 'legacy',
+    'value_type'    => Enum['"direct"', '"legacy"', '"off"'],
+    'default_value' => '"legacy"',
   })
 
   include ::profile::services::apache::firewall
