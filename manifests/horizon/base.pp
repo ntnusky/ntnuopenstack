@@ -32,8 +32,8 @@ class ntnuopenstack::horizon::base {
   })
 
   $upload_mode = lookup('ntnuopenstack::horizon::upload_mode', {
-    'value_type'    => Enum['"direct"', '"legacy"', '"off"'],
-    'default_value' => '"legacy"',
+    'value_type'    => Enum['direct', 'legacy', 'off'],
+    'default_value' => 'legacy',
   })
 
   include ::profile::services::apache::firewall
@@ -67,7 +67,7 @@ class ntnuopenstack::horizon::base {
     default_theme                  => 'default',
     enable_secure_proxy_ssl_header => $haproxy,
     help_url                       => $help_url,
-    horizon_upload_mode            => $upload_mode,
+    horizon_upload_mode            => "\"${upload_mode}\"",
     keystone_default_domain        => $ldap_name,
     keystone_multidomain_support   => true,
     keystone_url                   => "${keystone}:5000",
