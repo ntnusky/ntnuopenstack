@@ -78,7 +78,9 @@ class ntnuopenstack::glance::api {
 
   if ($upload_mode == '"direct"') {
     glance_api_config {
-      'cors/allowed_origin': value => $horizon_url;
+      'cors/allowed_origin':  value => $horizon_url;
+      'cors/max_age':         value => 3600;
+      'cors/allowed_methods': value => 'GET,PUT,POST,DELETE';
     }
   }
 }
