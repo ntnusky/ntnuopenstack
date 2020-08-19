@@ -37,6 +37,18 @@ class ntnuopenstack::glance::api {
     'default_value' => 'legacy',
   })
 
+  $disk_formats = lookup('ntnuopenstack::glance::disk_formats', {
+    'value_type'    => Hash[String, String],
+    'default_value' => {'raw' => '', 'qcow2' => ''}
+  })
+  $container_formats = lookup('ntnuopenstack::glance::container_formats', {
+    'value_type'    => Array[String],
+    'default_value' => ['bare'],
+  })
+
+  $disk_formats_real = join(keys($disk_formats), ',')
+  $container_formats_real = join($container_formats, ',')
+
   require ::ntnuopenstack::repo
   contain ::ntnuopenstack::glance::ceph
   contain ::ntnuopenstack::glance::firewall::server::api
@@ -73,7 +85,9 @@ class ntnuopenstack::glance::api {
   }
 
   glance_api_config {
-    'DEFAULT/default_store': value => 'rbd';
+    'DEFAULT/default_store':          value => 'rbd';
+    'image_format/container_formats': value => $container_formats_real;
+    'image_format/disk_formats':      value => $disk_formats_real;
   }
 
   if ($upload_mode == 'direct') {

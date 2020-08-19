@@ -36,6 +36,21 @@ class ntnuopenstack::horizon::base {
     'default_value' => 'legacy',
   })
 
+  $image_formats = lookup('ntnuopenstack::glance::disk_formats', {
+    'value_type'    => Hash[String, String],
+    'default_value' => { 'raw' => 'Raw', 'qcow2' => 'QCOW2 - QEMU Emulator' }
+  })
+
+  $image_formats_default = {
+    '' => 'Select format',
+  }
+
+  $image_formats_real = $image_formats_default + $image_formats
+
+  $image_backend = {
+    'image_formats' => $image_formats_real,
+  }
+
   include ::profile::services::apache::firewall
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::common
@@ -75,6 +90,7 @@ class ntnuopenstack::horizon::base {
       {'name' => $ldap_name, 'display' => $description},
       {'name' => 'default',  'display' => 'Openstack accounts'},
     ],
+    image_backend                  => $image_backend,
     manage_memcache_package        => false,
     neutron_options                => {
       enable_firewall => true,
