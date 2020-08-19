@@ -38,7 +38,8 @@ class ntnuopenstack::glance::api {
   })
 
   $disk_formats = lookup('ntnuopenstack::glance::disk_formats', {
-    'default_value' =>  ['raw', 'qcow2']
+    'value_type'    => Hash[String, String],
+    'default_value' => {'raw' => '', 'qcow2' => ''}
   })
   $container_formats = lookup('ntnuopenstack::glance::container_formats', {
     'value_type'    => Array[String],
