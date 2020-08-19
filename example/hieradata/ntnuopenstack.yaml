@@ -72,6 +72,10 @@ ntnuopenstack::endpoint::public::ipv6: "%{alias('profile::haproxy::services::ipv
 ntnuopenstack::glance::ceph::key: '<ceph-key>'
 ntnuopenstack::glance::keystone::password: '<password>'
 ntnuopenstack::glance::mysql::password: '<password>'
+ntnuopenstack::glance::disk_formats:
+  'raw': 'Raw'
+  'qcow2': 'QCOW2 - QEMU Emulator'
+  'vmdk': 'VMDK - Virtual Machine Disk'
 
 ntnuopenstack::heat::auth_encryption_key: '<password>'
 ntnuopenstack::heat::keystone::password: '<password>'
