@@ -46,5 +46,14 @@ ntnuopenstack::nova::endpoint::public: "%{alias('ntnuopenstack::endpoint::public
 ntnuopenstack::nova::vncproxy::host: "%{alias('ntnuopenstack::horizon::server_name')}"
 ntnuopenstack::nova::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 
+ntnuopenstack::placement::db::sync: "%{alias('ntnuopenstack::db::sync')}"
+ntnuopenstack::placement::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
+ntnuopenstack::placement::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
+ntnuopenstack::placement::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"
+ntnuopenstack::placement::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
+
 ntnuopenstack::octavia::api::port: 9876
+ntnuopenstack::octavia::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
+ntnuopenstack::octavia::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
+ntnuopenstack::octavia::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"
 ntnuopenstack::octavia::heartbeat::port: 5555

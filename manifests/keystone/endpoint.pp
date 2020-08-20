@@ -35,7 +35,7 @@ class ntnuopenstack::keystone::endpoint {
   include ::ntnuopenstack::heat::endpoint
   include ::ntnuopenstack::neutron::endpoint
   include ::ntnuopenstack::nova::endpoint::api
-  include ::ntnuopenstack::nova::endpoint::placement
+  include ::ntnuopenstack::placement::endpoint
 
   # Include domain config for heat
   class { '::ntnuopenstack::heat::domain':

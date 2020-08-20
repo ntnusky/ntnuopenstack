@@ -42,18 +42,4 @@ class ntnuopenstack::nova::haproxy::management {
       ],
     },
   }
-
-  ::profile::services::haproxy::frontend { 'nova_place_admin':
-    profile   => 'management',
-    port      => 8778,
-    certfile  => $certfile,
-    mode      => 'http',
-    bkoptions => {
-      'option'  => [
-        'tcplog',
-        'tcpka',
-        'httpchk',
-      ],
-    },
-  }
 }
