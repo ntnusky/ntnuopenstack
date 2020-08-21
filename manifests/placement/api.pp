@@ -4,7 +4,7 @@ class ntnuopenstack::placement::api {
   $mysql_pass = lookup('ntnuopenstack::placement::mysql::password', String)
   $mysql_ip = lookup('ntnuopenstack::placement::mysql::ip', Stdlib::IP::Address)
   $database_connection = "mysql+pymysql://placement:${mysql_pass}@${mysql_ip}/placement"
-  $db_sync = lookup('ntnuopenstack::placement::db::sync̈́', Boolean)
+  $db_sync = lookup('ntnuopenstack::placement::db::sync', Boolean)
 
   # Retrieve openstack-settings
   $region = lookup('ntnuopenstack::region', String)
