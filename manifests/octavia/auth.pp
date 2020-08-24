@@ -6,7 +6,7 @@ class ntnuopenstack::octavia::auth {
   require ::ntnuopenstack::repo
 
   class { '::octavia::service_auth':
-    auth_url            => "${internal_endpoint}:35357/v3",
+    auth_url            => "${internal_endpoint}:5000/v3",
     username            => 'octavia',
     project_name        => 'services',
     password            => $keystone_password,
