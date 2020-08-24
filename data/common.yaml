@@ -22,7 +22,7 @@ ntnuopenstack::heat::endpoint::public: "%{alias('ntnuopenstack::endpoint::public
 ntnuopenstack::heat::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 
 ntnuopenstack::keystone::db::sync: "%{alias('ntnuopenstack::db::sync')}"
-ntnuopenstack::keystone::auth::url: "%{lookup('ntnuopenstack::endpoint::admin')}:35357"
+ntnuopenstack::keystone::auth::url: "%{lookup('ntnuopenstack::endpoint::admin')}:5000"
 ntnuopenstack::keystone::auth::uri: "%{lookup('ntnuopenstack::endpoint::public')}:5000/"
 ntnuopenstack::keystone::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
 ntnuopenstack::keystone::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
