@@ -68,7 +68,6 @@ class ntnuopenstack::keystone::base {
     database_connection          => $db_con,
     enabled                      => false,
     service_name                 => 'httpd',
-    admin_bind_host              => '0.0.0.0',
     admin_endpoint               => "${admin_endpoint}:5000/",
     public_endpoint              => "${public_endpoint}:5000/",
     token_provider               => 'fernet',
