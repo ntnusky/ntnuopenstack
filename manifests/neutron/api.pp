@@ -33,7 +33,7 @@ class ntnuopenstack::neutron::api {
   }
   $service_providers = lookup('ntnuopenstack::neutron::service_providers', {
     'value_type'    => Array[String],
-    'default_value' => $sp, 
+    'default_value' => $sp,
   })
   $confhaproxy = lookup('ntnuopenstack::haproxy::configure::backend', {
     'value_type'    => Boolean,
