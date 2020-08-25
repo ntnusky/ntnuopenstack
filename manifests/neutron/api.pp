@@ -23,12 +23,17 @@ class ntnuopenstack::neutron::api {
   $region = lookup('ntnuopenstack::region', String)
   $nova_password = lookup('ntnuopenstack::nova::keystone::password', String)
   $neutron_password = lookup('ntnuopenstack::neutron::keystone::password', String)
+  $fwaas_enable = lookup('ntnuopenstack::neutron::fwaas::enabled', Boolean)
+  if($fwaas_enable) {
+    $sp = [
+      'FIREWALL_V2:fwaas_db:neutron_fwaas.services.firewall.service_drivers.agents.agents.FirewallAgentDriver:default',
+    ]
+  } else {
+    $sp = []
+  }
   $service_providers = lookup('ntnuopenstack::neutron::service_providers', {
     'value_type'    => Array[String],
-    'default_value' => [
-      'FIREWALL_V2:fwaas_db:neutron_fwaas.services.firewall.service_drivers.agents.agents.FirewallAgentDriver:default',
-      'LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default',
-    ],
+    'default_value' => $sp, 
   })
   $confhaproxy = lookup('ntnuopenstack::haproxy::configure::backend', {
     'value_type'    => Boolean,
@@ -40,10 +45,6 @@ class ntnuopenstack::neutron::api {
   include ::ntnuopenstack::neutron::ml2::config
   include ::profile::services::memcache::pythonclient
   include ::profile::monitoring::munin::plugin::openstack::neutronapi
-
-  # his class is to remove the rest of the DHCPv6-pd config. This can be removed
-  # when upgrading to Train.
-  contain ::ntnuopenstack::neutron::ipv6::pddisable
 
   if($confhaproxy) {
     contain ::ntnuopenstack::neutron::haproxy::backend
@@ -73,11 +74,5 @@ class ntnuopenstack::neutron::api {
     password    => $nova_password,
     auth_url    => "${keystone_admin}:5000",
     region_name => $region,
-  }
-
-  class { 'neutron::services::lbaas':
-  }
-
-  class { 'neutron::services::fwaas':
   }
 }

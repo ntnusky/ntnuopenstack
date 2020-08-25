@@ -1,13 +1,14 @@
 # Installs the base neutron services.
 class ntnuopenstack::neutron::base {
+  $fwaas_enable = lookup('ntnuopenstack::neutron::fwaas::enabled', Boolean)
+  if($fwaas_enable) {
+    $sp = ['router', 'firewall_v2', 'port_forwarding']
+  } else {
+    $sp = ['router', 'port_forwarding']
+  }
   $service_plugins = lookup('ntnuopenstack::neutron::service_plugins', {
     'value_type'    => Array[String],
-    'default_value' => [
-      'router',
-      'firewall_v2',
-      'neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2',
-      'port_forwarding',
-    ],
+    'default_value' => $sp,
   })
   $mtu = lookup('ntnuopenstack::neutron::mtu', {
     'value_type'    => Variant[Undef, Integer],

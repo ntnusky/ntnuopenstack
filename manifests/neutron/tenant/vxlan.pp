@@ -33,27 +33,9 @@ class ntnuopenstack::neutron::tenant::vxlan {
     manage_vswitch => $managevswitch,
   }
 
-  # If the vxlan-endpoint is a VLAN on a physical interface, connect a patch
-  # between the br-provider bridge, and a bridge called
-  # 'br-vlan-${physical-if}'. The bridges are also created if they dont exist
-  # from before.
-  #
-  # TODO: The 'vlan' option should be replaced with the more explicit 'vswitch'
-  #       option.
-  if($tenant_if == 'vlan') {
-    $tenant_parent = lookup('profile::interfaces::tenant::parentif')
-    $tenant_vlan = lookup('profile::interfaces::tenant::vlanid')
-
-    $n = "${tenant_parent}-${tenant_vlan}-br-provider"
-    ::profile::infrastructure::ovs::patch { $n :
-      physical_if => $tenant_parent,
-      vlan_id     => $tenant_vlan,
-      ovs_bridge  => 'br-provider',
-    }
-
   # If the vxlan-endpoint should be connected to a certain VLAN at an already
   # existing vswitch:
-  } elsif ($tenant_if == 'vswitch') {
+  if ($tenant_if == 'vswitch') {
     $bridge = lookup('ntnuopenstack::tenant::bridge', String)
     $vlan = lookup('ntnuopenstack::tenant::vlan', Integer)
 
