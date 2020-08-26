@@ -7,7 +7,6 @@ class ntnuopenstack::nova::services {
 
   $default_filters = [
     'AggregateImagePropertiesIsolation',
-    'RetryFilter',
     'AvailabilityZoneFilter',
     'ComputeFilter',
     'ComputeCapabilitiesFilter',
@@ -28,12 +27,6 @@ class ntnuopenstack::nova::services {
 
   class { '::nova::conductor':
     enabled => true,
-  }
-
-  class { '::nova::consoleauth':
-    enabled        => false,
-    manage_service => false,
-    ensure_package => 'purged',
   }
 
   class { '::nova::scheduler':
