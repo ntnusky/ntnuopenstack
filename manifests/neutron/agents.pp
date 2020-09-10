@@ -10,11 +10,14 @@ class ntnuopenstack::neutron::agents {
   $neutron_vrrp_pass = lookup('ntnuopenstack::neutron::vrrp_pass', String)
   $metadata_secret = lookup('ntnuopenstack::nova::sharedmetadataproxysecret',
                             String)
+  $fwaas_enable = lookup('ntnuopenstack::neutron::fwaas::enabled', Boolean)
 
   require ::ntnuopenstack::neutron::base
-  include ::ntnuopenstack::neutron::bgp
   require ::ntnuopenstack::neutron::firewall::l3agent
   require ::ntnuopenstack::repo
+
+  # TODO: We should deprecate the use of neutronnet-nodes as bgp-dragents. 
+  include ::ntnuopenstack::neutron::bgp
 
   class { '::neutron::agents::metadata':
     shared_secret => $metadata_secret,
@@ -26,9 +29,15 @@ class ntnuopenstack::neutron::agents {
     dnsmasq_dns_servers => $dns_servers,
   }
 
+  if($fwaas_enable) {
+    $extensions = 'fwaas_v2,port_forwarding'
+  } else {
+    $extensions = 'port_forwarding'
+  }
+
   class { '::neutron::agents::l3':
     ha_enabled            => true,
     ha_vrrp_auth_password => $neutron_vrrp_pass,
-    extensions            => 'fwaas_v2,port_forwarding',
+    extensions            => $extensions,
   }
 }

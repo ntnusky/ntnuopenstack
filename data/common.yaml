@@ -36,6 +36,7 @@ ntnuopenstack::neutron::dns: "%{alias('profile::dns::resolvers')}"
 ntnuopenstack::neutron::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
 ntnuopenstack::neutron::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
 ntnuopenstack::neutron::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"
+ntnuopenstack::neutron::fwaas::enabled: true
 ntnuopenstack::neutron::metadata::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 ntnuopenstack::neutron::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 

@@ -17,20 +17,6 @@ class ntnuopenstack::keystone::haproxy::management {
     $certfile = false
   }
 
-  ::profile::services::haproxy::frontend { 'keystone_admin':
-    profile   => 'management',
-    port      => 35357,
-    certfile  => $certfile,
-    mode      => 'http',
-    bkoptions => {
-      'option'  => [
-        'tcplog',
-        'tcpka',
-        'httpchk',
-      ],
-    },
-  }
-
   ::profile::services::haproxy::frontend { 'keystone_internal':
     profile   => 'management',
     port      => 5000,

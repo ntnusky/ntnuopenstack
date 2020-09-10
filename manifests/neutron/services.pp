@@ -6,15 +6,14 @@ class ntnuopenstack::neutron::services {
       'neutron_fwaas.services.firewall.service_drivers.agents.drivers.linux.iptables_fwaas_v2.IptablesFwaasDriver',
   })
 
+  $fwaas_enable = lookup('ntnuopenstack::neutron::fwaas::enabled', Boolean)
+
   require ::ntnuopenstack::neutron::base
   require ::ntnuopenstack::repo
 
   class { '::neutron::services::fwaas':
-    enabled       => true,
+    enabled       => $fwaas_enable,
     driver        => $fw_driver,
     agent_version => 'v2',
-  }
-
-  class { '::neutron::services::lbaas':
   }
 }

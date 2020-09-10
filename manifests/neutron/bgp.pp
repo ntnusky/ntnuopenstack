@@ -12,5 +12,10 @@ class ntnuopenstack::neutron::bgp {
     class { '::neutron::agents::bgp_dragent':
       bgp_router_id => $bgp_router_id,
     }
+  } else {
+    class { '::neutron::agents::bgp_dragent':
+      package_ensure => 'absent',
+      enabled        => false,
+    }
   }
 }

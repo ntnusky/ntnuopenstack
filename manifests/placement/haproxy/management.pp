@@ -5,8 +5,6 @@ class ntnuopenstack::placement::haproxy::management {
 
   include ::ntnuopenstack::placement::firewall::haproxy::internal
 
-  $standalone = lookup('ntnuopenstack::placement::standalone',
-                          Boolean, 'first', false)
   $certificate = lookup('ntnuopenstack::endpoint::admin::cert', {
     'default_value' => false,
   })
@@ -19,33 +17,17 @@ class ntnuopenstack::placement::haproxy::management {
     $certfile = false
   }
 
-  if($standalone) {
-    ::profile::services::haproxy::frontend { 'placement_admin':
-      profile   => 'management',
-      port      => 8778,
-      certfile  => $certfile,
-      mode      => 'http',
-      bkoptions => {
-        'option'  => [
-          'tcplog',
-          'tcpka',
-          'httpchk',
-        ],
-      },
-    }
-  } else {
-    ::profile::services::haproxy::frontend { 'nova_place_admin':
-      profile   => 'management',
-      port      => 8778,
-      certfile  => $certfile,
-      mode      => 'http',
-      bkoptions => {
-        'option'  => [
-          'tcplog',
-          'tcpka',
-          'httpchk',
-        ],
-      },
-    }
+  ::profile::services::haproxy::frontend { 'placement_admin':
+    profile   => 'management',
+    port      => 8778,
+    certfile  => $certfile,
+    mode      => 'http',
+    bkoptions => {
+      'option'  => [
+        'tcplog',
+        'tcpka',
+        'httpchk',
+      ],
+    },
   }
 }
