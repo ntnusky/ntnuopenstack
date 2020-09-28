@@ -2,12 +2,10 @@
 class ntnuopenstack::keystone::base {
   $region = lookup('ntnuopenstack::region', String)
 
-  $admin_endpoint  = lookup('ntnuopenstack::keystone::endpoint::admin', Stdlib::Httpurl)
-  $public_endpoint = lookup('ntnuopenstack::keystone::endpoint::public', Stdlib::Httpurl)
-
-  $admin_email = lookup('ntnuopenstack::keystone::admin_email', String)
-  $admin_pass  = lookup('ntnuopenstack::keystone::admin_password', String)
-  $admin_token = lookup('ntnuopenstack::keystone::admin_token', String)
+  $admin_endpoint  = lookup('ntnuopenstack::keystone::endpoint::admin',
+                              Stdlib::Httpurl)
+  $public_endpoint = lookup('ntnuopenstack::keystone::endpoint::public',
+                              Stdlib::Httpurl)
 
   $mysql_password = lookup('ntnuopenstack::keystone::mysql::password', String)
   $mysql_ip = lookup('ntnuopenstack::keystone::mysql::ip', Stdlib::IP::Address)
@@ -40,6 +38,7 @@ class ntnuopenstack::keystone::base {
   })
 
   require ::ntnuopenstack::repo
+  include ::ntnuopenstack::keystone::bootstrap
 
   if($cache_servers) {
     $memcache = $cache_servers.map | $server | {
@@ -63,8 +62,6 @@ class ntnuopenstack::keystone::base {
   }
 
   class { '::keystone':
-    admin_token                  => $admin_token,
-    admin_password               => $admin_pass,
     database_connection          => $db_con,
     enabled                      => false,
     service_name                 => 'httpd',
@@ -80,13 +77,6 @@ class ntnuopenstack::keystone::base {
     token_expiration             => $token_expiration,
     sync_db                      => $sync_db,
     *                            => $keystone_opts,
-  }
-
-  class { '::keystone::roles::admin':
-    email        => $admin_email,
-    password     => $admin_pass,
-    admin_tenant => 'admin',
-    require      => Class['::keystone'],
   }
 
   class { '::keystone::wsgi::apache':
