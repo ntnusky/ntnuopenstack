@@ -8,17 +8,6 @@ class ntnuopenstack::neutron::tenant::vxlan {
   include ::ntnuopenstack::neutron::ml2::config
   require ::vswitch::ovs
 
-  # Make sure there is allways an IP available for tunnel endpoints, even if the
-  # correct IP is not present yet.
-  if(has_key($facts['networking']['interfaces'], 'br-provider')) {
-    $local_ip = pick(
-      $facts['networking']['interfaces']['br-provider']['ip'],
-      '169.254.254.254'
-    )
-  } else {
-    $local_ip = '169.254.254.254'
-  }
-
   if($tenant_if == 'vswitch') {
     $managevswitch = false
     ::profile::infrastructure::ovs::bridge { 'br-provider' : }
@@ -26,12 +15,17 @@ class ntnuopenstack::neutron::tenant::vxlan {
     $managevswitch = true
   }
 
-  #class { '::ntnuopenstack::neutron::ovs':
-  #  tenant_mapping => 'provider:br-provider',
-  #  local_ip       => $local_ip,
-  #  tunnel_types   => ['vxlan'],
-  #  manage_vswitch => $managevswitch,
-  #}
+  # If the br-provider interface is in place, with an IP address, configure ovs
+  # to use it as a VXLAN VTEP.
+  if('br-provider' in $facts['networking']['interfaces'] and
+      'ip' in $facts['networking']['interfaces']['br-provider']) {
+    class { '::ntnuopenstack::neutron::ovs':
+      tenant_mapping => 'provider:br-provider',
+      local_ip       => $facts['networking']['interfaces']['br-provider']['ip'],
+      tunnel_types   => ['vxlan'],
+      manage_vswitch => $managevswitch,
+    }
+  }
 
   # If the vxlan-endpoint should be connected to a certain VLAN at an already
   # existing vswitch:
