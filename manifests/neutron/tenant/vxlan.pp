@@ -26,12 +26,12 @@ class ntnuopenstack::neutron::tenant::vxlan {
     $managevswitch = true
   }
 
-  class { '::ntnuopenstack::neutron::ovs':
-    tenant_mapping => 'provider:br-provider',
-    local_ip       => $local_ip,
-    tunnel_types   => ['vxlan'],
-    manage_vswitch => $managevswitch,
-  }
+  #class { '::ntnuopenstack::neutron::ovs':
+  #  tenant_mapping => 'provider:br-provider',
+  #  local_ip       => $local_ip,
+  #  tunnel_types   => ['vxlan'],
+  #  manage_vswitch => $managevswitch,
+  #}
 
   # If the vxlan-endpoint should be connected to a certain VLAN at an already
   # existing vswitch:
