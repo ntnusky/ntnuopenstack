@@ -13,11 +13,6 @@ class ntnuopenstack::keystone::base {
 
   $sync_db = lookup('ntnuopenstack::keystone::db::sync', Boolean)
 
-  $cache_servers = lookup('profile::memcache::servers', {
-    'value_type'    => Variant[Array[String], Boolean],
-    'default_value' => false,
-    'merge'         => 'unique',
-  })
   $confhaproxy = lookup('ntnuopenstack::haproxy::configure::backend', {
     'value_type'    => Boolean,
     'default_value' => true,
@@ -37,23 +32,9 @@ class ntnuopenstack::keystone::base {
     'default_value' => 14400,   # Default token lifetime is 14400 seconds (4h)
   })
 
-  require ::ntnuopenstack::repo
   include ::ntnuopenstack::keystone::bootstrap
-
-  if($cache_servers) {
-    $memcache = $cache_servers.map | $server | {
-      "${server}:11211"
-    }
-
-    $keystone_opts = {
-      'cache_memcache_servers' => $memcache,
-      'cache_backend'          => 'dogpile.cache.memcached',
-      'cache_enabled'          => true,
-      'token_caching'          => true,
-    }
-  } else {
-    $keystone_opts = {}
-  }
+  include ::ntnuopenstack::keystone::cache
+  require ::ntnuopenstack::repo
 
   if($confhaproxy) {
     $logformat = 'forwarded'
@@ -76,7 +57,6 @@ class ntnuopenstack::keystone::base {
     using_domain_config          => true,
     token_expiration             => $token_expiration,
     sync_db                      => $sync_db,
-    *                            => $keystone_opts,
   }
 
   class { '::keystone::wsgi::apache':
