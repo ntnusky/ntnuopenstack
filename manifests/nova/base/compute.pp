@@ -32,7 +32,6 @@ class ntnuopenstack::nova::base::compute {
   class { '::nova':
     database_connection           => $database_connection,
     default_transport_url         => $transport_url,
-    glance_api_servers            => "${internal_endpoint}:9292",
     block_device_allocate_retries => 120,
     *                             => $ha_transport_conf,
   }
