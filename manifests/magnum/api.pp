@@ -33,7 +33,7 @@ class ntnuopenstack::magnum::api {
     'keystone_auth/auth_url'            : value => $auth_url;
     'keystone_auth/username'            : value => 'magnum';
     'keystone_auth/password'            : value => $password, secret => true;
-    'keystone_auth/project_name'        : value => 'Default';
+    'keystone_auth/project_name'        : value => 'services';
     'keystone_auth/project_domain_name' : value => 'Default';
     'keystone_auth/user_domain_name'    : value => 'Default';
   }
