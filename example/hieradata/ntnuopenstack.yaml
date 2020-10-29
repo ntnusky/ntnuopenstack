@@ -37,6 +37,8 @@ magnum::keystone::authtoken::www_authenticate_uri: "%{lookup('ntnuopenstack::key
 magnum::keystone::authtoken::memcached_servers: "%{alias('ntnuopenstack::keystone::memcached::servers')}"
 magnum::keystone::authtoken::password: "%{lookup('ntnuopenstack::magnum::keystone::password')}"
 magnum::keystone::authtoken::region_name: "%{lookup('ntnuopenstack::region')}"
+magnum::keystone::keystone_auth::auth_url: "%{alias('magnum::keystone::authtoken::auth_url')}"
+magnum::keystone::keystone_auth::password: "%{alias('magnum::keystone::authtoken::password')}"
 octavia::db::database_connection: "mysql+pymysql://octavia:%{lookup('ntnuopenstack::octavia::mysql::password')}@%{lookup('ntnuopenstack::nova::mysql::ip')}/octavia"
 octavia::keystone::authtoken::auth_url: "%{alias('ntnuopenstack::keystone::auth::url')}"
 octavia::keystone::authtoken::auth_uri: "%{alias('ntnuopenstack::keystone::auth::uri')}"

@@ -23,18 +23,4 @@ class ntnuopenstack::magnum::api {
     ssl               => false,
     access_log_format => 'forwarded',
   }
-
-  # This is a temporary hack while wait for a fix for this bug:
-  #https://bugs.launchpad.net/puppet-magnum/+bug/1900813
-  $auth_url = lookup('magnum::keystone::authtoken::auth_url')
-  $password = lookup('magnum::keystone::authtoken::password')
-
-  magnum_config {
-    'keystone_auth/auth_url'            : value => $auth_url;
-    'keystone_auth/username'            : value => 'magnum';
-    'keystone_auth/password'            : value => $password, secret => true;
-    'keystone_auth/project_name'        : value => 'services';
-    'keystone_auth/project_domain_name' : value => 'Default';
-    'keystone_auth/user_domain_name'    : value => 'Default';
-  }
 }
