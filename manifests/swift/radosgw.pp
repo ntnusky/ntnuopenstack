@@ -12,11 +12,6 @@ class ntnuopenstack::swift::radosgw {
     user         => 'www-data',
   }
 
-  ::ceph::rgw { 'radosgw.main':
-    rgw_ensure => 'stopped',
-    rgw_enable => false,
-  }
-
   ::ceph::rgw::keystone { "radosgw.${hostname}":
     rgw_keystone_url            => "${endpoint_internal}:5000",
     rgw_keystone_version        => 'v3',
