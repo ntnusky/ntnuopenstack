@@ -28,6 +28,8 @@ class ntnuopenstack::keystone::endpoint {
     'value_type'    => Variant[Boolean, String],
   })
 
+  include ::ntnuopenstack::keystone::bootstrap
+
   # We need to define the endpoints on the keystone hosts, so include the other
   # endpoints here.
   include ::ntnuopenstack::cinder::endpoint
@@ -62,13 +64,5 @@ class ntnuopenstack::keystone::endpoint {
   if($magnum) {
     include ::ntnuopenstack::magnum::endpoint
     include ::ntnuopenstack::magnum::domain
-  }
-  # Defining the keystone endpoint
-  class { '::keystone::endpoint':
-    public_url   => "${public_endpoint}:5000",
-    admin_url    => "${admin_endpoint}:5000",
-    internal_url => "${internal_endpoint}:5000",
-    region       => $region,
-    require      => Class['::keystone'],
   }
 }

@@ -12,6 +12,7 @@ class ntnuopenstack::repo {
       }
     }
   } elsif ($::osfamily == 'RedHat') {
+    include ::profile::repo::powertools
     class { '::openstack_extras::repo::redhat::redhat':
       package_require => true,
     }

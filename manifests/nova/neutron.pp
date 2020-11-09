@@ -16,11 +16,9 @@ class ntnuopenstack::nova::neutron {
   require ::ntnuopenstack::repo
 
   class { '::nova::network::neutron':
+    auth_url              => "${keystone_internal}:5000/v3",
     default_floating_pool => $floating_pool,
-    neutron_region_name   => $region,
-    neutron_password      => $neutron_password,
-    neutron_auth_url      => "${keystone_internal}:5000/v3",
-    vif_plugging_is_fatal => false,
-    vif_plugging_timeout  => '0',
+    password              => $neutron_password,
+    region_name           => $region,
   }
 }

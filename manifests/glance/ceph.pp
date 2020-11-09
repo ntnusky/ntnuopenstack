@@ -20,8 +20,10 @@ class ntnuopenstack::glance::ceph {
     inject  => true,
   }
 
-  class { '::glance::backend::rbd' :
-    rbd_store_user  => 'glance',
-    manage_packages => false,
+  ::glance::backend::multistore::rbd { 'ceph-default' :
+    manage_packages   => false,
+    rbd_store_pool    => 'images',
+    rbd_store_user    => 'glance',
+    store_description => 'Default CEPH store',
   }
 }

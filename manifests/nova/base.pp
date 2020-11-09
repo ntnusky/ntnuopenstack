@@ -23,7 +23,6 @@ class ntnuopenstack::nova::base {
   $region = lookup('ntnuopenstack::region')
   $placement_password = lookup('ntnuopenstack::nova::placement::keystone::password')
   $keystone_admin = lookup('ntnuopenstack::endpoint::admin')
-  $internal_endpoint = lookup('ntnuopenstack::endpoint::internal')
 
   # RabbitMQ connection-information
   $rabbitservers = lookup('profile::rabbitmq::servers', {
@@ -49,8 +48,6 @@ class ntnuopenstack::nova::base {
     database_connection     => $db_con,
     default_transport_url   => $transport_url,
     api_database_connection => $api_db_con,
-    image_service           => 'nova.image.glance.GlanceImageService',
-    glance_api_servers      => "${internal_endpoint}:9292",
     *                       => $ha_transport_conf,
   }
 
