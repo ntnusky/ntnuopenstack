@@ -10,8 +10,8 @@ class ntnuopenstack::cinder::ceph {
     },
   })
 
-  $volumes = $backends.values().unique
-  $poolaccess = $volumes.map | $pool | {
+  $pools = $backends.values().unique
+  $poolaccess = $pools.map | $pool | {
     "allow rwx pool=${pool}"
   }
   $poolaccessstr = $poolaccess.join(', ')

@@ -11,14 +11,9 @@ class ntnuopenstack::nova::ceph {
     },
   })
 
-  $volumes = $backends.values().unique
-  $poolaccess = $volumes.map | $pool | {
+  $pools = $backends.values().unique
+  $poolaccess = $pools.map | $pool | {
     "allow rwx pool=${pool}"
-  }
-
-
-  exec { '/usr/bin/ceph osd pool create volumes 32' :
-    unless => '/usr/bin/ceph osd pool get volumes size',
   }
 
   ceph_config {
