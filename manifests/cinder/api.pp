@@ -5,6 +5,10 @@ class ntnuopenstack::cinder::api {
     'value_type'    => Boolean,
   })
   $db_sync = lookup('ntnuopenstack::cinder::db::sync', Boolean)
+  $default_type = lookup('ntnuopenstack::cinder::type::default', {
+    'value_type'    => String,
+    'default_value' => 'Normal',
+  })
 
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::cinder::base
@@ -21,7 +25,7 @@ class ntnuopenstack::cinder::api {
   class { '::cinder::api':
     enabled                      => false,
     service_name                 => 'httpd',
-    default_volume_type          => 'Normal',
+    default_volume_type          => $default_type,
     enable_proxy_headers_parsing => $confhaproxy,
     sync_db                      => $db_sync,
   }
