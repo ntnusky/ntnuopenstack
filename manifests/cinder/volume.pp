@@ -11,7 +11,7 @@ class ntnuopenstack::cinder::volume {
   })
 
   $types = lookup('ntnuopenstack::cinder::types', {
-    'value_type'    => Hash[String, Hash[String, String]],
+    'value_type'    => Hash[String, Hash[String, Variant[String, Hash]],
     'default_value' => {
       'Normal'      => {
         'backend' => 'rbd-images',
