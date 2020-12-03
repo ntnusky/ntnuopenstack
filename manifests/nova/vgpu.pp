@@ -10,9 +10,10 @@ class ntnuopenstack::nova::vgpu {
   $sriov_cmd = '/usr/lib/nvidia/sriov-manage -e ALL'
 
   cron { 'Enable SR-IOV for Nvidia GPUs on reboot':
-    command => $sriov_cmd,
-    user    => 'root',
-    special => 'reboot',
+    command     => $sriov_cmd,
+    environment => 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin',
+    user        => 'root',
+    special     => 'reboot',
   }
 
   # This can be removed when nova bug #1906494 is fixed
