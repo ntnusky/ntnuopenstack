@@ -6,8 +6,11 @@ class ntnuopenstack::nova::vgpu {
 
   # Ensure SR-IOV virtual functions are enabled on boot
   # This has no effect on GPUs that don't support SR-IOV
+
+  $sriov_cmd = '/usr/lib/nvidia/sriov-manage -e ALL'
+
   cron { 'Enable SR-IOV for Nvidia GPUs on reboot':
-    command => '/usr/lib/nvidia/sriov-manage -e ALL',
+    command => $sriov_cmd,
     user    => 'root',
     special => 'reboot',
   }
@@ -18,5 +21,12 @@ class ntnuopenstack::nova::vgpu {
     path   => '/usr/lib/nvidia/sriov-manage',
     line   => 'local numvfs=2',
     match  => 'local numvfs=\$2',
+    notify => Exec['sriov-manage-firstrun'],
+  }
+
+  exec { 'sriov-manage-firstrun':
+    command     => $sriov_cmd,
+    user        => 'root',
+    refreshonly => true,
   }
 }
