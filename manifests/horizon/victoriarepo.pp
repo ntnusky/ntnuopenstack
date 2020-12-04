@@ -6,7 +6,7 @@
 class ntnuopenstack::horizon::victoriarepo {
   yumrepo { 'rdo-release-victoria':
     ensure      => 'present',
-    name        => 'OpenStack Victoria Repository',
+    descr       => 'OpenStack Victoria Repository',
     baseurl     => 'http://mirror.centos.org/centos/8/cloud/$basearch/openstack-victoria/',
     gpgkey      => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-Cloud',
     enabled     => '1',
