@@ -5,6 +5,10 @@ class ntnuopenstack::magnum::base {
     'value_type'    => Variant[Array[String], Boolean],
     'default_value' => false,
   })
+  $default_volume_type = lookup('ntnuopenstack::cinder::type::default', {
+    'value_type'    => String,
+    'default_value' => 'Normal',
+  })
 
   if ($rabbitservers) {
     $ha_transport_conf = {
@@ -43,6 +47,6 @@ class ntnuopenstack::magnum::base {
   }
 
   magnum_config {
-    'cinder/default_docker_volume_type': value => 'Normal';
+    'cinder/default_docker_volume_type': value => $default_volume_type;
   }
 }
