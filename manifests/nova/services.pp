@@ -1,8 +1,8 @@
 # Installs various nova services.
 class ntnuopenstack::nova::services {
   require ::ntnuopenstack::nova::base
-  contain ::ntnuopenstack::nova::neutron
-  contain ::ntnuopenstack::nova::vncproxy
+  include ::ntnuopenstack::nova::neutron
+  include ::ntnuopenstack::nova::vncproxy
   require ::ntnuopenstack::repo
 
   $default_filters = [
