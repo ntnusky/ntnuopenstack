@@ -30,6 +30,11 @@ class ntnuopenstack::nova::base {
     'default_value' => false,
   })
 
+  $placement_quota = lookup('ntnuopenstack::nova::quota::placement', {
+    'value_type'    => Boolean,
+    'default_value' => true,
+  })
+
   if ($rabbitservers) {
     $ha_transport_conf = {
       rabbit_ha_queues    => true,
@@ -61,5 +66,9 @@ class ntnuopenstack::nova::base {
     enabled          => true,
     backend          => 'oslo_cache.memcache_pool',
     memcache_servers => $memcache,
+  }
+
+  nova_config {
+    'quota/count_usage_from_placement': value => $placement_quota;
   }
 }
