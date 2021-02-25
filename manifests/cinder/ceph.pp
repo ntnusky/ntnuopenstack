@@ -28,6 +28,6 @@ class ntnuopenstack::cinder::ceph {
     cap_osd => "allow class-read object_prefix rbd_children, ${poolaccessstr}",
     inject  => true,
     group   => 'cinder',
-    mode    => 0640,
+    mode    => '0640',
   }
 }
