@@ -33,7 +33,7 @@ class ntnuopenstack::cinder::volume {
   $backends.each | $bname, $pool | {
     cinder::backend::rbd { $bname :
       rbd_pool        => $pool,
-      rbd_user        => 'nova',
+      rbd_user        => 'cinder',
       rbd_secret_uuid => $ceph_uuid,
     }
   }
