@@ -14,7 +14,7 @@ class ntnuopenstack::nova::libvirt {
   require ::ntnuopenstack::nova::base::compute
 
   $cpu_model_extra_flags = $nova_nested_virt ? {
-    true  => 'vmx,pcid',
+    true  => 'vmx',
     false => undef
   }
 
