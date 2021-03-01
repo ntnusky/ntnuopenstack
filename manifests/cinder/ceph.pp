@@ -15,7 +15,7 @@ class ntnuopenstack::cinder::ceph {
     "allow rwx pool=${pool}"
   }
   $poolaccessstr = $poolaccess.join(', ')
-  $images = 'allow r pool=images'
+  $images = 'allow rwx pool=images'
 
   require ::profile::ceph::client
 
