@@ -8,6 +8,7 @@ class ntnuopenstack::neutron::ml2::config {
 
   if($strategy == 'vlan') {
     class { '::neutron::plugins::ml2':
+      extension_drivers    => ['port_security'],
       type_drivers         => ['vlan', 'flat'],
       tenant_network_types => ['vlan'],
       mechanism_drivers    => ['openvswitch', 'l2population'],
@@ -15,6 +16,7 @@ class ntnuopenstack::neutron::ml2::config {
     }
   } elsif($strategy == 'vxlan') {
     class { '::neutron::plugins::ml2':
+      extension_drivers    => ['port_security'],
       type_drivers         => ['vxlan', 'flat'],
       tenant_network_types => ['vxlan'],
       mechanism_drivers    => ['openvswitch', 'l2population'],
