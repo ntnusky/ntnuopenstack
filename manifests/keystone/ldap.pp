@@ -36,11 +36,13 @@ class ntnuopenstack::keystone::ldap {
     $user_enabled_mask = 2
     $user_enabled_default = 512
     $group_ad_nesting = true
+    $group_members_are_ids = undef
   } else {
     $user_enabled_attribute = undef
     $user_enabled_mask = undef
     $user_enabled_default = undef
     $group_ad_nesting = undef
+    $group_members_are_ids = true
   }
 
   $group_tree_dn = lookup(
@@ -95,6 +97,7 @@ class ntnuopenstack::keystone::ldap {
     group_id_attribute     => $group_id_attribute,
     group_name_attribute   => $group_name_attribute,
     group_member_attribute => $group_member_attribute,
+    group_members_are_ids  => $group_members_are_ids,
     group_desc_attribute   => $group_desc_attribute,
     use_tls                => false,
   }
