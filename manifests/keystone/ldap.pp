@@ -1,57 +1,104 @@
 # Configures keystone to use an LDAP backend for authentication
 class ntnuopenstack::keystone::ldap {
   $ldap_name = lookup('ntnuopenstack::keystone::ldap_backend::name', String)
-  $ldap_url  = lookup('ntnuopenstack::keystone::ldap_backend::url',  String)
-  $ldap_user = lookup('ntnuopenstack::keystone::ldap_backend::user', String)
-  $ldap_password = lookup(
-    'ntnuopenstack::keystone::ldap_backend::password',
-    String,
-  )
-  $ldap_suffix = lookup('ntnuopenstack::keystone::ldap_backend::suffix', String)
-  $ldap_user_tree_dn = lookup(
+  $url  = lookup('ntnuopenstack::keystone::ldap_backend::url',  String)
+  $user = lookup('ntnuopenstack::keystone::ldap_backend::user', String)
+  $password = lookup('ntnuopenstack::keystone::ldap_backend::password', String)
+  $suffix = lookup('ntnuopenstack::keystone::ldap_backend::suffix', String)
+  $user_tree_dn = lookup(
     'ntnuopenstack::keystone::ldap_backend::user_tree_dn', String
   )
-  $ldap_user_filter = lookup(
+  $user_filter = lookup(
     'ntnuopenstack::keystone::ldap_backend::user_filter', {
-    'value_type'    => Variant[Undef, String],
-    'default_value' => undef,
+      'value_type'    => Variant[Undef, String],
+      'default_value' => undef,
   })
-  $ldap_group_tree_dn = lookup(
+  $user_objectclass = lookup(
+    'ntnuopenstack::keystone::ldap_backend::user_objectclass', {
+      'value_type'    => String,
+      'default_value' => 'person',
+  })
+  $user_id_attribute = lookup(
+    'ntnuopenstack::keystone::ldap_backend::user_id_attribute', String
+  )
+  $user_name_attribute = lookup(
+    'ntnuopenstack::keystone::ldap_backend::user_name_attribute', String
+  )
+  $user_mail_attribute = lookup(
+    'ntnuopenstack::keystone::ldap_backend::user_mail_attribute', {
+      'value_type'    => String,
+      'default_value' => 'mail',
+  })
+
+  # Assume AD if we find sAMAccountName and set some AD specific defaults
+  if ($user_id_attribute == 'sAMAccountName') {
+    $user_enabled_attribute = 'userAccountControl'
+    $user_enabled_mask = 2
+    $user_enabled_default = 512
+    $group_ad_nesting = true
+    $group_members_are_ids = undef
+  } else {
+    $user_enabled_attribute = undef
+    $user_enabled_mask = undef
+    $user_enabled_default = undef
+    $group_ad_nesting = undef
+    $group_members_are_ids = true
+  }
+
+  $group_tree_dn = lookup(
     'ntnuopenstack::keystone::ldap_backend::group_tree_dn',
     String,
   )
-  $ldap_group_filter = lookup(
+  $group_filter = lookup(
     'ntnuopenstack::keystone::ldap_backend::group_filter', {
-    'value_type'    => Variant[Undef, String],
-    'default_value' => undef,
+      'value_type'    => Variant[Undef, String],
+      'default_value' => undef,
+  })
+  $group_objectclass = lookup(
+    'ntnuopenstack::keystone::ldap_backend::group_objectclass', String
+  )
+  $group_id_attribute = lookup(
+    'ntnuopenstack::keystone::ldap_backend::group_id_attribute', String
+  )
+  $group_name_attribute = lookup(
+    'ntnuopenstack::keystone::ldap_backend::group_name_attribute', String
+  )
+  $group_member_attribute = lookup(
+    'ntnuopenstack::keystone::ldap_backend::group_member_attribute', String
+  )
+  $group_desc_attribute = lookup(
+    'ntnuopenstack::keystone::ldap_backend::group_desc_attribute', {
+      'value_type'    => Variant[Undef, String],
+      'default_value' => undef,
   })
 
   require ::ntnuopenstack::repo
 
   keystone::ldap_backend { $ldap_name:
-    url                    => $ldap_url,
-    user                   => $ldap_user,
-    password               => $ldap_password,
-    suffix                 => $ldap_suffix,
+    url                    => $url,
+    user                   => $user,
+    password               => $password,
+    suffix                 => $suffix,
     query_scope            => sub,
     page_size              => 1000,
-    user_tree_dn           => $ldap_user_tree_dn,
-    user_filter            => $ldap_user_filter,
-    user_objectclass       => person,
-    user_id_attribute      => sAMAccountName,
-    user_name_attribute    => sAMAccountName,
-    user_mail_attribute    => mail,
-    user_enabled_attribute => userAccountControl,
-    user_enabled_mask      => 2,
-    user_enabled_default   => 512,
-    group_ad_nesting       => true,
-    group_tree_dn          => $ldap_group_tree_dn,
-    group_filter           => $ldap_group_filter,
-    group_objectclass      => group,
-    group_id_attribute     => sAMAccountName,
-    group_name_attribute   => sAMAccountName,
-    group_member_attribute => member,
-    group_desc_attribute   => description,
+    user_tree_dn           => $user_tree_dn,
+    user_filter            => $user_filter,
+    user_objectclass       => $user_objectclass,
+    user_id_attribute      => $user_id_attribute,
+    user_name_attribute    => $user_name_attribute,
+    user_mail_attribute    => $user_mail_attribute,
+    user_enabled_attribute => $user_enabled_attribute,
+    user_enabled_mask      => $user_enabled_mask,
+    user_enabled_default   => $user_enabled_default,
+    group_ad_nesting       => $group_ad_nesting,
+    group_tree_dn          => $group_tree_dn,
+    group_filter           => $group_filter,
+    group_objectclass      => $group_objectclass,
+    group_id_attribute     => $group_id_attribute,
+    group_name_attribute   => $group_name_attribute,
+    group_member_attribute => $group_member_attribute,
+    group_members_are_ids  => $group_members_are_ids,
+    group_desc_attribute   => $group_desc_attribute,
     use_tls                => false,
   }
 
