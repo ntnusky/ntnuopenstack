@@ -43,7 +43,6 @@ class ntnuopenstack::neutron::api {
   require ::ntnuopenstack::neutron::base
   include ::ntnuopenstack::neutron::firewall::api
   include ::ntnuopenstack::neutron::ml2::config
-  include ::profile::services::memcache::pythonclient
   include ::profile::monitoring::munin::plugin::openstack::neutronapi
 
   if($confhaproxy) {
