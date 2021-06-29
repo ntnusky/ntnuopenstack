@@ -1,7 +1,5 @@
 # Performs basic nova configuration.
 class ntnuopenstack::nova::base {
-  contain ::ntnuopenstack::common::pydb
-
   # Retrieve memcache configuration
   $memcache_servers = lookup('profile::memcache::servers', {
     'value_type'    => Array[Stdlib::IP::Address],
