@@ -25,6 +25,7 @@ class ntnuopenstack::neutron::api {
   $neutron_password = lookup('ntnuopenstack::neutron::keystone::password', String)
   $fwaas_enable = lookup('ntnuopenstack::neutron::fwaas::enabled', Boolean)
   if($fwaas_enable) {
+    include ::ntnuopenstack::neutron::services
     $sp = [
       'FIREWALL_V2:fwaas_db:neutron_fwaas.services.firewall.service_drivers.agents.agents.FirewallAgentDriver:default',
     ]
