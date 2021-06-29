@@ -28,15 +28,15 @@ class ntnuopenstack::nova::libvirt {
     vncserver_listen              => $management_ip,
   }
 
-  file { '/etc/libvirt/qemu.conf':
-    ensure => present,
-    source => 'puppet:///modules/ntnuopenstack/qemu.conf',
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644',
-    notify => Service['libvirt'],
-  }
-
-  Package['libvirt'] -> File['/etc/libvirt/qemu.conf']
+  #  file { '/etc/libvirt/qemu.conf':
+  #    ensure => present,
+  #    source => 'puppet:///modules/ntnuopenstack/qemu.conf',
+  #    owner  => 'root',
+  #    group  => 'root',
+  #    mode   => '0644',
+  #    notify => Service['libvirt'],
+  #  }
+  #
+  #  Package['libvirt'] -> File['/etc/libvirt/qemu.conf']
 }
 
