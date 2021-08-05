@@ -3,6 +3,10 @@ class ntnuopenstack::swift::radosgw {
   $endpoint_internal = lookup('ntnuopenstack::endpoint::internal')
   $keystone_password = lookup('ntnuopenstack::swift::keystone::password')
   $swift_dns_name = lookup('ntnuopenstack::swift::dns::name')
+  $keystone_roles = lookup('ntnuopenstack::swift::keystone::roles', {
+    'default_value' => [ '_member_', 'admin' ],
+    'value_type'    => Array[String],
+  })
 
   $hostname = $trusted['hostname']
 
@@ -14,7 +18,7 @@ class ntnuopenstack::swift::radosgw {
 
   ::ceph::rgw::keystone { "radosgw.${hostname}":
     rgw_keystone_url            => "${endpoint_internal}:5000",
-    rgw_keystone_accepted_roles => '_member_ admin',
+    rgw_keystone_accepted_roles => join($keystone_roles, ' '),
     rgw_keystone_admin_domain   => 'Default',
     rgw_keystone_admin_project  => 'services',
     rgw_keystone_admin_user     => 'swift',
