@@ -31,6 +31,10 @@ class ntnuopenstack::neutron::api {
     'value_type'    => Array[String],
     'default_value' => $sp,
   })
+  $register_loadbalancer = lookup('profile::haproxy::register', {
+    'value_type'    => Boolean,
+    'default_value' => true,
+  })
 
   require ::ntnuopenstack::neutron::base
   require ::ntnuopenstack::neutron::dbconnection
@@ -52,7 +56,7 @@ class ntnuopenstack::neutron::api {
   class { '::neutron::server':
     allow_automatic_l3agent_failover => true,
     allow_automatic_dhcp_failover    => true,
-    enable_proxy_headers_parsing     => $confhaproxy,
+    enable_proxy_headers_parsing     => $register_loadbalancer,
     service_providers                => $service_providers,
     sync_db                          => $sync_db,
   }
