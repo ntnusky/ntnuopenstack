@@ -1,11 +1,5 @@
 # Installs and configures the neutron api
 class ntnuopenstack::neutron::api {
-  # Determine where the database is
-  $mysql_password = lookup('ntnuopenstack::neutron::mysql::password', String)
-  $mysql_ip = lookup('ntnuopenstack::neutron::mysql::ip', Stdlib::IP::Address)
-  $database_connection = "mysql+pymysql://neutron:${mysql_password}@${mysql_ip}/neutron"
-  $sync_db = lookup('ntnuopenstack::neutron::db::sync', Boolean)
-
   # Create a list of memceche-servers.
   $cache_servers = lookup('profile::memcache::servers', {
     'value_type' => Array[Stdlib::IP::Address],
@@ -21,6 +15,7 @@ class ntnuopenstack::neutron::api {
 
   # Openstack parameters
   $region = lookup('ntnuopenstack::region', String)
+  $sync_db = lookup('ntnuopenstack::neutron::db::sync', Boolean)
   $nova_password = lookup('ntnuopenstack::nova::keystone::password', String)
   $neutron_password = lookup('ntnuopenstack::neutron::keystone::password', String)
   $fwaas_enable = lookup('ntnuopenstack::neutron::fwaas::enabled', Boolean)
@@ -42,6 +37,7 @@ class ntnuopenstack::neutron::api {
   })
 
   require ::ntnuopenstack::neutron::base
+  require ::ntnuopenstack::neutron::dbconnection
   include ::ntnuopenstack::neutron::firewall::api
   include ::ntnuopenstack::neutron::ml2::config
   include ::profile::monitoring::munin::plugin::openstack::neutronapi
@@ -61,18 +57,17 @@ class ntnuopenstack::neutron::api {
 
   # Install the neutron api
   class { '::neutron::server':
-    database_connection              => $database_connection,
-    sync_db                          => $sync_db,
     allow_automatic_l3agent_failover => true,
     allow_automatic_dhcp_failover    => true,
-    service_providers                => $service_providers,
     enable_proxy_headers_parsing     => $confhaproxy,
+    service_providers                => $service_providers,
+    sync_db                          => $sync_db,
   }
 
   # Configure nova notifications system
   class { '::neutron::server::notifications':
-    password    => $nova_password,
     auth_url    => "${keystone_admin}:5000",
+    password    => $nova_password,
     region_name => $region,
   }
 }
