@@ -31,20 +31,13 @@ class ntnuopenstack::neutron::api {
     'value_type'    => Array[String],
     'default_value' => $sp,
   })
-  $confhaproxy = lookup('ntnuopenstack::haproxy::configure::backend', {
-    'value_type'    => Boolean,
-    'default_value' => true,
-  })
 
   require ::ntnuopenstack::neutron::base
   require ::ntnuopenstack::neutron::dbconnection
   include ::ntnuopenstack::neutron::firewall::api
+  include ::ntnuopenstack::neutron::haproxy::backend
   include ::ntnuopenstack::neutron::ml2::config
   include ::profile::monitoring::munin::plugin::openstack::neutronapi
-
-  if($confhaproxy) {
-    contain ::ntnuopenstack::neutron::haproxy::backend
-  }
 
   # Configure how neutron communicates with keystone
   class { '::neutron::keystone::authtoken':
