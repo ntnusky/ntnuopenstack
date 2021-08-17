@@ -63,7 +63,4 @@ class ntnuopenstack::keystone::base {
     ssl               => false,
     access_log_format => $logformat,
   }
-  ensure_packages( ['python3-mysqldb'] , {
-    'ensure' => 'present',
-  })
 }

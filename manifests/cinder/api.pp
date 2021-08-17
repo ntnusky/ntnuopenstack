@@ -13,7 +13,6 @@ class ntnuopenstack::cinder::api {
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::cinder::base
   contain ::ntnuopenstack::cinder::firewall::server
-  include ::profile::services::memcache::pythonclient
 
   if($confhaproxy) {
     contain ::ntnuopenstack::cinder::haproxy::backend
