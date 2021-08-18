@@ -41,8 +41,8 @@ class ntnuopenstack::placement::api {
   }
 
   class { '::placement::api':
-    service_name => 'httpd',
-    sync_db      => $db_sync,
+    api_service_name => 'httpd',
+    sync_db          => $db_sync,
   }
 
   class { '::placement::keystone::authtoken':
