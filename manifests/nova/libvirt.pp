@@ -1,7 +1,20 @@
 # This class installs and configures libvirt for nova's use.
 class ntnuopenstack::nova::libvirt {
-  $nova_libvirt_type = lookup('ntnuopenstack::nova::libvirt_type')
-  $nova_libvirt_model = lookup('ntnuopenstack::nova::libvirt_model')
+  $nova_libvirt_type = lookup('ntnuopenstack::nova::libvirt_type', {
+    'default_value' => 'kvm',
+    'value_type'    => Enum['kvm', 'qemu'],
+  })
+
+  # A 'least-common-denominator' CPU model, supported by all our compute-nodes,
+  # should be configured in global hiera. In addition compute-nodes can have
+  # additional models configured in a list in their node-specific hiera.
+  $cpu_model = lookup('ntnuopenstack::nova::cpu::base_model', String)
+  $cpu_models = lookup('ntnuopenstack::nova::cpu::extra_models', {
+    'default_value' => [],
+    'value_type'    => Array[String],
+  })
+
+  # A boolean to determine if we should allow nested virtualization
   $nova_nested_virt = lookup('ntnuopenstack::nova::nested_virtualization', {
     'default_value' => false,
     'value_type'    => Boolean
@@ -19,13 +32,13 @@ class ntnuopenstack::nova::libvirt {
   }
 
   class { '::nova::compute::libvirt':
-    libvirt_cpu_mode              => 'custom',
-    libvirt_cpu_model             => $nova_libvirt_model,
-    libvirt_cpu_model_extra_flags => $cpu_model_extra_flags,
-    libvirt_disk_cachemodes       => [ 'network=writeback' ],
-    libvirt_virt_type             => $nova_libvirt_type,
-    migration_support             => true,
-    vncserver_listen              => $management_ip,
+    cpu_mode              => 'custom',
+    cpu_models            => [ $cpu_model ] + $cpu_models,
+    cpu_model_extra_flags => $cpu_model_extra_flags,
+    disk_cachemodes       => [ 'network=writeback' ],
+    migration_support     => true,
+    virt_type             => $nova_libvirt_type,
+    vncserver_listen      => $management_ip,
   }
 }
 

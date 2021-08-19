@@ -40,6 +40,7 @@ ntnuopenstack::neutron::fwaas::enabled: true
 ntnuopenstack::neutron::metadata::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 ntnuopenstack::neutron::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 
+ntnuopenstack::nova::cpu::base_model: "%{alias('ntnuopenstack::nova::libvirt_model')}"
 ntnuopenstack::nova::db::sync: "%{alias('ntnuopenstack::db::sync')}"
 ntnuopenstack::nova::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
 ntnuopenstack::nova::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
