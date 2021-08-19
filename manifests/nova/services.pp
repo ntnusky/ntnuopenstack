@@ -34,11 +34,7 @@ class ntnuopenstack::nova::services {
   }
 
   class { '::nova::scheduler::filter':
-    scheduler_default_filters => $default_filters_real,
-  }
-
-  nova_config {
-    'filter_scheduler/build_failure_weight_multiplier':
-      value => 0;
+    scheduler_default_filters       => $default_filters_real,
+    build_failure_weight_multiplier => 0,
   }
 }
