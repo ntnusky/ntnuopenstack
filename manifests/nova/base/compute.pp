@@ -30,6 +30,7 @@ class ntnuopenstack::nova::base::compute {
   }
 
   class { '::nova':
+    api_database_connection       => absent,
     database_connection           => $database_connection,
     default_transport_url         => $transport_url,
     block_device_allocate_retries => 120,
