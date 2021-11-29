@@ -41,4 +41,8 @@ class ntnuopenstack::nova::base::compute {
     auth_url    => "${internal_endpoint}:5000/v3",
     region_name => $region,
   }
+
+  nova_config {
+    'api_database/connection': ensure => absent;
+  }
 }
