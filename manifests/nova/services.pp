@@ -25,9 +25,7 @@ class ntnuopenstack::nova::services {
     'value_type'    => Integer,
   })
 
-  class { '::nova::conductor':
-    enabled => true,
-  }
+  include ::nova::conductor
 
   class { '::nova::scheduler':
     discover_hosts_in_cells_interval => $discover_interval,
