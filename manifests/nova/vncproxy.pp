@@ -40,10 +40,7 @@ class ntnuopenstack::nova::vncproxy {
   }
 
   nova::generic_service { 'vncproxy':
-    enabled        => true,
-    manage_service => true,
     package_name   => 'nova-novncproxy',
     service_name   => 'nova-novncproxy',
-    ensure_package => present,
   }
 }
