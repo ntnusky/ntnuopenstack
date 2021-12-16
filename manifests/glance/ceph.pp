@@ -4,10 +4,6 @@ class ntnuopenstack::glance::ceph {
 
   require ::profile::ceph::client
 
-  exec { '/usr/bin/ceph osd pool create images 32' :
-    unless  => '/usr/bin/ceph osd pool get images size',
-  }
-
   ceph_config {
       'client.glance/key': value => $glance_key;
   }
