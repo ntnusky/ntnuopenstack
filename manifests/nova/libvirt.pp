@@ -1,10 +1,5 @@
 # This class installs and configures libvirt for nova's use.
 class ntnuopenstack::nova::libvirt {
-  $nova_libvirt_type = lookup('ntnuopenstack::nova::libvirt_type', {
-    'default_value' => 'kvm',
-    'value_type'    => Enum['kvm', 'qemu'],
-  })
-
   # We can instruct libvirt to expose a certain CPU-model to our VM's. This is
   # useful to allow live-migration between hosts. If a model is specified A
   # 'least-common-denominator' CPU model, supported by all compute-nodes where
@@ -45,7 +40,7 @@ class ntnuopenstack::nova::libvirt {
     }
   } else {
     $cpuconfig = {
-      cpu_mode => false,
+      cpu_mode => 'host-passthrough',
     }
   }
 
@@ -53,7 +48,6 @@ class ntnuopenstack::nova::libvirt {
     cpu_model_extra_flags => $cpu_model_extra_flags,
     disk_cachemodes       => [ 'network=writeback' ],
     migration_support     => true,
-    virt_type             => $nova_libvirt_type,
     vncserver_listen      => $management_ip,
     *                     => $cpuconfig,
   }
