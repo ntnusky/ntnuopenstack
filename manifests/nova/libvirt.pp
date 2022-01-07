@@ -35,8 +35,9 @@ class ntnuopenstack::nova::libvirt {
 
   if($cpu_model) {
     $cpuconfig = {
-      cpu_mode   => 'custom',
-      cpu_models => [ $cpu_model ] + $cpu_models,
+      cpu_mode          => 'custom',
+      cpu_models        => [ $cpu_model ] + $cpu_models,
+      migration_support => true,
     }
   } else {
     $cpuconfig = {
@@ -47,7 +48,6 @@ class ntnuopenstack::nova::libvirt {
   class { '::nova::compute::libvirt':
     cpu_model_extra_flags => $cpu_model_extra_flags,
     disk_cachemodes       => [ 'network=writeback' ],
-    migration_support     => true,
     vncserver_listen      => $management_ip,
     *                     => $cpuconfig,
   }
