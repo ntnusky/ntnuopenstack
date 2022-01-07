@@ -5,10 +5,17 @@ class ntnuopenstack::nova::libvirt {
     'value_type'    => Enum['kvm', 'qemu'],
   })
 
-  # A 'least-common-denominator' CPU model, supported by all our compute-nodes,
-  # should be configured in global hiera. In addition compute-nodes can have
-  # additional models configured in a list in their node-specific hiera.
-  $cpu_model = lookup('ntnuopenstack::nova::cpu::base_model', String)
+  # We can instruct libvirt to expose a certain CPU-model to our VM's. This is
+  # useful to allow live-migration between hosts. If a model is specified A
+  # 'least-common-denominator' CPU model, supported by all compute-nodes where
+  # live-migration is relevant, should be configured in hiera. In addition
+  # compute-nodes can have additional models configured in a list in their
+  # node-specific hiera allowing some flavors to have a richer IA.
+  # If the value is not set, the VM will get the same IA as the host.
+  $cpu_model = lookup('ntnuopenstack::nova::cpu::base_model', {
+    'default_value' => undef,
+    'value_type'    => Variant[Undef, String],
+  })
   $cpu_models = lookup('ntnuopenstack::nova::cpu::extra_models', {
     'default_value' => [],
     'value_type'    => Array[String],
@@ -31,14 +38,23 @@ class ntnuopenstack::nova::libvirt {
     false => undef
   }
 
+  if($cpu_model) {
+    $cpuconfig = {
+      cpu_mode   => 'custom',
+      cpu_models => [ $cpu_model ] + $cpu_models,
+    }
+  } else {
+    $cpuconfig = {
+      cpu_mode => false,
+    }
+  }
+
   class { '::nova::compute::libvirt':
-    cpu_mode              => 'custom',
-    cpu_models            => [ $cpu_model ] + $cpu_models,
     cpu_model_extra_flags => $cpu_model_extra_flags,
     disk_cachemodes       => [ 'network=writeback' ],
     migration_support     => true,
     virt_type             => $nova_libvirt_type,
     vncserver_listen      => $management_ip,
+    *                     => $cpuconfig,
   }
 }
-
