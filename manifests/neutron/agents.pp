@@ -16,9 +16,6 @@ class ntnuopenstack::neutron::agents {
   require ::ntnuopenstack::neutron::firewall::l3agent
   require ::ntnuopenstack::repo
 
-  # TODO: We should deprecate the use of neutronnet-nodes as bgp-dragents. 
-  include ::ntnuopenstack::neutron::bgp
-
   class { '::neutron::agents::metadata':
     shared_secret => $metadata_secret,
     metadata_host => $metadata_ip,

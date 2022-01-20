@@ -1,11 +1,5 @@
-# Creates the databases for the placement service.
+# Installs and configures Placement API
 class ntnuopenstack::placement::api {
-  # Determine database-settings
-  $mysql_pass = lookup('ntnuopenstack::placement::mysql::password', String)
-  $mysql_ip = lookup('ntnuopenstack::placement::mysql::ip', Stdlib::IP::Address)
-  $database_connection = "mysql+pymysql://placement:${mysql_pass}@${mysql_ip}/placement"
-  $db_sync = lookup('ntnuopenstack::placement::db::sync', Boolean)
-
   # Retrieve openstack-settings
   $region = lookup('ntnuopenstack::region', String)
   $keystone_password = lookup('ntnuopenstack::placement::keystone::password',
@@ -14,6 +8,7 @@ class ntnuopenstack::placement::api {
                                 Stdlib::Httpurl)
   $keystone_public = lookup('ntnuopenstack::keystone::endpoint::public',
                                 Stdlib::Httpurl)
+  $db_sync = lookup('ntnuopenstack::placement::db::sync', Boolean)
 
   # Retrieve addresses for the memcached servers
   $cache_servers = lookup('profile::memcache::servers', {
@@ -31,6 +26,7 @@ class ntnuopenstack::placement::api {
   })
 
   require ::ntnuopenstack::repo
+  include ::ntnuopenstack::placement::dbconnection
   include ::ntnuopenstack::placement::firewall::server
 
   if($confhaproxy) {
@@ -44,8 +40,9 @@ class ntnuopenstack::placement::api {
     sync_db => $db_sync,
   }
 
-  class { '::placement::db':
-    database_connection => $database_connection,
+  class { '::placement::api':
+    api_service_name => 'httpd',
+    sync_db          => $db_sync,
   }
 
   class { '::placement::keystone::authtoken':

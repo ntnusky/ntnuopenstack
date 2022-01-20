@@ -4,6 +4,10 @@ class ntnuopenstack::nova::vncproxy {
   include ::ntnuopenstack::nova::firewall::vncproxy
   require ::ntnuopenstack::repo
 
+  $enabled = lookup('ntnuopenstack::enabled', {
+    'default_value' => true,
+    'value_type'    => Boolean,
+  })
   $host = lookup('ntnuopenstack::nova::vncproxy::host')
   $port = lookup('ntnuopenstack::nova::vncproxy::port', {
     'default_value' => 6080,
@@ -40,10 +44,8 @@ class ntnuopenstack::nova::vncproxy {
   }
 
   nova::generic_service { 'vncproxy':
-    enabled        => true,
-    manage_service => true,
-    package_name   => 'nova-novncproxy',
-    service_name   => 'nova-novncproxy',
-    ensure_package => present,
+    enabled      => $enabled,
+    package_name => 'nova-novncproxy',
+    service_name => 'nova-novncproxy',
   }
 }

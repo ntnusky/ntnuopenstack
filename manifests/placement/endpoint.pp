@@ -1,4 +1,4 @@
-# Installs and configures Placement API
+# Configures the placement API endpoint in keystone 
 class ntnuopenstack::placement::endpoint {
   # Openstack settings
   $region = lookup('ntnuopenstack::region', String)

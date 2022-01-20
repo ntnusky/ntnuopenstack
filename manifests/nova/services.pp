@@ -25,20 +25,14 @@ class ntnuopenstack::nova::services {
     'value_type'    => Integer,
   })
 
-  class { '::nova::conductor':
-    enabled => true,
-  }
+  include ::nova::conductor
 
   class { '::nova::scheduler':
     discover_hosts_in_cells_interval => $discover_interval,
   }
 
   class { '::nova::scheduler::filter':
-    scheduler_default_filters => $default_filters_real,
-  }
-
-  nova_config {
-    'filter_scheduler/build_failure_weight_multiplier':
-      value => 0;
+    scheduler_default_filters       => $default_filters_real,
+    build_failure_weight_multiplier => 0,
   }
 }
