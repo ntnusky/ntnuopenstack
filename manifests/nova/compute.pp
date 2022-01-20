@@ -14,7 +14,6 @@ class ntnuopenstack::nova::compute {
   $management_ip = getvar("::ipaddress_${management_if}")
 
   require ::ntnuopenstack::nova::compute::base
-  contain ::ntnuopenstack::nova::compute::ceph
   contain ::ntnuopenstack::nova::compute::libvirt
   contain ::ntnuopenstack::nova::common::neutron
   include ::ntnuopenstack::nova::munin::compute
