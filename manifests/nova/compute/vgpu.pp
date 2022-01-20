@@ -5,11 +5,6 @@ class ntnuopenstack::nova::compute::vgpu {
   # here even though this class is not using it...
   $vgpu_type = lookup('nova::compute::vgpu::vgpu_types_device_addresses_mapping', Hash)
 
-  $numvfs = lookup('ntnuopenstack::nova::vgpu::numvfs', {
-    'value_type'    => Variant[Boolean, Integer],
-    'default_value' => false,
-  })
-
   include ::profile::monitoring::munin::plugin::vgpu
 
   # Ensure SR-IOV virtual functions are enabled on boot
@@ -20,17 +15,7 @@ class ntnuopenstack::nova::compute::vgpu {
     environment => 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin',
     user        => 'root',
     special     => 'reboot',
-  }
-
-  # This can be removed when nova bug #1906494 is fixed
-  if ($numvfs) {
-    file_line { 'sriov-manage':
-      ensure => present,
-      path   => '/usr/lib/nvidia/sriov-manage',
-      line   => "local numvfs=${numvfs}",
-      match  => 'local numvfs=\$2',
-      notify => Exec['sriov-manage-firstrun'],
-    }
+    notify      => Exec['sriov-manage-firstrun'],
   }
 
   exec { 'sriov-manage-firstrun':
