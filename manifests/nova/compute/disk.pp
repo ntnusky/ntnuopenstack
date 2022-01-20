@@ -23,9 +23,14 @@ class ntnuopenstack::nova::compute::disk {
   }
 
   filesystem { '/dev/novacompute/ephemeral':
-    ensure            => present,
-    fs_type           => 'ext4',
-    mountpath         => '/var/lib/nova/instances',
-    mountpath_require => true,
+    ensure  => present,
+    fs_type => 'ext4',
+  }
+
+  mount { '/var/lib/nova/instances':
+    ensure  => 'mounted',
+    device  => '/dev/novacompute/ephemeral',
+    fstype  => 'ext4',
+    require => Filesystem['/dev/novacompute/ephemeral'],
   }
 }
