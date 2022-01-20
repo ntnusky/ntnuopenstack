@@ -1,6 +1,6 @@
 # This class installs and configures nova for a compute-node.
 class ntnuopenstack::nova::compute (
-  Boolan $localdisk,
+  Boolean $localdisk,
 ) {
   require ::ntnuopenstack::nova::compute::base
   contain ::ntnuopenstack::nova::compute::libvirt
