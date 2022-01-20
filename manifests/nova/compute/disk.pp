@@ -33,4 +33,8 @@ class ntnuopenstack::nova::compute::disk {
     fstype  => 'ext4',
     require => Filesystem['/dev/novacompute/ephemeral'],
   }
+
+  nova_config {
+    'libvirt/images_type': ensure => absent;
+  }
 }
