@@ -1,5 +1,5 @@
 # Installs the nova vnc proxy
-class ntnuopenstack::nova::vncproxy {
+class ntnuopenstack::nova::services::vncproxy {
   include ::nova::deps
   include ::ntnuopenstack::nova::firewall::vncproxy
   require ::ntnuopenstack::repo

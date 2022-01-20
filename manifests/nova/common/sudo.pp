@@ -1,5 +1,5 @@
 # Configures sudo for the nova service.
-class ntnuopenstack::nova::sudo {
+class ntnuopenstack::nova::common::sudo {
   sudo::conf { 'nova_sudoers':
     ensure         => 'present',
     source         => 'puppet:///modules/ntnuopenstack/sudo/nova_sudoers',

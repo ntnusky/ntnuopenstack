@@ -1,5 +1,5 @@
 # This class installs and configures libvirt for nova's use.
-class ntnuopenstack::nova::libvirt {
+class ntnuopenstack::nova::compute::libvirt {
   # We can instruct libvirt to expose a certain CPU-model to our VM's. This is
   # useful to allow live-migration between hosts. If a model is specified A
   # 'least-common-denominator' CPU model, supported by all compute-nodes where
@@ -25,8 +25,8 @@ class ntnuopenstack::nova::libvirt {
   $management_if = lookup('profile::interfaces::management')
   $management_ip = getvar("::ipaddress_${management_if}")
 
+  require ::ntnuopenstack::nova::compute::base
   require ::ntnuopenstack::repo
-  require ::ntnuopenstack::nova::base::compute
 
   $cpu_model_extra_flags = $nova_nested_virt ? {
     true  => 'vmx',

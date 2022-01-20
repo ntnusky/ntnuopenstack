@@ -1,10 +1,5 @@
 # Installs various nova services.
 class ntnuopenstack::nova::services {
-  require ::ntnuopenstack::nova::base
-  include ::ntnuopenstack::nova::neutron
-  include ::ntnuopenstack::nova::vncproxy
-  require ::ntnuopenstack::repo
-
   $default_filters = [
     'AggregateImagePropertiesIsolation',
     'AvailabilityZoneFilter',
@@ -26,6 +21,10 @@ class ntnuopenstack::nova::services {
   })
 
   include ::nova::conductor
+  include ::ntnuopenstack::nova::common::neutron
+  require ::ntnuopenstack::nova::services::base
+  include ::ntnuopenstack::nova::services::vncproxy
+  require ::ntnuopenstack::repo
 
   class { '::nova::scheduler':
     discover_hosts_in_cells_interval => $discover_interval,

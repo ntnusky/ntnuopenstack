@@ -6,6 +6,8 @@ class ntnuopenstack::nova::api::metadata {
   })
   $neutron_secret = lookup('ntnuopenstack::nova::sharedmetadataproxysecret')
 
+  require ::ntnuopenstack::nova::services::base
+
   if($confhaproxy) {
     contain ::ntnuopenstack::nova::haproxy::backend::metadata
     $header_parsing = true

@@ -12,14 +12,13 @@ class ntnuopenstack::nova::compute {
 
   $management_if = lookup('profile::interfaces::management')
   $management_ip = getvar("::ipaddress_${management_if}")
-  $nova_uuid = lookup('ntnuopenstack::nova::ceph::uuid')
 
-  require ::ntnuopenstack::repo
-  require ::ntnuopenstack::nova::base::compute
-  contain ::ntnuopenstack::nova::ceph
-  contain ::ntnuopenstack::nova::neutron
-  contain ::ntnuopenstack::nova::libvirt
+  require ::ntnuopenstack::nova::compute::base
+  contain ::ntnuopenstack::nova::compute::ceph
+  contain ::ntnuopenstack::nova::compute::libvirt
+  contain ::ntnuopenstack::nova::common::neutron
   include ::ntnuopenstack::nova::munin::compute
+  require ::ntnuopenstack::repo
 
   if($cert) {
     $protocol = 'https'
@@ -37,16 +36,13 @@ class ntnuopenstack::nova::compute {
     resume_guests_state_on_host_boot => true,
   }
 
+  class { '::ntnuopenstack::nova::compute::ceph':
+    ephemeral_storage => true,
+  }
+
   user { 'nova':
     shell => '/bin/bash',
     home  => '/var/lib/nova',
-  }
-
-  class { '::nova::compute::rbd':
-    libvirt_rbd_user        => 'nova',
-    libvirt_images_rbd_pool => 'volumes',
-    libvirt_rbd_secret_uuid => $nova_uuid,
-    manage_ceph_client      => false,
   }
 
   $install_sensu = lookup('profile::sensu::install', {

@@ -23,10 +23,10 @@ class ntnuopenstack::nova::api::compute {
   $public_endpoint = lookup('ntnuopenstack::endpoint::public')
 
   require ::ntnuopenstack::repo
-  require ::ntnuopenstack::nova::base
+  require ::ntnuopenstack::nova::services::base
   contain ::ntnuopenstack::nova::firewall::server
   include ::ntnuopenstack::nova::munin::api
-  include ::ntnuopenstack::nova::neutron
+  include ::ntnuopenstack::nova::common::neutron
 
   contain ::ntnuopenstack::nova::haproxy::backend::api
 

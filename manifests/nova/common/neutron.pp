@@ -1,5 +1,5 @@
 # Configures nova to use neutron for networking.
-class ntnuopenstack::nova::neutron {
+class ntnuopenstack::nova::common::neutron {
   $region = lookup('ntnuopenstack::region', String)
   $neutron_password = lookup('ntnuopenstack::neutron::keystone::password', String)
 
