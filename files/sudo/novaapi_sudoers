@@ -1,0 +1,2 @@
+# Allow to trigger the discovery of new compute-nodes without using a password
+%administrator ALL=(root) NOPASSWD: /usr/bin/nova-manage cell_v2 discover_hosts
