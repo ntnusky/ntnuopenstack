@@ -34,6 +34,13 @@ class ntnuopenstack::nova::compute::disk {
     require => Filesystem['/dev/novacompute/ephemeral'],
   }
 
+  file { '/var/lib/nova/instances':
+    ensure  => 'directory',
+    group   => 'nova',
+    owner   => 'nova',
+    require => Mount['/var/lib/nova/instances'],
+  }
+
   nova_config {
     'libvirt/images_type': ensure => absent;
   }
