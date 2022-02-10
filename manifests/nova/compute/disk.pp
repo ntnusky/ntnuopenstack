@@ -8,7 +8,7 @@ class ntnuopenstack::nova::compute::disk {
   $type = lookup('ntnuopenstack::compute::disk::type', {
     'default_value' => 'filesystem',
     'value_type'    => Enum['filesystem', 'lvm'],
-  }
+  })
 
   physical_volume { $blockdevice:
     ensure    => present,
