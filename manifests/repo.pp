@@ -15,6 +15,7 @@ class ntnuopenstack::repo {
     include ::profile::repo::powertools
     class { '::openstack_extras::repo::redhat::redhat':
       package_require => true,
+      stream          => true,
     }
   } else {
     fail("Operating system family ${::osfamily} is not supported.")
