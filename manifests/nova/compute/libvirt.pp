@@ -16,6 +16,14 @@ class ntnuopenstack::nova::compute::libvirt {
     'value_type'    => Array[String],
   })
 
+  # Allow to define a libvirt machine-type. For instance to allow VM's to have
+  # more than 1TB of memory.
+  # An example of a valid value: 'x86_64=pc-i440fx-focal-hpb'
+  $machine_type = lookup('ntnuopenstack::nova::libvirt::machine_type', {
+    'default_value' => undef,
+    'value_type'    => Variant[Undef, String],
+  })
+
   # A boolean to determine if we should allow nested virtualization
   $nova_nested_virt = lookup('ntnuopenstack::nova::nested_virtualization', {
     'default_value' => false,
@@ -48,6 +56,7 @@ class ntnuopenstack::nova::compute::libvirt {
   class { '::nova::compute::libvirt':
     cpu_model_extra_flags => $cpu_model_extra_flags,
     disk_cachemodes       => [ 'network=writeback' ],
+    hw_machine_type       => $machine_type,
     vncserver_listen      => $management_ip,
     *                     => $cpuconfig,
   }
