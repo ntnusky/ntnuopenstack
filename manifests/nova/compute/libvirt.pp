@@ -63,5 +63,6 @@ class ntnuopenstack::nova::compute::libvirt {
 
   class { '::profile::services::libvirt::architectures':
     require => Class['::nova::compute::libvirt'],
+    notify  => Service['libvirt'],
   }
 }
