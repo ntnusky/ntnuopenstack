@@ -60,4 +60,8 @@ class ntnuopenstack::nova::compute::libvirt {
     vncserver_listen      => $management_ip,
     *                     => $cpuconfig,
   }
+
+  class { '::profile::services::libvirt::architectures':
+    require => Class['::nova::compute::libvirt'],
+  }
 }
