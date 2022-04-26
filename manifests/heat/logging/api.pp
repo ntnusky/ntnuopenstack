@@ -4,6 +4,6 @@ class ntnuopenstack::heat::logging::api {
     'heat-api',
     'heat-api-cfn',
   ]:
-    project => 'cinder',
+    project => 'heat',
   }
 }
