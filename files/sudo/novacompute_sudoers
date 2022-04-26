@@ -1,0 +1,8 @@
+# Also let administrators administer the nova-compute when password is
+# supplied.
+%administrator ALL=(root) /bin/systemctl stop nova-compute
+%administrator ALL=(root) /bin/systemctl start nova-compute
+%administrator ALL=(root) /bin/systemctl restart nova-compute
+
+# Allow administrators to see the nova-compute status
+%administrator ALL=(root) NOPASSWD: /bin/systemctl status nova-compute
