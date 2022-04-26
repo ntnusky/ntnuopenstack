@@ -14,7 +14,7 @@ class ntnuopenstack::nova::compute::logging {
       'pattern' => '^[0-9]{4}-[0-9]{2}-[0-9]{2}',
       'negate'  => 'true',
       'match'   => 'after',
-    }
+    },
     tags  => [ 'openstack', 'nova', 'nova-compute' ],
   }
 }
