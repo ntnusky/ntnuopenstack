@@ -5,7 +5,7 @@ define ntnuopenstack::common::logging (
 ){
   profile::utilities::logging::file { $name :
     paths     => [
-      "/var/log/${project}/${name}",
+      "/var/log/${project}/${name}.log",
     ] + $extra_paths,
     multiline => {
       'type'    => 'pattern',
