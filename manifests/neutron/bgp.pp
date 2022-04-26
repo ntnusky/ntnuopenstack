@@ -6,6 +6,7 @@ class ntnuopenstack::neutron::bgp {
   })
 
   require ::ntnuopenstack::neutron::base
+  include ::ntnuopenstack::neutron::logging::dragent
   require ::ntnuopenstack::repo
 
   if($bgp_router_id != '0.0.0.0') {

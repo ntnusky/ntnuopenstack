@@ -7,6 +7,7 @@ class ntnuopenstack::heat::engine {
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::heat::base
   include ::ntnuopenstack::heat::deps
+  include ::ntnuopenstack::heat::logging::engine
 
   class { '::heat::engine':
     auth_encryption_key           => $auth_encryption_key,

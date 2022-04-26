@@ -28,6 +28,8 @@ class ntnuopenstack::placement::api {
   require ::ntnuopenstack::repo
   include ::ntnuopenstack::placement::dbconnection
   include ::ntnuopenstack::placement::firewall::server
+  # Placement logs all activity through apache-logs.
+  include ::profile::services::apache::logging
 
   if($confhaproxy) {
     contain ::ntnuopenstack::placement::haproxy::backend

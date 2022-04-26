@@ -8,6 +8,7 @@ class ntnuopenstack::keystone {
   require ::ntnuopenstack::keystone::base
   contain ::ntnuopenstack::keystone::endpoint
   contain ::ntnuopenstack::keystone::firewall::server
+  include ::ntnuopenstack::keystone::logging
   contain ::ntnuopenstack::keystone::ldap
   require ::ntnuopenstack::repo
   include ::profile::monitoring::munin::plugin::openstack::keystone
