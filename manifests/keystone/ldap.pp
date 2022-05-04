@@ -106,4 +106,6 @@ class ntnuopenstack::keystone::ldap {
   keystone_domain_config {
     "${ldap_name}::identity/list_limit": value   => '100';
   }
+
+  Keystone::Ldap_backend[$ldap_name] ~> Exec<| title == 'restart_keystone' |>
 }
