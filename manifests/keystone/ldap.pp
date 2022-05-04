@@ -36,7 +36,7 @@ class ntnuopenstack::keystone::ldap {
     $user_enabled_mask = 2
     $user_enabled_default = 512
     $group_ad_nesting = true
-    $group_members_are_ids = undef
+    $group_members_are_ids = false
   } else {
     $user_enabled_attribute = undef
     $user_enabled_mask = undef
