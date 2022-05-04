@@ -75,6 +75,7 @@ class ntnuopenstack::keystone::ldap {
   require ::ntnuopenstack::repo
 
   keystone::ldap_backend { $ldap_name:
+    create_domain_entry    => true,
     url                    => $url,
     user                   => $user,
     password               => $password,
@@ -104,10 +105,5 @@ class ntnuopenstack::keystone::ldap {
 
   keystone_domain_config {
     "${ldap_name}::identity/list_limit": value   => '100';
-  }
-
-  keystone_domain { $ldap_name:
-    ensure  => present,
-    enabled => true,
   }
 }
