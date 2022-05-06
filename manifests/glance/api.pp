@@ -30,13 +30,15 @@ class ntnuopenstack::glance::api {
     'value_type'    => Hash[String, String],
     'default_value' => {'raw' => '', 'qcow2' => ''}
   })
-  $disk_formats_real = join(keys($disk_formats), ',')
+  $container_formats = lookup('ntnuopenstack::glance::container_formats', {
+    'value_type'    => Array[String],
+    'default_value' => ['bare'],
+  })
 
   require ::ntnuopenstack::repo
   contain ::ntnuopenstack::glance::ceph
   include ::ntnuopenstack::glance::dbconnection
   contain ::ntnuopenstack::glance::firewall::server::api
-  include ::ntnuopenstack::glance::formats
   include ::ntnuopenstack::glance::horizon
   include ::ntnuopenstack::glance::sudo
   include ::ntnuopenstack::glance::rabbit
@@ -53,7 +55,8 @@ class ntnuopenstack::glance::api {
     # ::glance::api::authtoken.
     auth_strategy                => '',
     default_backend              => 'ceph-default',
-    disk_formats                 => $disk_formats_real,
+    container_formats            => $container_formats,
+    disk_formats                 => keys($disk_formats),
     enabled_backends             => ['ceph-default:rbd'],
     enable_proxy_headers_parsing => $confhaproxy,
     show_image_direct_url        => true,
