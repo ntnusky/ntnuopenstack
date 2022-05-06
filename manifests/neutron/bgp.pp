@@ -12,10 +12,16 @@ class ntnuopenstack::neutron::bgp {
     class { '::neutron::agents::bgp_dragent':
       bgp_router_id => $bgp_router_id,
     }
+    neutron_config { 'DEFAULT/bgp_drscheduler_driver' :
+      value => 'neutron_dynamic_routing.services.bgp.scheduler.bgp_dragent_scheduler.StaticScheduler',
+    }
   } else {
     class { '::neutron::agents::bgp_dragent':
       package_ensure => 'absent',
       enabled        => false,
+    }
+    neutron_config { 'DEFAULT/bgp_drscheduler_driver' :
+      ensure => 'abesent',
     }
   }
 }
