@@ -51,10 +51,4 @@ class ntnuopenstack::nova::compute::ceph (
     manage_ceph_client      => false,
     ephemeral_storage       => $ephemeral_storage,
   }
-
-  class { '::nova::glance':
-    enable_rbd_download => true,
-    rbd_user            => 'nova',
-    rbd_pool            => 'images',
-  }
 }
