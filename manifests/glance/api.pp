@@ -1,9 +1,5 @@
 # Installs and configures the glance API
 class ntnuopenstack::glance::api {
-  # Determine where the database is
-  $mysql_pass= lookup('ntnuopenstack::glance::mysql::password', String)
-  $mysql_ip = lookup('ntnuopenstack::glance::mysql::ip', Stdlib::IP::Address)
-  $database_connection = "mysql+pymysql://glance:${mysql_pass}@${mysql_ip}/glance"
   $db_sync = lookup('ntnuopenstack::glance::db::sync', Boolean)
 
   # Openstack parameters
@@ -38,6 +34,7 @@ class ntnuopenstack::glance::api {
 
   require ::ntnuopenstack::repo
   contain ::ntnuopenstack::glance::ceph
+  include ::ntnuopenstack::glance::dbconnection
   contain ::ntnuopenstack::glance::firewall::server::api
   include ::ntnuopenstack::glance::formats
   include ::ntnuopenstack::glance::horizon
@@ -55,7 +52,6 @@ class ntnuopenstack::glance::api {
     # Auth_strategy is blank to prevent glance::api from including
     # ::glance::api::authtoken.
     auth_strategy                => '',
-    database_connection          => $database_connection,
     default_backend              => 'ceph-default',
     disk_formats                 => $disk_formats_real,
     enabled_backends             => ['ceph-default:rbd'],
