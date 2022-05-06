@@ -92,10 +92,6 @@ class ntnuopenstack::horizon::base {
     ],
     image_backend                  => $image_backend,
     manage_memcache_package        => false,
-    neutron_options                => {
-      enable_firewall => true,
-      enable_lb       => true,
-    },
     instance_options               => {
       create_volume => false,
     },
