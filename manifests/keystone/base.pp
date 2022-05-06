@@ -28,6 +28,7 @@ class ntnuopenstack::keystone::base {
     'default_value' => 14400,   # Default token lifetime is 14400 seconds (4h)
   })
 
+  include ::keystone::healthcheck
   include ::ntnuopenstack::keystone::bootstrap
   include ::ntnuopenstack::keystone::cache
   include ::ntnuopenstack::keystone::dbconnection
