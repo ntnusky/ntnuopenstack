@@ -11,11 +11,17 @@ class ntnuopenstack::keystone::bootstrap {
                                 Stdlib::Httpurl)
   $region   = lookup('ntnuopenstack::region', String)
 
+  $bootstrap = lookup('ntnuopenstack::keystone::bootstrap', {
+    'default_value' => false,
+    'value_type'    => Boolean,
+  })
+
   class { '::keystone::bootstrap':
-    email        => $email,
-    password     => $password,
     admin_url    => "${admin}:5000",
+    bootstrap    => $bootstrap,
+    email        => $email,
     internal_url => "${internal}:5000",
+    password     => $password,
     public_url   => "${public}:5000",
     region       => $region,
   }
