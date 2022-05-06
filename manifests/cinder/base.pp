@@ -21,8 +21,8 @@ class ntnuopenstack::cinder::base {
   }
 
   require ::ntnuopenstack::repo
+  include ::ntnuopenstack::cinder::dbconnection
   require ::ntnuopenstack::cinder::sudo
-  include ::ntnuopenstack::dbconnection
 
   class { '::cinder':
     default_transport_url => $transport_url,
