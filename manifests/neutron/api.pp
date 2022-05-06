@@ -67,4 +67,8 @@ class ntnuopenstack::neutron::api {
     password    => $nova_password,
     region_name => $region,
   }
+
+  neutron_config { 'DEFAULT/bgp_drscheduler_driver' :
+    value => 'neutron_dynamic_routing.services.bgp.scheduler.bgp_dragent_scheduler.StaticScheduler',
+  }
 }
