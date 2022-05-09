@@ -2,6 +2,9 @@
 class ntnuopenstack::nova::compute (
   Boolean $localdisk,
 ) {
+  ## TODO: 
+  # Use nova::compute::provider for GPU-traits in placement
+
   require ::ntnuopenstack::nova::compute::base
   include ::ntnuopenstack::nova::compute::service
   contain ::ntnuopenstack::nova::common::neutron

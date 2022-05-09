@@ -24,6 +24,7 @@ class ntnuopenstack::nova::compute::service {
 
   class { '::nova::compute':
     enabled                          => true,
+    block_device_allocate_retries    => 120,
     vnc_enabled                      => true,
     vncserver_proxyclient_address    => $management_ip,
     vncproxy_host                    => $host,

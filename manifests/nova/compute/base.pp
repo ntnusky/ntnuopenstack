@@ -1,17 +1,13 @@
 # Basic nova configuration for compute nodes.
 class ntnuopenstack::nova::compute::base {
-  include ::ntnuopenstack::nova::common::placement
-  include ::ntnuopenstack::nova::common::sudo
+  include ::ntnuopenstack::nova::common::base
   include ::ntnuopenstack::nova::firewall::compute
   require ::ntnuopenstack::repo
 
-  class { '::ntnuopenstack::nova::common::base':
-    extra_options => {
-      'block_device_allocate_retries' => 120,
-    },
-  }
-
+  # The compute-nodes have falsibly been configured with database-parameters.
+  # They are not needed there, and should thus be removed.
   nova_config {
+    'database/connection':     ensure => absent;
     'api_database/connection': ensure => absent;
   }
 }

@@ -27,6 +27,7 @@ class ntnuopenstack::nova::api::compute {
   contain ::ntnuopenstack::nova::firewall::server
   include ::ntnuopenstack::nova::munin::api
   include ::ntnuopenstack::nova::common::neutron
+  include ::ntnuopenstack::nova::dbconnection
 
   contain ::ntnuopenstack::nova::haproxy::backend::api
 

@@ -1,15 +1,9 @@
-# Performs the common nova configuration.
+# Performs common base-configuration of nova.
 class ntnuopenstack::nova::common::base (
-  $extra_options = {},
+  Hash    $extra_options = {},
 ){
-  # Retrieve mysql parameters
-  $mysql_password = lookup('ntnuopenstack::nova::mysql::password')
-  $mysql_ip = lookup('ntnuopenstack::nova::mysql::ip', {
-      'value_type' => Stdlib::IP::Address,
-  })
-
-  $db_con = "mysql+pymysql://nova:${mysql_password}@${mysql_ip}/nova"
-  $api_db_con = "mysql+pymysql://nova_api:${mysql_password}@${mysql_ip}/nova_api"
+  include ::ntnuopenstack::nova::common::placement
+  include ::ntnuopenstack::nova::common::sudo
 
   # RabbitMQ connection-information
   $rabbitservers = lookup('profile::rabbitmq::servers', {
@@ -29,7 +23,6 @@ class ntnuopenstack::nova::common::base (
   $transport_url = lookup('ntnuopenstack::transport::url')
 
   class { '::nova':
-    database_connection   => $db_con,
     default_transport_url => $transport_url,
     *                     => $ha_transport_conf + $extra_options,
   }
