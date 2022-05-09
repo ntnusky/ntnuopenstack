@@ -9,7 +9,9 @@ class ntnuopenstack::nova::dbconnection {
   $db_con = "mysql+pymysql://nova:${mysql_password}@${mysql_ip}/nova"
   $api_db_con = "mysql+pymysql://nova_api:${mysql_password}@${mysql_ip}/nova_api"
 
-  ::Nova::Db {
+  include ::nova::db
+
+  Nova::Db {
     api_database_connection => $api_db_con,
     database_connection     => $db_con,
   }
