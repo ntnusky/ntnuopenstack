@@ -8,6 +8,7 @@ class ntnuopenstack::nova::services::base {
 
   include ::ntnuopenstack::nova::common::base
   include ::ntnuopenstack::nova::common::cache
+  require ::ntnuopenstack::nova::dbconnection
   require ::ntnuopenstack::repo
 
   nova_config {
