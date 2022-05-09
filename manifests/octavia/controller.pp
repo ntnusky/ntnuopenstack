@@ -10,8 +10,6 @@ class ntnuopenstack::octavia::controller {
   $health_managers = lookup('ntnuopenstack::octavia::health::managers',
                         Array[String])
   $controller_ip_port_list = join($health_managers, ', ')
-  $spare_pool_size = lookup('ntnuopenstack::octavia::amphora::spares', Integer,
-      'first', 0)
   $management_if = lookup('profile::interfaces::management', String)
   $mip = $facts['networking']['interfaces'][$management_if]['ip']
   $management_ipv4 = lookup(
@@ -46,6 +44,5 @@ class ntnuopenstack::octavia::controller {
   }
 
   class { '::octavia::housekeeping':
-    spare_amphora_pool_size => $spare_pool_size,
   }
 }
