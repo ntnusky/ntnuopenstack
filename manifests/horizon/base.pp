@@ -79,6 +79,7 @@ class ntnuopenstack::horizon::base {
 
   class { '::horizon':
     allowed_hosts                  => [$::fqdn, $server_name],
+    compress_offline               => false,
     default_theme                  => 'default',
     enable_secure_proxy_ssl_header => $haproxy,
     help_url                       => $help_url,
