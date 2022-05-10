@@ -15,7 +15,9 @@ class ntnuopenstack::nova::compute (
   # not.
   class { '::ntnuopenstack::nova::compute::libvirt':
     localdisk => $localdisk,
+    before    => Class['::ntnuopenstack::nova::compute::service'],
   }
+
 
   # Determine if sensu should be installed, and in that case include a sensu
   # subscription.
