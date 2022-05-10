@@ -15,7 +15,6 @@ class ntnuopenstack::nova::compute (
   # not.
   class { '::ntnuopenstack::nova::compute::libvirt':
     localdisk => $localdisk,
-    before    => Class['::ntnuopenstack::nova::compute::service'],
   }
 
 
