@@ -16,10 +16,4 @@ class ntnuopenstack::nova::compute::disk {
     createonly       => true,
     physical_volumes => $blockdevice,
   }
-
-  class { '::nova::glance':
-    enable_rbd_download => true,
-    rbd_user            => 'nova',
-    rbd_pool            => 'glance',
-  }
 }
