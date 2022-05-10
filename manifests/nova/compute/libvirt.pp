@@ -56,6 +56,8 @@ class ntnuopenstack::nova::compute::libvirt (
       require ::ntnuopenstack::nova::compute::disk::lvm
       $images_type = 'lvm'
     }
+
+    Class['::nova::glance'] -> Class['::nova:compute']
   } else {
     $images_type = 'rbd'
   }
