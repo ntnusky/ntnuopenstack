@@ -21,9 +21,5 @@ class ntnuopenstack::nova::compute::disk {
     enable_rbd_download => true,
     rbd_user            => 'nova',
     rbd_pool            => 'glance',
-    before              => [
-      Class['::nova'],
-      Class['::nova::compute'],
-    ],
   }
 }
