@@ -13,7 +13,7 @@ class ntnuopenstack::swift::radosgw {
   ::ceph::rgw { "radosgw.${hostname}":
     pkg_radosgw  => 'radosgw',
     rgw_dns_name => $swift_dns_name,
-    user         => 'www-data',
+    user         => 'ceph',
   }
 
   ::ceph::rgw::keystone { "radosgw.${hostname}":

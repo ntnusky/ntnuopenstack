@@ -40,6 +40,7 @@ class ntnuopenstack::neutron::api {
   require ::ntnuopenstack::neutron::dbconnection
   include ::ntnuopenstack::neutron::firewall::api
   include ::ntnuopenstack::neutron::haproxy::backend
+  include ::ntnuopenstack::neutron::logging::api
   include ::ntnuopenstack::neutron::ml2::config
   include ::profile::monitoring::munin::plugin::openstack::neutronapi
 

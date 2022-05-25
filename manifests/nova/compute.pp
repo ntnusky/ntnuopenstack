@@ -4,10 +4,12 @@ class ntnuopenstack::nova::compute (
 ) {
   ## TODO: 
   # Use nova::compute::provider for GPU-traits in placement
-
-  require ::ntnuopenstack::nova::compute::base
-  include ::ntnuopenstack::nova::compute::service
   contain ::ntnuopenstack::nova::common::neutron
+  require ::ntnuopenstack::nova::compute::base
+  contain ::ntnuopenstack::nova::compute::libvirt
+  include ::ntnuopenstack::nova::compute::logging
+  include ::ntnuopenstack::nova::compute::service
+  include ::ntnuopenstack::nova::compute::sudo
   include ::ntnuopenstack::nova::munin::compute
   require ::ntnuopenstack::repo
 

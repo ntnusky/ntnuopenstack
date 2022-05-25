@@ -4,6 +4,7 @@ class ntnuopenstack::magnum {
   require ::ntnuopenstack::common
   include ::ntnuopenstack::magnum::api
   include ::ntnuopenstack::magnum::params
+  include ::profile::services::apache::logging
 
   $package_ensure = $::ntnuopenstack::magnum::params::package_ensure
 

@@ -7,6 +7,7 @@ class ntnuopenstack::heat::api {
 
   require ::ntnuopenstack::heat::base
   require ::ntnuopenstack::heat::firewall::api
+  include ::ntnuopenstack::heat::logging::api
   require ::ntnuopenstack::repo
 
   if($confhaproxy) {
