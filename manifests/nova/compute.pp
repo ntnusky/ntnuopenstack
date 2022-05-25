@@ -6,7 +6,6 @@ class ntnuopenstack::nova::compute (
   # Use nova::compute::provider for GPU-traits in placement
   contain ::ntnuopenstack::nova::common::neutron
   require ::ntnuopenstack::nova::compute::base
-  contain ::ntnuopenstack::nova::compute::libvirt
   include ::ntnuopenstack::nova::compute::logging
   include ::ntnuopenstack::nova::compute::service
   include ::ntnuopenstack::nova::compute::sudo
@@ -18,7 +17,6 @@ class ntnuopenstack::nova::compute (
   class { '::ntnuopenstack::nova::compute::libvirt':
     localdisk => $localdisk,
   }
-
 
   # Determine if sensu should be installed, and in that case include a sensu
   # subscription.
