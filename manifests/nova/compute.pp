@@ -2,10 +2,12 @@
 class ntnuopenstack::nova::compute (
   Boolean $localdisk,
 ) {
+  contain ::ntnuopenstack::nova::common::neutron
   require ::ntnuopenstack::nova::compute::base
   contain ::ntnuopenstack::nova::compute::libvirt
+  include ::ntnuopenstack::nova::compute::logging
   include ::ntnuopenstack::nova::compute::service
-  contain ::ntnuopenstack::nova::common::neutron
+  include ::ntnuopenstack::nova::compute::sudo
   include ::ntnuopenstack::nova::munin::compute
   require ::ntnuopenstack::repo
 
