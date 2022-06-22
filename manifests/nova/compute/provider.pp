@@ -6,6 +6,6 @@ class ntnuopenstack::nova::compute::provider {
   })
 
   class {'::nova::compute::provider': 
-    $custom_inventories => $providers
+    custom_inventories => $providers,
   }
 }
