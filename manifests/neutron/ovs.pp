@@ -15,6 +15,11 @@ class ntnuopenstack::neutron::ovs (
     'default_value' => 60,
   })
 
+  $firewall_driver = lookup('ntnuopenstack::neutron::ovs::firewall_driver', {
+    'default_value' => 'openvswitch',
+    'value_type'    => String,
+  })
+
   require ::ntnuopenstack::neutron::base
   require ::ntnuopenstack::repo
 
@@ -27,6 +32,7 @@ class ntnuopenstack::neutron::ovs (
 
   class { '::neutron::agents::ml2::ovs':
     bridge_mappings => $mappings,
+    firewall_driver => $firewall_driver,
     local_ip        => $local_ip,
     manage_vswitch  => $manage_vswitch,
     ovsdb_timeout   => $ovsdb_timeout,

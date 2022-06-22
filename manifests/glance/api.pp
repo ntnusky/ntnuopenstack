@@ -1,9 +1,5 @@
 # Installs and configures the glance API
 class ntnuopenstack::glance::api {
-  # Determine where the database is
-  $mysql_pass= lookup('ntnuopenstack::glance::mysql::password', String)
-  $mysql_ip = lookup('ntnuopenstack::glance::mysql::ip', Stdlib::IP::Address)
-  $database_connection = "mysql+pymysql://glance:${mysql_pass}@${mysql_ip}/glance"
   $db_sync = lookup('ntnuopenstack::glance::db::sync', Boolean)
 
   # Openstack parameters
@@ -34,12 +30,15 @@ class ntnuopenstack::glance::api {
     'value_type'    => Hash[String, String],
     'default_value' => {'raw' => '', 'qcow2' => ''}
   })
-  $disk_formats_real = join(keys($disk_formats), ',')
+  $container_formats = lookup('ntnuopenstack::glance::container_formats', {
+    'value_type'    => Array[String],
+    'default_value' => ['bare'],
+  })
 
   require ::ntnuopenstack::repo
   contain ::ntnuopenstack::glance::ceph
+  include ::ntnuopenstack::glance::dbconnection
   contain ::ntnuopenstack::glance::firewall::server::api
-  include ::ntnuopenstack::glance::formats
   include ::ntnuopenstack::glance::horizon
   include ::ntnuopenstack::glance::sudo
   include ::ntnuopenstack::glance::rabbit
@@ -55,14 +54,15 @@ class ntnuopenstack::glance::api {
     # Auth_strategy is blank to prevent glance::api from including
     # ::glance::api::authtoken.
     auth_strategy                => '',
-    database_connection          => $database_connection,
     default_backend              => 'ceph-default',
-    disk_formats                 => $disk_formats_real,
+    container_formats            => $container_formats,
+    disk_formats                 => keys($disk_formats),
     enabled_backends             => ['ceph-default:rbd'],
     enable_proxy_headers_parsing => $confhaproxy,
     show_image_direct_url        => true,
     show_multiple_locations      => true,
     sync_db                      => $db_sync,
+    worker_self_reference_url    => "http://${::fqdn}:9292",
   }
 
   class { '::glance::api::authtoken':

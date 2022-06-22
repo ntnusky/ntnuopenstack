@@ -1,5 +1,7 @@
 # This class installs and configures libvirt for nova's use.
-class ntnuopenstack::nova::compute::libvirt {
+class ntnuopenstack::nova::compute::libvirt (
+  Boolean $localdisk,
+){
   # We can instruct libvirt to expose a certain CPU-model to our VM's. This is
   # useful to allow live-migration between hosts. If a model is specified A
   # 'least-common-denominator' CPU model, supported by all compute-nodes where
@@ -41,6 +43,23 @@ class ntnuopenstack::nova::compute::libvirt {
     false => undef
   }
 
+  if($localdisk) {
+    $type = lookup('ntnuopenstack::compute::disk::type', {
+      'default_value' => 'filesystem',
+      'value_type'    => Enum['filesystem', 'lvm'],
+    })
+
+    if ( $type == 'filesystem' ) {
+      require ::ntnuopenstack::nova::compute::disk::filesystem
+      $images_type = 'qcow2'
+    } else {
+      require ::ntnuopenstack::nova::compute::disk::lvm
+      $images_type = 'lvm'
+    }
+  } else {
+    $images_type = 'rbd'
+  }
+
   if($cpu_model) {
     $cpuconfig = {
       cpu_mode          => 'custom',
@@ -58,7 +77,12 @@ class ntnuopenstack::nova::compute::libvirt {
     disk_cachemodes       => [ 'network=writeback' ],
     hw_machine_type       => $machine_type,
     vncserver_listen      => $management_ip,
+    images_type           => $images_type,
     *                     => $cpuconfig,
+  }
+
+  class { '::ntnuopenstack::nova::compute::ceph':
+    ephemeral_storage => ! $localdisk,
   }
 
   class { '::profile::services::libvirt::architectures':

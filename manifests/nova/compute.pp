@@ -2,21 +2,20 @@
 class ntnuopenstack::nova::compute (
   Boolean $localdisk,
 ) {
+  ## TODO: 
+  # Use nova::compute::provider for GPU-traits in placement
   contain ::ntnuopenstack::nova::common::neutron
   require ::ntnuopenstack::nova::compute::base
-  contain ::ntnuopenstack::nova::compute::libvirt
   include ::ntnuopenstack::nova::compute::logging
   include ::ntnuopenstack::nova::compute::service
   include ::ntnuopenstack::nova::compute::sudo
   include ::ntnuopenstack::nova::munin::compute
   require ::ntnuopenstack::repo
 
-  if($localdisk) {
-    require ::ntnuopenstack::nova::compute::disk
-  }
-
-  class { '::ntnuopenstack::nova::compute::ceph':
-    ephemeral_storage => ! $localdisk,
+  # Configure libvirt. Need to tell libvirt if local disk(s) should be used or
+  # not.
+  class { '::ntnuopenstack::nova::compute::libvirt':
+    localdisk => $localdisk,
   }
 
   # Determine if sensu should be installed, and in that case include a sensu

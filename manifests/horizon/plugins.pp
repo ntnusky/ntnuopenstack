@@ -14,18 +14,6 @@ class ntnuopenstack::horizon::plugins {
   # We would like to have the heat dashboard
   horizon::dashboard { 'heat': }
 
-  # The FWaaS is no longer maintained and will be removed in the W release
-  if ($::osfamily == 'Debian') {
-    horizon::dashboard { 'neutron-fwaas':
-      ensure => 'absent'
-    }
-  }
-
-  # The old neutron-lbaas dashboard should be removed
-  horizon::dashboard { 'neutron-lbaas':
-    ensure => 'absent',
-  }
-
   # If the octavia keystone-password is in hiera, we assume octavia to be
   # present, and is thus installing the octavia dashboard:
   if($octavia) {

@@ -13,12 +13,8 @@ class ntnuopenstack::heat::base {
     'default_value' => false,
   })
 
-  # Database-connection
-  $mysql_pass = lookup('ntnuopenstack::heat::mysql::password', String)
-  $mysql_ip = lookup('ntnuopenstack::heat::mysql::ip', Stdlib::IP::Address)
-  $database_connection = "mysql+pymysql://heat:${mysql_pass}@${mysql_ip}/heat"
-
   include ::ntnuopenstack::heat::cache
+  require ::ntnuopenstack::heat::dbconnection
   require ::ntnuopenstack::repo
 
   if ($rabbitservers) {
@@ -33,7 +29,6 @@ class ntnuopenstack::heat::base {
   class { '::heat':
     enable_stack_adopt           => true,
     enable_stack_abandon         => true,
-    database_connection          => $database_connection,
     default_transport_url        => $transport_url,
     region_name                  => $region,
     enable_proxy_headers_parsing => true,
