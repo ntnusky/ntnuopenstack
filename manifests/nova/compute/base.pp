@@ -1,6 +1,7 @@
 # Basic nova configuration for compute nodes.
 class ntnuopenstack::nova::compute::base {
   include ::ntnuopenstack::nova::common::base
+  include ::ntnuopenstack::nova::compute::provider
   include ::ntnuopenstack::nova::firewall::compute
   require ::ntnuopenstack::repo
 
