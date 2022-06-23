@@ -1,6 +1,6 @@
 # Installs various nova services.
 class ntnuopenstack::nova::services {
-  $default_filters = [
+  $enabled_filters = [
     'AggregateImagePropertiesIsolation',
     'AvailabilityZoneFilter',
     'ComputeFilter',
@@ -10,8 +10,8 @@ class ntnuopenstack::nova::services {
     'ServerGroupAffinityFilter'
   ]
 
-  $default_filters_real = lookup('ntnuopenstack::nova::default_scheduling_filters', {
-    'default_value' => $default_filters,
+  $enabled_filters_real = lookup('ntnuopenstack::nova::default_scheduling_filters', {
+    'default_value' => $enabled_filters,
     'value_type'    => Array[String],
   })
 
@@ -32,7 +32,7 @@ class ntnuopenstack::nova::services {
   }
 
   class { '::nova::scheduler::filter':
-    scheduler_default_filters       => $default_filters_real,
+    scheduler_enabled_filters       => $enabled_filters_real,
     build_failure_weight_multiplier => 0,
   }
 }
