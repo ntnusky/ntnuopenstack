@@ -58,7 +58,7 @@ class ntnuopenstack::placement::api {
   class { '::placement::wsgi::apache':
     access_log_format => $logformat,
     api_port          => 8778,
-    path              => '/placement'
+    path              => '/placement',
     ssl               => false,
   }
 }
