@@ -20,6 +20,5 @@ class ntnuopenstack::nova::endpoint::api {
     password     => $nova_password,
     public_url   => "${nova_public}:8774/v2.1",
     region       => $region,
-    system_roles => ['admin'],
   }
 }

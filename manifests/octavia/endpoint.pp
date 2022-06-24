@@ -17,6 +17,5 @@ class ntnuopenstack::octavia::endpoint {
     password     => $keystone_password,
     public_url   => $public,
     region       => $region,
-    system_roles => ['admin'],
   }
 }

@@ -17,7 +17,6 @@ class ntnuopenstack::barbican::endpoint {
     password     => $keystone_password,
     public_url   => $public,
     region       => $region,
-    system_roles => ['admin'],
   }
 }
 

@@ -20,6 +20,5 @@ class ntnuopenstack::neutron::endpoint {
     password     => $keystone_password,
     public_url   => "${neutron_public}:9696",
     region       => $region,
-    system_roles => ['admin'],
   }
 }

@@ -17,7 +17,6 @@ class ntnuopenstack::placement::endpoint {
     internal_url => "${placement_internal}:8778/placement",
     password     => $password,
     public_url   => "${placement_public}:8778/placement",
-    system_roles => ['admin'],
     region       => $region,
   }
 }

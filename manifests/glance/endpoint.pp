@@ -15,7 +15,6 @@ class ntnuopenstack::glance::endpoint {
     public_url   => "${glance_public}:9292",
     internal_url => "${glance_internal}:9292",
     admin_url    => "${glance_admin}:9292",
-    system_roles => ['admin'],
     region       => $region,
   }
 }

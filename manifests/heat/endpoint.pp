@@ -18,7 +18,6 @@ class ntnuopenstack::heat::endpoint {
     password     => $password,
     public_url   => "${heat_public}:8004/v1/%(tenant_id)s",
     region       => $region,
-    system_roles => ['admin'],
   }
 
   class { '::heat::keystone::auth_cfn':
@@ -27,7 +26,6 @@ class ntnuopenstack::heat::endpoint {
     password     => $password,
     public_url   => "${heat_public}:8000/v1",
     service_name => 'heat-cfn',
-    system_roles => ['admin'],
     region       => $region,
   }
 }

@@ -44,7 +44,6 @@ class ntnuopenstack::swift::endpoint {
     password            => $keystone_password,
     public_url          => $public,
     region              => $region,
-    system_roles        => ['admin'],
     service_description => 'Openstack Object-Store Service',
     service_name        => 'swift',
     service_type        => 'object-store',
