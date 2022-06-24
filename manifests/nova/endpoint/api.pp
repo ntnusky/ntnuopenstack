@@ -15,10 +15,11 @@ class ntnuopenstack::nova::endpoint::api {
   require ::ntnuopenstack::repo
 
   class { '::nova::keystone::auth':
+    admin_url    => "${nova_admin}:8774/v2.1",
+    internal_url => "${nova_internal}:8774/v2.1",
     password     => $nova_password,
     public_url   => "${nova_public}:8774/v2.1",
-    internal_url => "${nova_internal}:8774/v2.1",
-    admin_url    => "${nova_admin}:8774/v2.1",
     region       => $region,
+    system_roles => ['admin'],
   }
 }

@@ -12,11 +12,12 @@ class ntnuopenstack::magnum::endpoint {
   $public   = "${endpoint_public}:9511/v1"
 
   class { 'magnum::keystone::auth':
-    password     => $keystone_password,
-    region       => $region,
     admin_url    => $admin,
     internal_url => $internal,
+    password     => $keystone_password,
     public_url   => $public,
+    region       => $region,
+    system_roles => ['admin'],
   }
 }
 

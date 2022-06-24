@@ -13,19 +13,21 @@ class ntnuopenstack::heat::endpoint {
   require ::ntnuopenstack::repo
 
   class  { '::heat::keystone::auth':
+    admin_url    => "${heat_admin}:8004/v1/%(tenant_id)s",
+    internal_url => "${heat_internal}:8004/v1/%(tenant_id)s",
     password     => $password,
     public_url   => "${heat_public}:8004/v1/%(tenant_id)s",
-    internal_url => "${heat_internal}:8004/v1/%(tenant_id)s",
-    admin_url    => "${heat_admin}:8004/v1/%(tenant_id)s",
     region       => $region,
+    system_roles => ['admin'],
   }
 
   class { '::heat::keystone::auth_cfn':
-    password     => $password,
-    service_name => 'heat-cfn',
-    region       => $region,
-    public_url   => "${heat_public}:8000/v1",
-    internal_url => "${heat_internal}:8000/v1",
     admin_url    => "${heat_admin}:8000/v1",
+    internal_url => "${heat_internal}:8000/v1",
+    password     => $password,
+    public_url   => "${heat_public}:8000/v1",
+    service_name => 'heat-cfn',
+    system_roles => ['admin'],
+    region       => $region,
   }
 }
