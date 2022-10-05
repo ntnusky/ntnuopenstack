@@ -42,6 +42,11 @@ class ntnuopenstack::placement::api {
     sync_db => $db_sync,
   }
 
+  file { '/etc/placement/policy.yaml':
+    ensure => absent,
+    notify => Service['httpd'],
+  }
+
   class { '::placement::api':
     api_service_name => 'httpd',
     sync_db          => $db_sync,
