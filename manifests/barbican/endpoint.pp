@@ -12,11 +12,11 @@ class ntnuopenstack::barbican::endpoint {
   $public   = "${endpoint_public}:9311"
 
   class { 'barbican::keystone::auth':
-    password     => $keystone_password,
-    region       => $region,
     admin_url    => $admin,
     internal_url => $internal,
+    password     => $keystone_password,
     public_url   => $public,
+    region       => $region,
   }
 }
 

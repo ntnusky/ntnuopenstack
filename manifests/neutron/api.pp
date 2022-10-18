@@ -18,18 +18,9 @@ class ntnuopenstack::neutron::api {
   $sync_db = lookup('ntnuopenstack::neutron::db::sync', Boolean)
   $nova_password = lookup('ntnuopenstack::nova::keystone::password', String)
   $neutron_password = lookup('ntnuopenstack::neutron::keystone::password', String)
-  $fwaas_enable = lookup('ntnuopenstack::neutron::fwaas::enabled', Boolean)
-  if($fwaas_enable) {
-    include ::ntnuopenstack::neutron::services
-    $sp = [
-      'FIREWALL_V2:fwaas_db:neutron_fwaas.services.firewall.service_drivers.agents.agents.FirewallAgentDriver:default',
-    ]
-  } else {
-    $sp = []
-  }
   $service_providers = lookup('ntnuopenstack::neutron::service_providers', {
     'value_type'    => Array[String],
-    'default_value' => $sp,
+    'default_value' => [],
   })
   $register_loadbalancer = lookup('profile::haproxy::register', {
     'value_type'    => Boolean,

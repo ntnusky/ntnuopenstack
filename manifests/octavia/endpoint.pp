@@ -12,10 +12,10 @@ class ntnuopenstack::octavia::endpoint {
   $internal = "${endpoint_internal}:9876"
 
   class { 'octavia::keystone::auth':
-    password     => $keystone_password,
-    region       => $region,
-    public_url   => $public,
     admin_url    => $admin,
     internal_url => $internal,
+    password     => $keystone_password,
+    public_url   => $public,
+    region       => $region,
   }
 }

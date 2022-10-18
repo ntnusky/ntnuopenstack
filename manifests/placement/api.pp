@@ -48,16 +48,19 @@ class ntnuopenstack::placement::api {
   }
 
   class { '::placement::keystone::authtoken':
-    password             => $keystone_password,
-    auth_url             => "${keystone_internal}:5000",
-    www_authenticate_uri => "${keystone_public}:5000",
-    memcached_servers    => $memcache,
-    region_name          => $region,
+    password                     => $keystone_password,
+    auth_url                     => "${keystone_internal}:5000",
+    www_authenticate_uri         => "${keystone_public}:5000",
+    memcached_servers            => $memcache,
+    region_name                  => $region,
+    service_token_roles          => [ 'admin', 'service' ],
+    service_token_roles_required => true,
   }
 
   class { '::placement::wsgi::apache':
-    api_port          => 8778,
-    ssl               => false,
     access_log_format => $logformat,
+    api_port          => 8778,
+    path              => '/placement',
+    ssl               => false,
   }
 }

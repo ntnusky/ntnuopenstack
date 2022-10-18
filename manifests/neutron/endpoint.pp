@@ -15,10 +15,10 @@ class ntnuopenstack::neutron::endpoint {
 
   # Configure the neutron API endpoint in keystone
   class { '::neutron::keystone::auth':
+    admin_url    => "${neutron_admin}:9696",
+    internal_url => "${neutron_internal}:9696",
     password     => $keystone_password,
     public_url   => "${neutron_public}:9696",
-    internal_url => "${neutron_internal}:9696",
-    admin_url    => "${neutron_admin}:9696",
     region       => $region,
   }
 }

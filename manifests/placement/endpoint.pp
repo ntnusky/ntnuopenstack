@@ -13,10 +13,10 @@ class ntnuopenstack::placement::endpoint {
                                 Stdlib::Httpurl)
 
   class { '::placement::keystone::auth':
+    admin_url    => "${placement_admin}:8778/placement",
+    internal_url => "${placement_internal}:8778/placement",
     password     => $password,
     public_url   => "${placement_public}:8778/placement",
-    internal_url => "${placement_internal}:8778/placement",
-    admin_url    => "${placement_admin}:8778/placement",
     region       => $region,
   }
 }

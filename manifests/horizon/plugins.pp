@@ -12,12 +12,12 @@ class ntnuopenstack::horizon::plugins {
   })
 
   # We would like to have the heat dashboard
-  horizon::dashboard { 'heat': }
+  include ::horizon::dashboards::heat
 
   # If the octavia keystone-password is in hiera, we assume octavia to be
   # present, and is thus installing the octavia dashboard:
   if($octavia) {
-    horizon::dashboard { 'octavia': }
+    include ::horizon::dashboards::octavia
   }
 
   # If the magnum keystone-password is in hiera, we assume magnum to be
