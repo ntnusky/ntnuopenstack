@@ -11,10 +11,11 @@ class ntnuopenstack::swift::radosgw {
   $hostname = $trusted['hostname']
 
   ::ceph::rgw { "radosgw.${hostname}":
-    frontend_type => 'beast',
-    pkg_radosgw   => 'radosgw',
-    rgw_dns_name  => $swift_dns_name,
-    user          => 'ceph',
+    frontend_type            => 'beast',
+    pkg_radosgw              => 'radosgw',
+    rgw_dns_name             => $swift_dns_name,
+    rgw_swift_account_in_url => true,
+    user                     => 'ceph',
   }
 
   ::ceph::rgw::keystone { "radosgw.${hostname}":
@@ -24,9 +25,5 @@ class ntnuopenstack::swift::radosgw {
     rgw_keystone_admin_project  => 'services',
     rgw_keystone_admin_user     => 'swift',
     rgw_keystone_admin_password => $keystone_password,
-  }
-
-  ceph_config {
-    "client.radosgw.${hostname}/rgw swift account in url": value => true;
   }
 }
