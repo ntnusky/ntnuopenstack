@@ -11,9 +11,10 @@ class ntnuopenstack::swift::radosgw {
   $hostname = $trusted['hostname']
 
   ::ceph::rgw { "radosgw.${hostname}":
-    pkg_radosgw  => 'radosgw',
-    rgw_dns_name => $swift_dns_name,
-    user         => 'ceph',
+    frontend_type => 'beast',
+    pkg_radosgw   => 'radosgw',
+    rgw_dns_name  => $swift_dns_name,
+    user          => 'ceph',
   }
 
   ::ceph::rgw::keystone { "radosgw.${hostname}":
