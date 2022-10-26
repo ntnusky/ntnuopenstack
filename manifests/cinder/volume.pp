@@ -36,8 +36,6 @@ class ntnuopenstack::cinder::volume {
       rbd_pool        => $pool,
       rbd_user        => 'cinder',
       rbd_secret_uuid => $ceph_uuid,
-      backend_host    => "rbd:${pool}",
-      before          => Class['cinder::backends'],
     }
   }
 
