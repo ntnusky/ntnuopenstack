@@ -12,6 +12,7 @@ class ntnuopenstack::horizon::logging {
     path         => '/var/log/horizon/*.log',
     rotate       => 4,
     rotate_every => 'week',
+    minsize      => '100k',
     compress     => true,
     copytruncate => true,
     missingok    => true,
