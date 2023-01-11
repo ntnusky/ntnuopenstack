@@ -61,8 +61,10 @@ class ntnuopenstack::horizon::base {
     $extra_params = {
       access_log_format => 'forwarded',
     }
+    $secure_proxy_addr_header = 'HTTP_X_FORWARDED_FOR'
   } else {
     $extra_params = undef
+    $secure_proxy_addr_header = undef
   }
 
   # Determine which cacheservers to use
@@ -99,6 +101,7 @@ class ntnuopenstack::horizon::base {
     password_retrieve              => true,
     root_url                       => '/horizon',
     secret_key                     => $django_secret,
+    secure_proxy_addr_header       => $secure_proxy_addr_header,
     server_aliases                 => [$::fqdn, $server_name],
     servername                     => $server_name,
     session_timeout                => $session_timeout,
