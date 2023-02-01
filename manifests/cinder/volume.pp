@@ -31,6 +31,10 @@ class ntnuopenstack::cinder::volume {
     enabled_backends => $backends.keys(),
   }
 
+  cinder_config {
+    'backend_defaults/image_upload_use_cinder_backend': value => true;
+  }
+
   $backends.each | $bname, $pool | {
     cinder::backend::rbd { $bname :
       rbd_pool        => $pool,
