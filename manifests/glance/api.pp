@@ -34,6 +34,11 @@ class ntnuopenstack::glance::api {
     'value_type'    => Array[String],
     'default_value' => ['bare'],
   })
+  
+  $use_keystone_limits = lookup('ntnuopenstack::glance::keystone::limits', {
+    'default_value' => false,
+    'value_type'    => Boolean,
+  })
 
   require ::ntnuopenstack::repo
   contain ::ntnuopenstack::glance::ceph
@@ -66,10 +71,26 @@ class ntnuopenstack::glance::api {
   }
 
   class { '::glance::api::authtoken':
-    password             => $keystone_password,
     auth_url             => "${keystone_internal}:5000",
-    www_authenticate_uri => "${keystone_public}:5000",
     memcached_servers    => $memcache,
+    password             => $keystone_password,
     region_name          => $region,
+    system_scope         => 'all',
+    www_authenticate_uri => "${keystone_public}:5000",
+  }
+  
+  # Configure the oslo_limit class if we should use the keystone limits.
+  if($use_keystone_limits) {
+    $endpoint_id = lookup('ntnuopenstack::glance::endpoint::internal::id', {
+      'value_type' => String,
+    })
+
+    class { '::glance::limit':
+      auth_url     => "${keystone_internal}:5000",
+      endpoint_id  => $endpoint_id,
+      password     => $keystone_password,
+      region_name  => $region,
+      system_scope => 'all',
+    }
   }
 }

@@ -11,10 +11,11 @@ class ntnuopenstack::glance::endpoint {
                               Stdlib::Httpurl)
 
   class  { '::glance::keystone::auth':
+    admin_url    => "${glance_admin}:9292",
+    internal_url => "${glance_internal}:9292",
     password     => $password,
     public_url   => "${glance_public}:9292",
-    internal_url => "${glance_internal}:9292",
-    admin_url    => "${glance_admin}:9292",
     region       => $region,
+    system_roles => [ 'reader' ],
   }
 }
