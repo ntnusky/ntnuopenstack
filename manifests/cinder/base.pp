@@ -44,7 +44,7 @@ class ntnuopenstack::cinder::base {
 
   class { '::cinder::nova':
     auth_url     => $auth_url,
-    interface    => 'internal'.
+    interface    => 'internal',
     password     => $password,
     region_name  => $region_name,
     system_scope => 'all',
