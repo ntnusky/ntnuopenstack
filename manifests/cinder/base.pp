@@ -23,9 +23,10 @@ class ntnuopenstack::cinder::base {
     $ha_transport_conf = {}
   }
 
-  require ::ntnuopenstack::repo
   include ::ntnuopenstack::cinder::dbconnection
   require ::ntnuopenstack::cinder::sudo
+  require ::ntnuopenstack::keystone::bootstrap
+  require ::ntnuopenstack::repo
 
   class { '::cinder':
     default_transport_url => $transport_url,
