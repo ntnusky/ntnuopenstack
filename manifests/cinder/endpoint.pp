@@ -21,5 +21,7 @@ class ntnuopenstack::cinder::endpoint {
     password        => $keystone_password,
     public_url_v3   => "${cinder_public}:8776/v3/%(tenant_id)s",
     region          => $region,
+    system_roles    => [ 'reader' ],
+    system_roles_v3 => [ 'reader' ],
   }
 }
