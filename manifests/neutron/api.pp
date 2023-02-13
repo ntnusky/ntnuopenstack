@@ -41,7 +41,6 @@ class ntnuopenstack::neutron::api {
     memcached_servers    => $memcache,
     password             => $neutron_password,
     region_name          => $region,
-    system_scope         => 'all',
     www_authenticate_uri => "${keystone_public}:5000/",
   }
 
@@ -58,7 +57,6 @@ class ntnuopenstack::neutron::api {
   class { '::neutron::server::notifications::nova':
     auth_url     => "${keystone_admin}:5000",
     password     => $nova_password,
-    system_scope => 'all',
     region_name  => $region,
   }
 }

@@ -48,6 +48,5 @@ class ntnuopenstack::cinder::base {
     interface    => 'internal',
     password     => $password,
     region_name  => $region_name,
-    system_scope => 'all',
   }
 }

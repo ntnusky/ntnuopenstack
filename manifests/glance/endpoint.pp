@@ -16,6 +16,5 @@ class ntnuopenstack::glance::endpoint {
     password     => $password,
     public_url   => "${glance_public}:9292",
     region       => $region,
-    system_roles => [ 'reader' ],
   }
 }

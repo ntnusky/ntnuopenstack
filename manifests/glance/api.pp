@@ -76,7 +76,6 @@ class ntnuopenstack::glance::api {
     memcached_servers    => $memcache,
     password             => $keystone_password,
     region_name          => $region,
-    system_scope         => 'all',
     www_authenticate_uri => "${keystone_public}:5000",
   }
   
@@ -91,7 +90,6 @@ class ntnuopenstack::glance::api {
       endpoint_id  => $endpoint_id,
       password     => $keystone_password,
       region_name  => $region,
-      system_scope => 'all',
     }
   }
 }
