@@ -58,9 +58,10 @@ class ntnuopenstack::placement::api {
   }
 
   class { '::placement::wsgi::apache':
-    access_log_format => $logformat,
-    api_port          => 8778,
-    path              => '/placement',
-    ssl               => false,
+    access_log_format            => $logformat,
+    api_port                     => 8778,
+    enable_proxy_headers_parsing => $confhaproxy,
+    path                         => '/placement',
+    ssl                          => false,
   }
 }
