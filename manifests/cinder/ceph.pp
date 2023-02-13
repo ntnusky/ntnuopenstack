@@ -25,7 +25,7 @@ class ntnuopenstack::cinder::ceph {
 
   ceph::key { 'client.cinder':
     secret  => $ceph_key,
-    cap_mon => 'allow r, allow command "osd blacklist"',
+    cap_mon => 'allow r, allow command "osd blocklist"',
     cap_osd => "allow class-read object_prefix rbd_children, ${poolaccessstr}, ${images}",
     inject  => true,
     group   => 'cinder',
