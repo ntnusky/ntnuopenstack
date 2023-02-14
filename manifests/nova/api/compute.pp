@@ -1,7 +1,6 @@
 # Installs and configures the nova compute API.
 class ntnuopenstack::nova::api::compute {
-  # Retrieve addresses for the memcached servers, either the old IP or the new
-  # list of hosts.
+  # Retrieve addresses for the memcached servers
   $memcache_servers = lookup('profile::memcache::servers', {
     'value_type'    => Array[Stdlib::IP::Address],
     'default_value' => [],
@@ -19,24 +18,21 @@ class ntnuopenstack::nova::api::compute {
   })
   $region = lookup('ntnuopenstack::region')
 
-  $admin_endpoint    = lookup('ntnuopenstack::endpoint::admin')
+  $use_keystone_limits = lookup('ntnuopenstack::glance::keystone::limits', {
+    'default_value' => false,
+    'value_type'    => Boolean,
+  })
+
+  $internal_endpoint = lookup('ntnuopenstack::endpoint::internal')
   $public_endpoint = lookup('ntnuopenstack::endpoint::public')
 
-  require ::ntnuopenstack::repo
-  require ::ntnuopenstack::nova::services::base
-  contain ::ntnuopenstack::nova::firewall::server
-  include ::ntnuopenstack::nova::munin::api
   include ::ntnuopenstack::nova::common::neutron
-
+  contain ::ntnuopenstack::nova::firewall::server
   contain ::ntnuopenstack::nova::haproxy::backend::api
-
-  class { '::nova::keystone::authtoken':
-    auth_url             => "${admin_endpoint}:5000/",
-    www_authenticate_uri => "${public_endpoint}:5000/",
-    password             => $nova_password,
-    memcached_servers    => $memcache,
-    region_name          => $region,
-  }
+  include ::ntnuopenstack::nova::munin::api
+  include ::ntnuopenstack::nova::quota
+  require ::ntnuopenstack::nova::services::base
+  require ::ntnuopenstack::repo
 
   class { '::nova::api':
     enabled                      => false,
@@ -48,8 +44,24 @@ class ntnuopenstack::nova::api::compute {
     use_forwarded_for            => true,
   }
 
+  class { '::nova::keystone':
+    auth_url    => "${internal_endpoint}:5000/",
+    password    => $nova_password,
+    region_name => $region,
+    username    => 'nova',
+  }
+
+  class { '::nova::keystone::authtoken':
+    auth_url             => "${internal_endpoint}:5000/",
+    memcached_servers    => $memcache,
+    password             => $nova_password,
+    region_name          => $region,
+    www_authenticate_uri => "${public_endpoint}:5000/",
+  }
+
   class { '::nova::wsgi::apache_api':
     ssl               => false,
     access_log_format => 'forwarded',
   }
+
 }
