@@ -23,6 +23,7 @@ class ntnuopenstack::cinder::base {
     $ha_transport_conf = {}
   }
 
+  require ::ntnuopenstack::cinder::auth
   include ::ntnuopenstack::cinder::dbconnection
   require ::ntnuopenstack::cinder::sudo
   require ::ntnuopenstack::keystone::bootstrap
@@ -35,12 +36,6 @@ class ntnuopenstack::cinder::base {
   
   class { '::cinder::glance':
     glance_api_servers => "${glance_internal}:9292",
-  }
-
-  class { '::cinder::keystone::service_user':
-    auth_url    => $auth_url,
-    password    => $password,
-    region_name => $region_name,
   }
 
   class { '::cinder::nova':
