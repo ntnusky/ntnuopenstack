@@ -34,6 +34,14 @@ class ntnuopenstack::nova::api::compute {
   require ::ntnuopenstack::nova::services::base
   require ::ntnuopenstack::repo
 
+  class { '::nova::keystone::authtoken':
+    auth_url             => "${internal_endpoint}:5000/",
+    memcached_servers    => $memcache,
+    password             => $nova_password,
+    region_name          => $region,
+    www_authenticate_uri => "${public_endpoint}:5000/",
+  }
+
   class { '::nova::api':
     enabled                      => false,
     enable_proxy_headers_parsing => true,
@@ -49,14 +57,6 @@ class ntnuopenstack::nova::api::compute {
     password    => $nova_password,
     region_name => $region,
     username    => 'nova',
-  }
-
-  class { '::nova::keystone::authtoken':
-    auth_url             => "${internal_endpoint}:5000/",
-    memcached_servers    => $memcache,
-    password             => $nova_password,
-    region_name          => $region,
-    www_authenticate_uri => "${public_endpoint}:5000/",
   }
 
   class { '::nova::wsgi::apache_api':
