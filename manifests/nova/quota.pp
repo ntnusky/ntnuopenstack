@@ -4,7 +4,7 @@ class ntnuopenstack::nova::quota {
   $internal_endpoint = lookup('ntnuopenstack::endpoint::internal')
   $nova_password = lookup('ntnuopenstack::nova::keystone::password')
   $region = lookup('ntnuopenstack::region')
-  $use_keystone_limits = lookup('ntnuopenstack::glance::keystone::limits', {
+  $use_keystone_limits = lookup('ntnuopenstack::nova::keystone::limits', {
     'default_value' => false,
     'value_type'    => Boolean,
   })
