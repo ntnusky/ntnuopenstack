@@ -13,6 +13,7 @@ class ntnuopenstack::heat::base {
     'default_value' => false,
   })
 
+  include ::ntnuopenstack::heat::auth
   include ::ntnuopenstack::heat::cache
   require ::ntnuopenstack::heat::dbconnection
   require ::ntnuopenstack::repo
