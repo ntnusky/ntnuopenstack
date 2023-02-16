@@ -24,16 +24,8 @@ class ntnuopenstack::magnum::base {
 
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::magnum::auth
-  include ::ntnuopenstack::magnum::params
-
-  $package_ensure = $::ntnuopenstack::magnum::params::package_ensure
-
-  if($package_ensure == 'absent') {
-    require ::ntnuopenstack::magnum::pip
-  }
 
   class { '::magnum':
-    package_ensure        => $package_ensure,
     default_transport_url => $transport_url,
     *                     => $ha_transport_conf,
   }
