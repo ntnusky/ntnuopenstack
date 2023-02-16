@@ -23,6 +23,7 @@ class ntnuopenstack::magnum::base {
   $region = lookup('ntnuopenstack::region', String)
 
   require ::ntnuopenstack::repo
+  require ::ntnuopenstack::magnum::auth
   include ::ntnuopenstack::magnum::params
 
   $package_ensure = $::ntnuopenstack::magnum::params::package_ensure
