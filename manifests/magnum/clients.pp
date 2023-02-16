@@ -5,4 +5,11 @@ class ntnuopenstack::magnum::clients {
   class { '::magnum::clients':
     region_name => $region,
   }
+
+  # There is no class for octavia client in puppet-magnum.
+  # Adding manally
+
+  magnum_config {
+    'octavia_client/region_name': value => $region;
+  }
 }
