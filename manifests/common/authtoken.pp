@@ -13,11 +13,14 @@ define ntnuopenstack::common::authtoken {
     "${server}:11211"
   }
 
+  include "::${name}::deps"
+
   class { "::${name}::keystone::authtoken":
     auth_url             => $auth_url,
     memcached_servers    => $memcache, 
     password             => $password,
     region_name          => $region_name,
     www_authenticate_uri => $www_authenticate_uri,
+    before               => Anchor["::${name}::config::begin"],
   }
 }
