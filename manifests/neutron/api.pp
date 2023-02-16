@@ -27,5 +27,6 @@ class ntnuopenstack::neutron::api {
     enable_proxy_headers_parsing     => $register_loadbalancer,
     service_providers                => $service_providers,
     sync_db                          => $sync_db,
+    require                          => Class['neutron::keystone::authtoken'],
   }
 }
