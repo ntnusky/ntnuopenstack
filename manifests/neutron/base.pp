@@ -14,9 +14,8 @@ class ntnuopenstack::neutron::base {
     'default_value' => false,
   })
 
-  require ::ntnuopenstack::neutron::auth
-  include ::ntnuopenstack::neutron::sudo
   require ::ntnuopenstack::repo
+  include ::ntnuopenstack::neutron::sudo
 
   if ($rabbitservers) {
     $ha_transport_conf = {

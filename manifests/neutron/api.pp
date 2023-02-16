@@ -11,6 +11,7 @@ class ntnuopenstack::neutron::api {
     'default_value' => true,
   })
 
+  require ::ntnuopenstack::neutron::auth
   require ::ntnuopenstack::neutron::base
   require ::ntnuopenstack::neutron::dbconnection
   include ::ntnuopenstack::neutron::firewall::api
