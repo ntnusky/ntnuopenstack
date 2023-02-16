@@ -3,12 +3,6 @@ class ntnuopenstack::magnum {
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::common
   include ::ntnuopenstack::magnum::api
-  include ::ntnuopenstack::magnum::params
+  include ::magnum::conductor
   include ::profile::services::apache::logging
-
-  $package_ensure = $::ntnuopenstack::magnum::params::package_ensure
-
-  class { '::magnum::conductor':
-    package_ensure => $package_ensure,
-  }
 }
