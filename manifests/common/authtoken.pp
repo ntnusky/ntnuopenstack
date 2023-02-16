@@ -21,6 +21,9 @@ define ntnuopenstack::common::authtoken {
     password             => $password,
     region_name          => $region_name,
     www_authenticate_uri => $www_authenticate_uri,
-    before               => Anchor["::${name}::config::begin"],
   }
+
+  Package<| tag == "${name}-package" |>
+  -> Class["::${name}::keystone::authtoken"]
+  -> Anchor["::${name}::config::begin"]
 }
