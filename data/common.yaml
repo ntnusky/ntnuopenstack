@@ -59,3 +59,4 @@ ntnuopenstack::octavia::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admi
 ntnuopenstack::octavia::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
 ntnuopenstack::octavia::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"
 ntnuopenstack::octavia::heartbeat::port: 5555
+ntnuopenstack::octavia::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
