@@ -19,7 +19,7 @@ class ntnuopenstack::heat::auth {
     memcached_servers    => $memcache,
     password             => $password,
     region_name          => $region,
-    www_authenticate_uri => "${public_endpoint}:5000/",
+    www_authenticate_uri => "${public_endpoint}:5000/v3",
   }
 
   class { '::heat::trustee':
