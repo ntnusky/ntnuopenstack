@@ -20,4 +20,9 @@ class ntnuopenstack::magnum::auth {
     region_name          => $region_name,
     www_authenticate_uri => $www_authenticate_uri,
   }
+
+  class { '::magnum::keystone::keystone_auth':
+    auth_url => $auth_url,
+    password => $password,
+  }
 }
