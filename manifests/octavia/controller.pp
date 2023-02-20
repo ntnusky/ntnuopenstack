@@ -19,6 +19,7 @@ class ntnuopenstack::octavia::controller {
   })
 
   include ::ntnuopenstack::octavia::base
+  require ::ntnuopenstack::octavia::dbconnection
   include ::ntnuopenstack::octavia::firewall::controller
   require ::ntnuopenstack::repo
   include ::profile::monitoring::munin::plugin::openstack::octavia

@@ -10,6 +10,7 @@ class ntnuopenstack::octavia::api {
 
   require ::ntnuopenstack::octavia::auth
   include ::ntnuopenstack::octavia::base
+  require ::ntnuopenstack::octavia::dbconnection
   include ::ntnuopenstack::octavia::firewall::api
   include ::ntnuopenstack::octavia::haproxy::backend
   require ::ntnuopenstack::repo
