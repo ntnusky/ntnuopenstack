@@ -30,6 +30,7 @@ ntnuopenstack::keystone::endpoint::public: "%{alias('ntnuopenstack::endpoint::pu
 ntnuopenstack::keystone::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 
 ntnuopenstack::magnum::db::sync: "%{alias('ntnuopenstack::db::sync')}"
+ntnuopenstack::magnum::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 
 ntnuopenstack::neutron::db::sync: "%{alias('ntnuopenstack::db::sync')}"
 ntnuopenstack::neutron::dns: "%{alias('profile::dns::resolvers')}"
