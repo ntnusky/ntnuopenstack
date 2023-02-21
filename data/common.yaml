@@ -2,6 +2,10 @@
 ntnuopenstack::db::sync: false
 
 ntnuopenstack::barbican::db::sync: "%{alias('ntnuopenstack::db::sync')}"
+ntnuopenstack::barbican::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
+ntnuopenstack::barbican::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
+ntnuopenstack::barbican::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"
+ntnuopenstack::barbican::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 
 ntnuopenstack::cinder::db::sync: "%{alias('ntnuopenstack::db::sync')}"
 ntnuopenstack::cinder::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
@@ -30,7 +34,6 @@ ntnuopenstack::keystone::endpoint::public: "%{alias('ntnuopenstack::endpoint::pu
 ntnuopenstack::keystone::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 
 ntnuopenstack::magnum::db::sync: "%{alias('ntnuopenstack::db::sync')}"
-ntnuopenstack::magnum::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 
 ntnuopenstack::neutron::db::sync: "%{alias('ntnuopenstack::db::sync')}"
 ntnuopenstack::neutron::dns: "%{alias('profile::dns::resolvers')}"
