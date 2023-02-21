@@ -20,13 +20,14 @@ class ntnuopenstack::nova::services {
     'value_type'    => Integer,
   })
 
-  include ::nova::conductor
   include ::ntnuopenstack::nova::common::neutron
   require ::ntnuopenstack::nova::dbconnection
   require ::ntnuopenstack::nova::services::base
   include ::ntnuopenstack::nova::services::logging
   include ::ntnuopenstack::nova::services::vncproxy
   require ::ntnuopenstack::repo
+
+  class { '::nova::conductor' : }
 
   class { '::nova::scheduler':
     discover_hosts_in_cells_interval => $discover_interval,
