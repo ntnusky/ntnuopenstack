@@ -21,6 +21,7 @@ class ntnuopenstack::barbican::api {
   }
 
   require ::ntnuopenstack::barbican::auth
+  require ::ntnuopenstack::barbican::dbconnection
   include ::ntnuopenstack::barbican::firewall::api
   include ::ntnuopenstack::barbican::haproxy::backend
 

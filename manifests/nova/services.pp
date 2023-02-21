@@ -22,6 +22,7 @@ class ntnuopenstack::nova::services {
 
   include ::nova::conductor
   include ::ntnuopenstack::nova::common::neutron
+  require ::ntnuopenstack::nova::dbconnection
   require ::ntnuopenstack::nova::services::base
   include ::ntnuopenstack::nova::services::logging
   include ::ntnuopenstack::nova::services::vncproxy
