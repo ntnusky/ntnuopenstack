@@ -5,6 +5,6 @@ class ntnuopenstack::glance::dbconnection {
   $database_connection = "mysql+pymysql://glance:${mysql_pass}@${mysql_ip}/glance"
 
   class { '::glance::api::db':
-    database_connection          => $database_connection,
+    database_connection => $database_connection,
   }
 }

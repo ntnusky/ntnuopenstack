@@ -1,8 +1,8 @@
 # Configure the endpoint and keystone user for barbican
 class ntnuopenstack::barbican::endpoint {
-  $endpoint_admin = lookup('ntnuopenstack::endpoint::admin')
-  $endpoint_internal = lookup('ntnuopenstack::endpoint::internal')
-  $endpoint_public = lookup('ntnuopenstack::endpoint::public')
+  $endpoint_admin = lookup('ntnuopenstack::barbican::endpoint::admin')
+  $endpoint_internal = lookup('ntnuopenstack::barbican::endpoint::internal')
+  $endpoint_public = lookup('ntnuopenstack::barbican::endpoint::public')
 
   $keystone_password = lookup('ntnuopenstack::barbican::keystone::password')
   $region = lookup('ntnuopenstack::region')

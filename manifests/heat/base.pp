@@ -4,7 +4,6 @@ class ntnuopenstack::heat::base {
   $region = lookup('ntnuopenstack::region', String)
   $keystone_admin  = lookup('ntnuopenstack::keystone::endpoint::admin', Stdlib::Httpurl)
   $keystone_internal = lookup('ntnuopenstack::keystone::endpoint::internal', Stdlib::Httpurl)
-  $db_sync = lookup('ntnuopenstack::heat::db::sync', Boolean)
 
   # Rabbitmq servers
   $transport_url = lookup('ntnuopenstack::transport::url', String)
@@ -13,6 +12,7 @@ class ntnuopenstack::heat::base {
     'default_value' => false,
   })
 
+  include ::ntnuopenstack::heat::auth
   include ::ntnuopenstack::heat::cache
   require ::ntnuopenstack::heat::dbconnection
   require ::ntnuopenstack::repo
@@ -32,7 +32,6 @@ class ntnuopenstack::heat::base {
     default_transport_url        => $transport_url,
     region_name                  => $region,
     enable_proxy_headers_parsing => true,
-    sync_db                      => $db_sync,
     *                            => $ha_transport_conf,
   }
 

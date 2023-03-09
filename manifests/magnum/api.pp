@@ -2,18 +2,16 @@
 class ntnuopenstack::magnum::api {
   $sync_db = lookup('ntnuopenstack::magnum::db::sync', Boolean)
 
-  require ::ntnuopenstack::magnum::base
-  include ::ntnuopenstack::magnum::params
+  require ::ntnuopenstack::magnum::auth
+  include ::ntnuopenstack::magnum::base
   include ::ntnuopenstack::magnum::clients
+  require ::ntnuopenstack::magnum::dbconnection
   include ::ntnuopenstack::magnum::firewall::api
   include ::ntnuopenstack::magnum::haproxy::backend
   include ::profile::monitoring::munin::plugin::openstack::magnum
 
-  $package_ensure = $::ntnuopenstack::magnum::params::package_ensure
-
   class { '::magnum::api':
     enabled        => false,
-    package_ensure => $package_ensure,
     service_name   => 'httpd',
     sync_db        => $sync_db,
     enabled_ssl    => false,

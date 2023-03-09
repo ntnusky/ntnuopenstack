@@ -2,24 +2,6 @@
 class ntnuopenstack::glance::api {
   $db_sync = lookup('ntnuopenstack::glance::db::sync', Boolean)
 
-  # Openstack parameters
-  $region = lookup('ntnuopenstack::region', String)
-  $keystone_password = lookup('ntnuopenstack::glance::keystone::password', String)
-
-  # Determine where the keystone service is located.
-  $keystone_internal = lookup('ntnuopenstack::keystone::endpoint::internal', Stdlib::Httpurl)
-  $keystone_public = lookup('ntnuopenstack::keystone::endpoint::public', Stdlib::Httpurl)
-
-  # Retrieve addresses for the memcached servers, either the old IP or the new
-  # list of hosts.
-  $cache_servers = lookup('profile::memcache::servers', {
-    'value_type'    => Array[String],
-    'merge'         => 'unique',
-  })
-  $memcache = $cache_servers.map | $server | {
-    "${server}:11211"
-  }
-
   # Variables to determine if haproxy or keepalived should be configured.
   $confhaproxy = lookup('ntnuopenstack::haproxy::configure::backend', {
     'value_type'    => Boolean,
@@ -34,14 +16,21 @@ class ntnuopenstack::glance::api {
     'value_type'    => Array[String],
     'default_value' => ['bare'],
   })
+  
+  $use_keystone_limits = lookup('ntnuopenstack::glance::keystone::limits', {
+    'default_value' => false,
+    'value_type'    => Boolean,
+  })
 
-  require ::ntnuopenstack::repo
+  require ::ntnuopenstack::glance::auth
   contain ::ntnuopenstack::glance::ceph
   include ::ntnuopenstack::glance::dbconnection
   contain ::ntnuopenstack::glance::firewall::server::api
   include ::ntnuopenstack::glance::horizon
-  include ::ntnuopenstack::glance::sudo
+  include ::ntnuopenstack::glance::quota
   include ::ntnuopenstack::glance::rabbit
+  include ::ntnuopenstack::glance::sudo
+  require ::ntnuopenstack::repo
   include ::profile::monitoring::munin::plugin::openstack::glance
 
   # If this server should be placed behind haproxy, export a haproxy
@@ -62,14 +51,7 @@ class ntnuopenstack::glance::api {
     show_image_direct_url        => true,
     show_multiple_locations      => true,
     sync_db                      => $db_sync,
+    use_keystone_limits          => $use_keystone_limits,
     worker_self_reference_url    => "http://${::fqdn}:9292",
-  }
-
-  class { '::glance::api::authtoken':
-    password             => $keystone_password,
-    auth_url             => "${keystone_internal}:5000",
-    www_authenticate_uri => "${keystone_public}:5000",
-    memcached_servers    => $memcache,
-    region_name          => $region,
   }
 }

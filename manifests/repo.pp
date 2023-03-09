@@ -4,8 +4,8 @@ class ntnuopenstack::repo {
 
   if ($::osfamily == 'Debian' and $::operatingsystem == 'Ubuntu') {
     $distro = $facts['os']['release']['major']
-    if ($distro == '20.04' and $::openstack_extras::repo::debian::params::release == 'ussuri') {
-      notice('Ussuri is default in Focal. Do not use UCA')
+    if ($distro == '22.04' and $::openstack_extras::repo::debian::params::release == 'yoga') {
+      notice('Yoga is default in Jammy. Do not use UCA')
     } else {
       class { '::openstack_extras::repo::debian::ubuntu':
         package_require => true,

@@ -23,16 +23,10 @@ class ntnuopenstack::magnum::base {
   $region = lookup('ntnuopenstack::region', String)
 
   require ::ntnuopenstack::repo
-  include ::ntnuopenstack::magnum::params
-
-  $package_ensure = $::ntnuopenstack::magnum::params::package_ensure
-
-  if($package_ensure == 'absent') {
-    require ::ntnuopenstack::magnum::pip
-  }
+  require ::ntnuopenstack::magnum::auth
+  require ::ntnuopenstack::magnum::dbconnection
 
   class { '::magnum':
-    package_ensure        => $package_ensure,
     default_transport_url => $transport_url,
     *                     => $ha_transport_conf,
   }

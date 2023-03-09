@@ -11,7 +11,6 @@ class ntnuopenstack::neutron::agents {
   $metadata_secret = lookup('ntnuopenstack::nova::sharedmetadataproxysecret',
                             String)
   require ::ntnuopenstack::neutron::base
-  require ::ntnuopenstack::neutron::firewall::l3agent
   require ::ntnuopenstack::repo
 
   class { '::neutron::agents::metadata':

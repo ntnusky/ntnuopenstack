@@ -41,7 +41,6 @@ class ntnuopenstack::keystone::base {
   }
 
   class { '::keystone':
-    admin_endpoint               => "${admin_endpoint}:5000/",
     credential_keys              => $credential_keys,
     enable_credential_setup      => true,
     enable_fernet_setup          => true,

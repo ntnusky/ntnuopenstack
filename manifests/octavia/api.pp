@@ -8,7 +8,9 @@ class ntnuopenstack::octavia::api {
     'value_type'    => Boolean,
   })
 
+  require ::ntnuopenstack::octavia::auth
   include ::ntnuopenstack::octavia::base
+  require ::ntnuopenstack::octavia::dbconnection
   include ::ntnuopenstack::octavia::firewall::api
   include ::ntnuopenstack::octavia::haproxy::backend
   require ::ntnuopenstack::repo

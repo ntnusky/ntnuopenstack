@@ -3,7 +3,7 @@ class ntnuopenstack::nova::compute::vgpu {
   # The variable mdev_type is just a mechanism to ensure that this key is
   # actually defined, and otherwise fail the puppet run. So, it is nice to have
   # here even though this class is not using it...
-  $mdev_type = lookup('nova::compute::mdev::mdev_types_device_addresses_mapping', Hash)
+  $mdev_type = lookup('nova::compute::mdev::mdev_types', Hash)
 
   include ::profile::monitoring::munin::plugin::vgpu
 

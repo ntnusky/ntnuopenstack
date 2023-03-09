@@ -1,42 +1,20 @@
 # Installs and configures the nova compute API.
 class ntnuopenstack::nova::api::compute {
-  # Retrieve addresses for the memcached servers, either the old IP or the new
-  # list of hosts.
-  $memcache_servers = lookup('profile::memcache::servers', {
-    'value_type'    => Array[Stdlib::IP::Address],
-    'default_value' => [],
-  })
-  $memcache = $memcache_servers.map | $server | {
-    "${server}:11211"
-  }
-
-  # Retrieve openstack parameters
-  $nova_password = lookup('ntnuopenstack::nova::keystone::password')
   $sync_db = lookup('ntnuopenstack::nova::db::sync', {
     'value_type'    => Boolean,
     'default_value' => false,   # One of your nodes need to have this key set to
                                 # true to automaticly populate the databases.
   })
-  $region = lookup('ntnuopenstack::region')
 
-  $admin_endpoint    = lookup('ntnuopenstack::endpoint::admin')
-  $public_endpoint = lookup('ntnuopenstack::endpoint::public')
-
-  require ::ntnuopenstack::repo
-  require ::ntnuopenstack::nova::services::base
-  contain ::ntnuopenstack::nova::firewall::server
-  include ::ntnuopenstack::nova::munin::api
+  require ::ntnuopenstack::nova::auth
   include ::ntnuopenstack::nova::common::neutron
-
+  require ::ntnuopenstack::nova::dbconnection
+  contain ::ntnuopenstack::nova::firewall::server
   contain ::ntnuopenstack::nova::haproxy::backend::api
-
-  class { '::nova::keystone::authtoken':
-    auth_url             => "${admin_endpoint}:5000/",
-    www_authenticate_uri => "${public_endpoint}:5000/",
-    password             => $nova_password,
-    memcached_servers    => $memcache,
-    region_name          => $region,
-  }
+  include ::ntnuopenstack::nova::munin::api
+  include ::ntnuopenstack::nova::quota
+  require ::ntnuopenstack::nova::services::base
+  require ::ntnuopenstack::repo
 
   class { '::nova::api':
     enabled                      => false,

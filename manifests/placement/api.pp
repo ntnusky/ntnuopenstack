@@ -43,18 +43,19 @@ class ntnuopenstack::placement::api {
   }
 
   class { '::placement::api':
-    api_service_name => 'httpd',
-    sync_db          => $db_sync,
+    api_service_name             => 'httpd',
+    enable_proxy_headers_parsing => $confhaproxy,
+    sync_db                      => $db_sync,
   }
 
   class { '::placement::keystone::authtoken':
-    password                     => $keystone_password,
     auth_url                     => "${keystone_internal}:5000",
-    www_authenticate_uri         => "${keystone_public}:5000",
     memcached_servers            => $memcache,
+    password                     => $keystone_password,
     region_name                  => $region,
     service_token_roles          => [ 'admin', 'service' ],
     service_token_roles_required => true,
+    www_authenticate_uri         => "${keystone_public}:5000",
   }
 
   class { '::placement::wsgi::apache':

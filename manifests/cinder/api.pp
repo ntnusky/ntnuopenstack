@@ -10,9 +10,9 @@ class ntnuopenstack::cinder::api {
     'default_value' => 'Normal',
   })
 
-  require ::ntnuopenstack::repo
   require ::ntnuopenstack::cinder::base
   contain ::ntnuopenstack::cinder::firewall::server
+  require ::ntnuopenstack::repo
 
   if($confhaproxy) {
     contain ::ntnuopenstack::cinder::haproxy::backend
