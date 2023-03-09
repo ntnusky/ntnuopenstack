@@ -3,7 +3,7 @@
 # proposed-repositores, and this class installs that version of apparmor from
 # the proposed repositories.
 class ntnuopenstack::nova::compute::apparmor {
-  require ::project::apt::proposed
+  require ::profile::apt::proposed
 
   package { 'apparmor':
     ensure => '>= 2.13.3-7ubuntu5.2',
