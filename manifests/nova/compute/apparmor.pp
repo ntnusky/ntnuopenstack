@@ -6,6 +6,6 @@ class ntnuopenstack::nova::compute::apparmor {
   require ::profile::apt::proposed
 
   package { 'apparmor':
-    ensure => '>= 2.13.3-7ubuntu5.2',
+    ensure => '>=2.13.3-7ubuntu5.2',
   }
 }
