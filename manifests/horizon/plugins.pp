@@ -28,11 +28,12 @@ class ntnuopenstack::horizon::plugins {
   # If the magnum keystone-password is in hiera, we assume magnum to be
   # present, and is thus installing the magnum dashboard
   # (only available for RHEL/CentOS)
-  if($magnum and $::osfamily == 'RedHat') {
+  if($magnum and $facts['os']['name'] == 'CentOS') {
     horizon::dashboard { 'magnum': }
   }
 
-  if($vpnaas) {
+  # The vpnaas dashboard only exists in the Ubuntu repos...
+  if($vpnaas and $facts['os']['name'] == 'Ubuntu') {
     horizon::dashboard { 'neutron-vpnaas' : }
   }
 }
