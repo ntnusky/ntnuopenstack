@@ -30,7 +30,6 @@ class ntnuopenstack::neutron::agents {
 
   if($enable_vpnaas) {
     class { '::neutron::agents::vpnaas':
-      vpn_device_driver => 'neutron_vpnaas.services.vpn.device_drivers.strongswan_ipsec.StrongSwanDriver',
     }
     $vpnaas = [ 'vpnaas']
   } else {
