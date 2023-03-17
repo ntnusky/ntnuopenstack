@@ -10,6 +10,10 @@ class ntnuopenstack::neutron::api {
     'value_type'    => Boolean,
     'default_value' => true,
   })
+  $enable_vpnaas = lookup('ntnuopenstack::neutron::vpnaas::enabled', {
+    'default_value' => false,
+    'value_type'    => Boolean,
+  })
 
   require ::ntnuopenstack::neutron::auth
   require ::ntnuopenstack::neutron::base
@@ -20,12 +24,21 @@ class ntnuopenstack::neutron::api {
   include ::ntnuopenstack::neutron::ml2::config
   include ::profile::monitoring::munin::plugin::openstack::neutronapi
 
+  if ( $enable_vpnaas ) {
+    $vpnaas_provider = [
+      'VPN:strongswan:neutron_vpnaas.services.vpn.service_drivers.ipsec.IPsecVPNDriver:default'
+    ]
+  } else {
+    $vpnaas_provider = []
+  }
+
   # Install the neutron api
   class { '::neutron::server':
     allow_automatic_l3agent_failover => true,
     allow_automatic_dhcp_failover    => true,
     enable_proxy_headers_parsing     => $register_loadbalancer,
-    service_providers                => $service_providers,
+    ensure_vpnaas_package            => $enable_vpnaas,
+    service_providers                => $service_providers + $vpnaas_provider,
     sync_db                          => $sync_db,
   }
 }

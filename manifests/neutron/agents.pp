@@ -10,6 +10,11 @@ class ntnuopenstack::neutron::agents {
   $neutron_vrrp_pass = lookup('ntnuopenstack::neutron::vrrp_pass', String)
   $metadata_secret = lookup('ntnuopenstack::nova::sharedmetadataproxysecret',
                             String)
+  $enable_vpnaas = lookup('ntnuopenstack::neutron::vpnaas::enabled', {
+    'default_value' => false,
+    'value_type'    => Boolean,
+  })
+
   require ::ntnuopenstack::neutron::base
   require ::ntnuopenstack::repo
 
@@ -23,9 +28,18 @@ class ntnuopenstack::neutron::agents {
     dnsmasq_dns_servers => $dns_servers,
   }
 
+  if($enable_vpnaas) {
+    class { '::neutron::agents::vpnaas':
+    }
+    $vpnaas = [ 'vpnaas']
+  } else {
+    $vpnaas = []
+  }
+
   class { '::neutron::agents::l3':
     ha_enabled            => true,
     ha_vrrp_auth_password => $neutron_vrrp_pass,
-    extensions            => 'port_forwarding', 
+    extensions            => [ 'port_forwarding' ] + $vpnaas,
   }
+
 }

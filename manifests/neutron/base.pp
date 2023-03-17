@@ -13,6 +13,10 @@ class ntnuopenstack::neutron::base {
     'value_type'    => Variant[Boolean, Array[String]],
     'default_value' => false,
   })
+  $enable_vpnaas = lookup('ntnuopenstack::neutron::vpnaas::enabled', {
+    'default_value' => false,
+    'value_type'    => Boolean,
+  })
 
   require ::ntnuopenstack::repo
   include ::ntnuopenstack::neutron::sudo
@@ -26,13 +30,19 @@ class ntnuopenstack::neutron::base {
     $ha_transport_conf = {}
   }
 
+  if ($enable_vpnaas) {
+    $vpn_plugin = [ 'vpnaas' ]
+  } else {
+    $vpn_plugin = []
+  }
+
   class { '::neutron':
     allow_overlapping_ips   => true,
     core_plugin             => 'ml2',
     default_transport_url   => $transport_url,
     dhcp_agents_per_network => 2,
     global_physnet_mtu      => $mtu,
-    service_plugins         => $service_plugins,
+    service_plugins         => $service_plugins + $vpn_plugin,
     *                       => $ha_transport_conf,
   }
 

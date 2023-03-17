@@ -11,6 +11,11 @@ class ntnuopenstack::horizon::plugins {
     'value_type'    => Variant[Boolean, String],
   })
 
+  $vpnaas = lookup('ntnuopenstack::neutron::vpnaas::enabled', {
+    'default_value' => false,
+    'value_type'    => Boolean,
+  })
+
   # We would like to have the heat dashboard
   include ::horizon::dashboards::heat
 
@@ -25,5 +30,9 @@ class ntnuopenstack::horizon::plugins {
   # (only available for RHEL/CentOS)
   if($magnum and $::osfamily == 'RedHat') {
     horizon::dashboard { 'magnum': }
+  }
+
+  if($vpnaas) {
+    horizon::dashboard { 'neutron-vpnaas' : }
   }
 }
