@@ -30,7 +30,7 @@ class ntnuopenstack::horizon::plugins {
   } elsif ($magnum and $::osfamily == 'Debian') {
     ensure_packages('python3-magnum-ui', {
       'ensure' => 'present',
-      'tag'    => ['horizon-dashboard-package', 'horizon-compress']
+      'tag'    => ['horizon-dashboard-package', 'horizon-package', 'django-config']
     })
   }
 }
