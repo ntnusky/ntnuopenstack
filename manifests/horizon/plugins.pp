@@ -27,9 +27,18 @@ class ntnuopenstack::horizon::plugins {
 
   # If the magnum keystone-password is in hiera, we assume magnum to be
   # present, and is thus installing the magnum dashboard
-  # (only available for RHEL/CentOS)
+
+  # For Ubuntu, the packaging people decided to NOT follow the naming scheme
+  # for Horizon Dashboards in Ubuntu, so we have to insall it "manually".
+  # Magnum dashboard on Ubuntu is only available in 22.04 and newer
   if($magnum and $facts['os']['name'] == 'CentOS') {
     horizon::dashboard { 'magnum': }
+  } elsif ($magnum and $facts['os']['name'] == 'Ubuntu' and 
+      versioncmp($facts['os']['release']['major'], '22.04') >= 0) {
+    ensure_packages('python3-magnum-ui', {
+      'ensure' => 'present',
+      'tag'    => ['horizon-package']
+    })
   }
 
   # The vpnaas dashboard only exists in the Ubuntu repos...
