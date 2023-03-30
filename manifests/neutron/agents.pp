@@ -32,6 +32,12 @@ class ntnuopenstack::neutron::agents {
     class { '::neutron::agents::vpnaas':
     }
     $vpnaas = [ 'vpnaas']
+    neutron_vpnaas_service_config { 'service_providers/service_provider':
+      value => 'VPN:strongswan:neutron_vpnaas.services.vpn.service_drivers.ipsec.IPsecVPNDriver:default'
+    }
+    neutron_l3_agent_config { 'vpnagent/vpn_device_driver':
+      value => 'neutron_vpnaas.services.vpn.device_drivers.strongswan_ipsec.StrongSwanDriver',
+    }
   } else {
     $vpnaas = []
   }
