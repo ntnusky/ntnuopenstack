@@ -1,6 +1,9 @@
-# Configures logging for octavia 
+# Configures logging for octavia
 class ntnuopenstack::octavia::logging {
-  # Some services runs standalone 
+  # The API-service is logged through apache
+  include ::profile::services::apache::logging
+
+  # Some services runs standalone
   ntnuopenstack::common::logging { [
     'octavia-api',
     'octavia-health-manager',
