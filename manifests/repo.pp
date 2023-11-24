@@ -16,14 +16,14 @@ class ntnuopenstack::repo (
     } else {
       class { '::openstack_extras::repo::debian::ubuntu':
         package_require => true,
-        release         => $release
+        release         => $release,
       }
     }
   } elsif ($::osfamily == 'RedHat') {
     include ::profile::repo::powertools
     class { '::openstack_extras::repo::redhat::redhat':
       package_require => true,
-      release         => $release
+      release         => $release,
       stream          => true,
     }
   } else {
