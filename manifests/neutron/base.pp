@@ -27,7 +27,6 @@ class ntnuopenstack::neutron::base {
   }
 
   class { '::neutron':
-    allow_overlapping_ips   => true,
     core_plugin             => 'ml2',
     default_transport_url   => $transport_url,
     dhcp_agents_per_network => 2,
