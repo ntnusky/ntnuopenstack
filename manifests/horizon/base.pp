@@ -23,6 +23,10 @@ class ntnuopenstack::horizon::base {
     'value_type'    => Stdlib::Httpurl,
     'default_value' => 'https://docs.openstack.org',
   })
+  $timezone = lookup('ntnuopenstack::horizon::timezone', {
+    'value_type'    => String,
+    'default_value' => 'Europe/Oslo',
+  })
 
   # Try to retrieve memcache addresses.
   $memcache_servers = lookup('profile::memcache::servers', {
@@ -54,6 +58,7 @@ class ntnuopenstack::horizon::base {
   include ::profile::services::apache::firewall
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::common
+  require ::ntnuopenstack::horizon::deps
 
   # If this server should be placed behind haproxy, make sure to configure it.
   if($haproxy) {
@@ -105,6 +110,7 @@ class ntnuopenstack::horizon::base {
     server_aliases                 => [$::fqdn, $server_name],
     servername                     => $server_name,
     session_timeout                => $session_timeout,
+    timezone                       => $timezone,
     vhost_extra_params             => $extra_params,
     *                              => $memcache,
   }

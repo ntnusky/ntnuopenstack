@@ -50,5 +50,6 @@ class ntnuopenstack::nova::compute::ceph (
     libvirt_rbd_secret_uuid => $nova_uuid,
     manage_ceph_client      => false,
     ephemeral_storage       => $ephemeral_storage,
+    require                 => Ceph::Key['client.nova'],
   }
 }
