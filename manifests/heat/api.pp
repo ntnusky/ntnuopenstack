@@ -27,11 +27,11 @@ class ntnuopenstack::heat::api {
     service_name => 'httpd',
   }
 
-  class { ' ::heat::wsgi::apache_api':
+  class { '::heat::wsgi::apache_api':
     access_log_format => $logformat,
   }
 
-  class { ' ::heat::wsgi::apache_api_cfn':
+  class { '::heat::wsgi::apache_api_cfn':
     access_log_format => $logformat,
   }
 }
