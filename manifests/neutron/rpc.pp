@@ -8,7 +8,7 @@ class ntnuopenstack::neutron::rpc {
     ensure => present,
     owner  => 'root',
     group  => 'root',
-    mode   => '0644',
+    mode   => '0755',
     source => 'puppet:///modules/ntnuopenstack/initd/neutron-rpc-server',
     before => Anchor['neutron::install::end'],
     notify => Exec['systemd-reload'],
