@@ -2,6 +2,7 @@
 # not packaged for Ubuntu
 class ntnuopenstack::neutron::rpc {
   include ::neutron::deps
+  include ::profile::systemd::reload
 
   file { '/etc/init.d/neutron-rpc-server':
     ensure => present,
