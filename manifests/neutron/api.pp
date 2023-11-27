@@ -18,6 +18,7 @@ class ntnuopenstack::neutron::api {
   include ::ntnuopenstack::neutron::haproxy::backend
   include ::ntnuopenstack::neutron::logging::api
   include ::ntnuopenstack::neutron::ml2::config
+  include ::ntnuopenstack::neutron::rpc
   include ::profile::monitoring::munin::plugin::openstack::neutronapi
 
   # Install the neutron api
@@ -26,6 +27,7 @@ class ntnuopenstack::neutron::api {
     allow_automatic_dhcp_failover    => true,
     api_service_name                 => 'httpd',
     enable_proxy_headers_parsing     => $register_loadbalancer,
+    rpc_service_name                 => 'neutron-rpc-server',
     service_name                     => false,
     service_providers                => $service_providers,
     sync_db                          => $sync_db,
