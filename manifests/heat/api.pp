@@ -12,8 +12,26 @@ class ntnuopenstack::heat::api {
 
   if($confhaproxy) {
     contain ::ntnuopenstack::heat::haproxy::backend
+    $logformat = 'forwarded'
+  } else {
+    $logformat = false
   }
 
-  class { '::heat::api' : }
-  class { '::heat::api_cfn' : }
+  class { '::heat::api':
+    enabled      => false,
+    service_name => 'httpd',
+  }
+
+  class { '::heat::api_cfn':
+    enabled      => false,
+    service_name => 'httpd',
+  }
+
+  class { '::heat::wsgi::apache_api':
+    access_log_format => $logformat,
+  }
+
+  class { '::heat::wsgi::apache_api_cfn':
+    access_log_format => $logformat,
+  }
 }
