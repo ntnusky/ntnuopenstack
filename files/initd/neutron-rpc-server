@@ -14,7 +14,7 @@
 DESC="OpenStack Neutron RPC Server"
 PROJECT_NAME=neutron
 NAME=${PROJECT_NAME}-rpc-server
-[ -r /etc/default/neutron-rpc-server ] && . /etc/default/neutron-server
+[ -r /etc/default/neutron-server ] && . /etc/default/neutron-server
 [ -n "$NEUTRON_PLUGIN_CONFIG" ] && DAEMON_ARGS="--config-file=$NEUTRON_PLUGIN_CONFIG"
 #!/bin/sh
 # The content after this line comes from openstack-pkg-tools
