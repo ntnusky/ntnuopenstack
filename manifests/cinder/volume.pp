@@ -26,13 +26,14 @@ class ntnuopenstack::cinder::volume {
 
   class { '::cinder::volume': }
 
-  class { 'cinder::backends':
-    enabled_backends => $backends.keys(),
+  # We can not use cinder::backends and cinder::backend::rbd together
+  # It will always default to not configuring the differen backend hosts..
+  cinder_config {
+    'DEFAULT/enabled_backends': value => join($backends.keys(), ',');
   }
 
   $backends.each | $bname, $pool | {
     cinder::backend::rbd { $bname :
-      before          => Class['cinder::backends'],
       rbd_pool        => $pool,
       rbd_user        => 'cinder',
       rbd_secret_uuid => $ceph_uuid,
