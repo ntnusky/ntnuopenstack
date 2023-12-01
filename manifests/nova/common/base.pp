@@ -5,12 +5,6 @@ class ntnuopenstack::nova::common::base (
   include ::ntnuopenstack::nova::common::placement
   include ::ntnuopenstack::nova::common::sudo
 
-  # Determine if quotas should be counted through placement
-  $placement_quota = lookup('ntnuopenstack::nova::quota::placement', {
-    'value_type'    => Boolean,
-    'default_value' => true,
-  })
-
   # RabbitMQ connection-information
   $rabbitservers = lookup('profile::rabbitmq::servers', {
     'value_type'    => Variant[Array[String], Boolean],
@@ -29,8 +23,7 @@ class ntnuopenstack::nova::common::base (
   $transport_url = lookup('ntnuopenstack::transport::url')
 
   class { '::nova':
-    default_transport_url      => $transport_url,
-    count_usage_from_placement => $placement_quota,
-    *                          => $ha_transport_conf + $extra_options,
+    default_transport_url => $transport_url,
+    *                     => $ha_transport_conf + $extra_options,
   }
 }
