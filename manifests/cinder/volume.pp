@@ -27,12 +27,12 @@ class ntnuopenstack::cinder::volume {
   class { '::cinder::volume': }
 
   class { 'cinder::backends':
-    backend_host     => undef,
     enabled_backends => $backends.keys(),
   }
 
   $backends.each | $bname, $pool | {
     cinder::backend::rbd { $bname :
+      before          => Class['cinder::backends'],
       rbd_pool        => $pool,
       rbd_user        => 'cinder',
       rbd_secret_uuid => $ceph_uuid,
