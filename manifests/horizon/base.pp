@@ -18,7 +18,7 @@ class ntnuopenstack::horizon::base {
     'value_type'    => Integer,
     'default_value' => 7200,
   })
-  $keystone = lookup('ntnuopenstack::keystone::endpoint::internal', Stdlib::Httpurl)
+  $keystone = lookup('ntnuopenstack::keystone::endpoint::public', Stdlib::Httpurl)
   $help_url = lookup('ntnuopenstack::horizon::help_url', {
     'value_type'    => Stdlib::Httpurl,
     'default_value' => 'https://docs.openstack.org',
@@ -45,14 +45,8 @@ class ntnuopenstack::horizon::base {
     'default_value' => { 'raw' => 'Raw', 'qcow2' => 'QCOW2 - QEMU Emulator' }
   })
 
-  $image_formats_default = {
-    '' => 'Select format',
-  }
-
-  $image_formats_real = $image_formats_default + $image_formats
-
   $image_backend = {
-    'image_formats' => $image_formats_real,
+    'image_formats' => $image_formats,
   }
 
   include ::profile::services::apache::firewall
@@ -89,7 +83,7 @@ class ntnuopenstack::horizon::base {
     default_theme                  => 'default',
     enable_secure_proxy_ssl_header => $haproxy,
     help_url                       => $help_url,
-    horizon_upload_mode            => "\"${upload_mode}\"",
+    horizon_upload_mode            => $upload_mode,
     keystone_default_domain        => $ldap_name,
     keystone_multidomain_support   => true,
     keystone_url                   => "${keystone}:5000",
