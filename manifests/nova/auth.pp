@@ -22,6 +22,12 @@ class ntnuopenstack::nova::auth {
     www_authenticate_uri => "${public_endpoint}:5000/",
   }
 
+  class { '::nova::keystone::service_user':
+    auth_url    => "${internal_endpoint}:5000/",
+    password    => $nova_password,
+    region_name => $region,
+  }
+
   class { '::nova::keystone':
     auth_url    => "${internal_endpoint}:5000/",
     password    => $nova_password,
