@@ -27,7 +27,7 @@ class ntnuopenstack::cinder::volume {
   class { '::cinder::volume': }
 
   class { 'cinder::backends':
-    backend_host = undef,
+    backend_host     => undef,
     enabled_backends => $backends.keys(),
   }
 
