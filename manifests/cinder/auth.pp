@@ -15,15 +15,16 @@ class ntnuopenstack::cinder::auth {
 
   class { '::cinder::keystone::authtoken':
     auth_url             => $auth_url,
-    memcached_servers    => $memcache, 
+    memcached_servers    => $memcache,
     password             => $password,
     region_name          => $region_name,
     www_authenticate_uri => $www_authenticate_uri,
   }
 
   class { '::cinder::keystone::service_user':
-    auth_url    => $auth_url,
-    password    => $password,
-    region_name => $region_name,
+    auth_url                => $auth_url,
+    password                => $password,
+    region_name             => $region_name,
+    send_service_user_token => true,
   }
 }
