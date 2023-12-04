@@ -19,7 +19,7 @@ class ntnuopenstack::nova::auth {
     memcached_servers    => $memcache,
     password             => $nova_password,
     region_name          => $region,
-    www_authenticate_uri => "${public_endpoint}:5000/",
+    www_authenticate_uri => $www_authenticate_uri, 
   }
 
   class { '::nova::keystone::service_user':
