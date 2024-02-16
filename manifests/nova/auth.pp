@@ -1,7 +1,7 @@
 # Configures nova's authtoken 
 class ntnuopenstack::nova::auth {
-  $public_endpoint = lookup('ntnuopenstack::endpoint::public')
-  $internal_endpoint = lookup('ntnuopenstack::endpoint::internal')
+  $auth_url = lookup('ntnuopenstack::keystone::auth::url')
+  $www_authenticate_uri = lookup('ntnuopenstack::keystone::auth::uri')
   $nova_password = lookup('ntnuopenstack::nova::keystone::password')
   $region = lookup('ntnuopenstack::region')
 
@@ -15,15 +15,22 @@ class ntnuopenstack::nova::auth {
   }
 
   class { '::nova::keystone::authtoken':
-    auth_url             => "${internal_endpoint}:5000/",
+    auth_url             => $auth_url,
     memcached_servers    => $memcache,
     password             => $nova_password,
     region_name          => $region,
-    www_authenticate_uri => "${public_endpoint}:5000/",
+    www_authenticate_uri => $www_authenticate_uri, 
+  }
+
+  class { '::nova::keystone::service_user':
+    auth_url                => $auth_url,
+    password                => $nova_password,
+    region_name             => $region,
+    send_service_user_token => true,
   }
 
   class { '::nova::keystone':
-    auth_url    => "${internal_endpoint}:5000/",
+    auth_url    => $auth_url,
     password    => $nova_password,
     region_name => $region,
     username    => 'nova',

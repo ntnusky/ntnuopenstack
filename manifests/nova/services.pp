@@ -20,6 +20,7 @@ class ntnuopenstack::nova::services {
     'value_type'    => Integer,
   })
 
+  require ::ntnuopenstack::nova::auth
   include ::ntnuopenstack::nova::common::neutron
   require ::ntnuopenstack::nova::dbconnection
   require ::ntnuopenstack::nova::services::base

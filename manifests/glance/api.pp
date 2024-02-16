@@ -37,6 +37,9 @@ class ntnuopenstack::glance::api {
   # configuration snippet.
   if($confhaproxy) {
     contain ::ntnuopenstack::glance::haproxy::backend
+    $logformat = 'forwarded'
+  } else {
+    $logformat = false
   }
 
   class { '::glance::api':
@@ -48,10 +51,16 @@ class ntnuopenstack::glance::api {
     disk_formats                 => keys($disk_formats),
     enabled_backends             => ['ceph-default:rbd'],
     enable_proxy_headers_parsing => $confhaproxy,
+    service_name                 => 'httpd',
     show_image_direct_url        => true,
     show_multiple_locations      => true,
     sync_db                      => $db_sync,
     use_keystone_limits          => $use_keystone_limits,
     worker_self_reference_url    => "http://${::fqdn}:9292",
+  }
+
+  class { '::glance::wsgi::apache':
+    access_log_format => $logformat,
+    ssl               => false,
   }
 }

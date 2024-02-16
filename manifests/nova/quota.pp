@@ -8,6 +8,12 @@ class ntnuopenstack::nova::quota {
     'default_value' => false,
     'value_type'    => Boolean,
   })
+  # Determine if quotas should be counted through placement
+  $placement_quota = lookup('ntnuopenstack::nova::quota::placement', {
+    'value_type'    => Boolean,
+    'default_value' => true,
+  })
+
 
   # Configure the oslo_limit class if we should use the keystone limits.
   if($use_keystone_limits) {
@@ -29,7 +35,8 @@ class ntnuopenstack::nova::quota {
   }
 
   class { '::nova::quota':
-    * => $driver_opts,
+    count_usage_from_placement => $placement_quota,
+    *                          => $driver_opts,
   }
 
 }
