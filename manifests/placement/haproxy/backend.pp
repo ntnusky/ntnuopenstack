@@ -7,14 +7,14 @@ class ntnuopenstack::placement::haproxy::backend {
 
   ::profile::services::haproxy::backend { 'PlacementPublic':
     backend   => 'bk_placement_public',
-    port      => 8778,
+    port      => '8778',
     interface => $if,
     options   => 'check inter 2000 rise 2 fall 5',
   }
 
   ::profile::services::haproxy::backend { 'PlacementAdmin':
     backend   => 'bk_placement_admin',
-    port      => 8778,
+    port      => '8778',
     interface => $if,
     options   => 'check inter 2000 rise 2 fall 5',
   }

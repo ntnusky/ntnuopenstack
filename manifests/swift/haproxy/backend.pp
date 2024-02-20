@@ -7,14 +7,14 @@ class ntnuopenstack::swift::haproxy::backend {
 
   ::profile::services::haproxy::backend { 'SwiftPublic':
     backend   => 'bk_swift_public',
-    port      => 7480,
+    port      => '7480',
     interface => $if,
     options   => 'check inter 2000 rise 2 fall 5',
   }
 
   ::profile::services::haproxy::backend { 'SwiftAdmin':
     backend   => 'bk_swift_admin',
-    port      => 7480,
+    port      => '7480',
     interface => $if,
     options   => 'check inter 2000 rise 2 fall 5',
   }
