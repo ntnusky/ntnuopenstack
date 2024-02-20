@@ -7,7 +7,7 @@ class ntnuopenstack::nova::haproxy::backend::metadata {
 
   ::profile::services::haproxy::backend { 'NovaMetadata':
     backend   => 'bk_nova_metadata',
-    port      => 8775,
+    port      => '8775',
     interface => $if,
     options   => 'check inter 2000 rise 2 fall 5',
   }
