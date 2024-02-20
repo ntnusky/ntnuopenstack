@@ -1,6 +1,9 @@
 # Configures the haproxy backends for magnum
 class ntnuopenstack::magnum::haproxy::backend {
-  $if = lookup('profile::interfaces::management')
+  $if = lookup('profile::interfaces::management', {
+    'default_value' => $::sl2['server']['primary_interface']['name'],
+    'value_type'    => String,
+  })
 
   ::profile::services::haproxy::backend { 'MagnumPublic':
     backend   => 'bk_magnum_public',

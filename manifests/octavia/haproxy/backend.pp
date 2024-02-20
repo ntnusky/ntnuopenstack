@@ -1,6 +1,9 @@
 # Exports a server-definition to be collected by the haproxy backends.
 class ntnuopenstack::octavia::haproxy::backend {
-  $if = lookup('profile::interfaces::management')
+  $if = lookup('profile::interfaces::management', {
+    'default_value' => $::sl2['server']['primary_interface']['name'],
+    'value_type'    => String,
+  })
   $port = lookup('ntnuopenstack::octavia::api::port', Stdlib::Port)
 
   ::profile::services::haproxy::backend { 'OctaviaPublic':

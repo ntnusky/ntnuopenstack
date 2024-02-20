@@ -1,6 +1,9 @@
 # Configures the haproxy backends for glance
 class ntnuopenstack::glance::haproxy::backend {
-  $if = lookup('profile::interfaces::management')
+  $if = lookup('profile::interfaces::management', {
+    'default_value' => $::sl2['server']['primary_interface']['name'],
+    'value_type'    => String,
+  })
 
   ::profile::services::haproxy::backend { 'GlancePublic':
     backend   => 'bk_glance_public',

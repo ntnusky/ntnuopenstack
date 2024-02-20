@@ -32,7 +32,10 @@ class ntnuopenstack::nova::compute::libvirt (
     'value_type'    => Boolean
   })
 
-  $management_if = lookup('profile::interfaces::management')
+  $management_if = lookup('profile::interfaces::management', {
+    'default_value' => $::sl2['server']['primary_interface']['name'],
+    'value_type'    => String,
+  })
   $management_ip = getvar("::ipaddress_${management_if}")
 
   require ::ntnuopenstack::nova::compute::base
