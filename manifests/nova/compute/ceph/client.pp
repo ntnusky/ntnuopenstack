@@ -2,6 +2,11 @@
 class ntnuopenstack::nova::compute::ceph::client {
   $nova_key = lookup('ntnuopenstack::cinder::ceph::key')
 
+  $nova_pool = lookup('ntnuopenstack::nova::ceph::ephemeral::pool', {
+    'default_value' => 'volumes',
+    'value_type'    => String,
+  })
+
   $backends = lookup('ntnuopenstack::cinder::rbd::backends', {
     'value_type'    => Hash[String, String],
     'default_value' => {
@@ -9,10 +14,12 @@ class ntnuopenstack::nova::compute::ceph::client {
     },
   })
 
+
   # For each unique backend (avoid configuring the same backend multiple times
   # even if it is used for multiple cinder volume types), add relevant ceph
   # parameters giving access to the relevant pools.
-  $pools = $backends.values().unique
+  $allpools = [ $nova_pool ] + $backends.values()
+  $pools = $allpools.unique
   $poolaccess = $pools.map | $pool | {
     "allow rwx pool=${pool}"
   }
