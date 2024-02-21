@@ -32,11 +32,17 @@ class ntnuopenstack::nova::compute::libvirt (
     'value_type'    => Boolean
   })
 
-  $management_if = lookup('profile::interfaces::management', {
-    'default_value' => $::sl2['server']['primary_interface']['name'],
-    'value_type'    => String,
+  $slversion = lookup('profile::shiftleader::major::version', {
+    'default_value' => 1,
+    'value_type'    => Integer,
   })
-  $management_ip = getvar("::ipaddress_${management_if}")
+
+  if($slversion == 1) {
+    $management_if = lookup('profile::interfaces::management')
+    $management_ip = getvar("::ipaddress_${management_if}")
+  } else {
+    $management_ip = $::sl2['server']['primary_interface']['ipv4']
+  }
 
   require ::ntnuopenstack::nova::compute::base
   require ::ntnuopenstack::repo
