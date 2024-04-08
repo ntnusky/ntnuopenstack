@@ -5,7 +5,7 @@ class ntnuopenstack::octavia::firewall::controller {
       'value_type' => Stdlib::IP::Address::V4::CIDR,
     }
   )
-  $health_port = lookup('ntnuopenstack::octavia::heartbeat::port', Stdlib::Port)
+  $health_port = lookup('ntnuopenstack::octavia::heartbeat::port')
 
   ::profile::baseconfig::firewall::service::custom { 'amphorae heartbeats':
     protocol => 'udp',
