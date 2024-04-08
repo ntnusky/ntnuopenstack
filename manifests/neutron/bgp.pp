@@ -1,9 +1,18 @@
 # Installs and configures the neutron BGP agent
 class ntnuopenstack::neutron::bgp {
-  $bgp_router_id = lookup('ntnuopenstack::neutron::bgp::router::id', {
-    'value_type'    => Stdlib::IP::Address,
-    'default_value' => '0.0.0.0',
+  $bgp_interface = lookup('ntnuopenstack::neutron::bgp::router::interface', {
+    'default_value' => undef,
+    'value_type'    => Optional[String],
   })
+
+  if($bgp_interface) {
+    $bgp_router_id = $::sl2['server']['interfaces'][$bgp_interface]['ipv4']
+  } else {
+    $bgp_router_id = lookup('ntnuopenstack::neutron::bgp::router::id', {
+      'default_value' => '0.0.0.0',
+      'value_type'    => Stdlib::IP::Address,
+    })
+  }
 
   require ::ntnuopenstack::neutron::base
   include ::ntnuopenstack::neutron::logging::dragent
