@@ -5,7 +5,7 @@ class ntnuopenstack::octavia::haproxy::management {
 
   include ::ntnuopenstack::octavia::firewall::haproxy
 
-  $port = lookup('ntnuopenstack::octavia::api::port', Stdlib::Port)
+  $port = lookup('ntnuopenstack::octavia::api::port')
   $certificate = lookup('ntnuopenstack::endpoint::admin::cert', {
     'default_value' => false,
   })

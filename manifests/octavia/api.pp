@@ -1,6 +1,6 @@
 # Installs the octavia API.
 class ntnuopenstack::octavia::api {
-  $api_port = lookup('ntnuopenstack::octavia::api::port', Stdlib::Port)
+  $api_port = lookup('ntnuopenstack::octavia::api::port')
   $dbsync = lookup('ntnuopenstack::octavia::db::sync', Boolean, 'first', false)
 
   $register_loadbalancer = lookup('profile::haproxy::register', {

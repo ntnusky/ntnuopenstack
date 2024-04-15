@@ -4,7 +4,7 @@ class ntnuopenstack::nova::haproxy::backend::vnc {
 
   ::profile::services::haproxy::backend { 'NovaVNC':
     backend   => 'bk_nova_vnc',
-    port      => 6080,
+    port      => '6080',
     interface => $if,
     options   => 'check inter 2000 rise 2 fall 5',
   }
