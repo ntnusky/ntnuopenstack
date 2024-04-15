@@ -10,7 +10,10 @@ class ntnuopenstack::octavia::controller {
   $health_managers = lookup('ntnuopenstack::octavia::health::managers',
                         Array[String])
   $controller_ip_port_list = join($health_managers, ', ')
-  $management_if = lookup('profile::interfaces::management', String)
+  $management_if = lookup('profile::interfaces::management', {
+    'default_value' => $::sl2['server']['primary_interface']['name'],
+    'value_type'    => String,
+  })
   $mip = $facts['networking']['interfaces'][$management_if]['ip']
   $management_ipv4 = lookup(
     "profile::baseconfig::network::interfaces.${management_if}.ipv4.address", {

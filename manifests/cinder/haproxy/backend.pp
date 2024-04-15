@@ -1,6 +1,9 @@
 # Configures the haproxy backends for cinder
 class ntnuopenstack::cinder::haproxy::backend {
-  $if = lookup('profile::interfaces::management')
+  $if = lookup('profile::interfaces::management', {
+    'default_value' => $::sl2['server']['primary_interface']['name'],
+    'value_type'    => String,
+  })
 
   ::profile::services::haproxy::backend { 'CinderPublic':
     backend   => 'bk_cinder_public',
