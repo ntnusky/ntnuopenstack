@@ -3,7 +3,7 @@ class ntnuopenstack::neutron::api {
   # Openstack parameters
   $sync_db = lookup('ntnuopenstack::neutron::db::sync', Boolean)
   $service_providers = lookup('ntnuopenstack::neutron::service_providers', {
-    'value_type'    => Variant[Array[String], Undef],
+    'value_type'    => Optional[Array[String]],
     'default_value' => undef,
   })
   $register_loadbalancer = lookup('profile::haproxy::register', {
