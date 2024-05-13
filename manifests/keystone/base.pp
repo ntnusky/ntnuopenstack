@@ -28,6 +28,11 @@ class ntnuopenstack::keystone::base {
     'default_value' => 14400,   # Default token lifetime is 14400 seconds (4h)
   })
 
+  $max_token_size = lookup('ntnuopenstack::keystone::token::size', {
+    'value_type'    => Integer,
+    'default_value' => 512,
+  })
+
   include ::keystone::healthcheck
   include ::ntnuopenstack::keystone::bootstrap
   include ::ntnuopenstack::keystone::cache
@@ -46,6 +51,7 @@ class ntnuopenstack::keystone::base {
     enable_fernet_setup          => true,
     enable_proxy_headers_parsing => $confhaproxy,
     fernet_keys                  => $fernet_keys,
+    max_token_size               => $max_token_size,
     public_endpoint              => "${public_endpoint}:5000/",
     service_name                 => 'httpd',
     sync_db                      => $sync_db,

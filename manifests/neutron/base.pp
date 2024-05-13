@@ -8,6 +8,10 @@ class ntnuopenstack::neutron::base {
     'value_type'    => Variant[Undef, Integer],
     'default_value' => undef,
   })
+  $max_routes = lookup('ntnuopenstack::neutron::routes::max', {
+    'default_value' => 100,
+    'value_type'    => Integer,
+  })
   $transport_url = lookup('ntnuopenstack::transport::url', String)
   $rabbitservers = lookup('profile::rabbitmq::servers', {
     'value_type'    => Variant[Boolean, Array[String]],
@@ -27,7 +31,6 @@ class ntnuopenstack::neutron::base {
   }
 
   class { '::neutron':
-    allow_overlapping_ips   => true,
     core_plugin             => 'ml2',
     default_transport_url   => $transport_url,
     dhcp_agents_per_network => 2,
@@ -37,6 +40,6 @@ class ntnuopenstack::neutron::base {
   }
 
   neutron_config { 'DEFAULT/max_routes':
-    value => 100,
+    value => $max_routes,
   }
 }
