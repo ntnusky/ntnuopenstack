@@ -40,7 +40,7 @@ class ntnuopenstack::magnum::base {
     keystone_region_name => $region,
   }
 
-  class { '::magnum::cinder': {
+  class { '::magnum::cinder':
     default_docker_volume_type => $default_volume_type,
   }
 }
