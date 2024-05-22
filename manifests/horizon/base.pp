@@ -92,7 +92,6 @@ class ntnuopenstack::horizon::base {
       {'name' => 'default',  'display' => 'Openstack accounts'},
     ],
     image_backend                  => $image_backend,
-    images_panel                   => 'angular',
     manage_memcache_package        => false,
     instance_options               => {
       create_volume => false,
