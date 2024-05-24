@@ -1,4 +1,3 @@
-Defaults:neutron syslog_goodpri=none, !requiretty, !pam_session
+Defaults:neutron !requiretty
 
 neutron ALL = (root) NOPASSWD: /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf *
-neutron ALL = (root) NOPASSWD: /usr/bin/neutron-rootwrap-daemon /etc/neutron/rootwrap.conf
