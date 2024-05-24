@@ -4,7 +4,7 @@ class ntnuopenstack::nova::compute::id {
     'value_type' => Hash[String, String],
   })
 
-  if(! $::fqdn in $ids) {
+  if(! ($::fqdn in $ids)) {
     fail("The hostname ${::fqdn} is missing in the " +
       "'ntnuopenstack::nova::compute::ids' key in hiera")
   }
