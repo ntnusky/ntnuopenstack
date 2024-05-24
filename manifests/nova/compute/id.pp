@@ -5,10 +5,10 @@ class ntnuopenstack::nova::compute::id {
   })
 
   if(! ($::fqdn in $ids)) {
-    fail(' '.join([
+    fail(join([
       "The hostname ${::fqdn} is missing in the",
       "'ntnuopenstack::nova::compute::ids' key in hiera",
-    ]))
+    ], ' '))
   }
 
   file { '/var/lib/nova/compute_id':
