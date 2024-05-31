@@ -1,5 +1,8 @@
 # Configures the nova hypervisor ID
 class ntnuopenstack::nova::compute::id {
+
+  include ::nova::deps
+
   $ids = lookup('ntnuopenstack::nova::compute::ids', {
     'value_type' => Hash[String, String],
   })
@@ -17,5 +20,6 @@ class ntnuopenstack::nova::compute::id {
     group   => 'nova',
     owner   => 'nova',
     mode    => '0640',
+    require => Anchor['nova::install::end'],
   }
 }
