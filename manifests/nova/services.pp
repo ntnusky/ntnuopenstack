@@ -23,6 +23,7 @@ class ntnuopenstack::nova::services {
   require ::ntnuopenstack::nova::auth
   include ::ntnuopenstack::nova::common::neutron
   require ::ntnuopenstack::nova::dbconnection
+  include ::ntnuopenstack::nova::quota
   require ::ntnuopenstack::nova::services::base
   include ::ntnuopenstack::nova::services::logging
   include ::ntnuopenstack::nova::services::vncproxy
