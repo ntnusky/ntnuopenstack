@@ -34,6 +34,7 @@ class ntnuopenstack::octavia::controller {
     amp_secgroup_list       => [$secgroup_id],
     amp_ssh_key_name        => $keypair,
     controller_ip_port_list => $controller_ip_port_list,
+    heartbeat_key           => $heartbeat_key,
     loadbalancer_topology   => 'SINGLE',
   }
 
@@ -44,7 +45,6 @@ class ntnuopenstack::octavia::controller {
 
   class { '::octavia::health_manager':
     ip            => $management_ipv4,
-    heartbeat_key => $heartbeat_key,
   }
 
   class { '::octavia::housekeeping':
