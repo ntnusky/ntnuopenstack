@@ -1,6 +1,13 @@
-# Configures logging for neutron 
+# Configures logging for neutron
 class ntnuopenstack::neutron::logging::api {
-  ntnuopenstack::common::logging {'neutron-server':
+
+  # The API-services is loggedn through apache
+  include ::profile::services::apache::logging
+
+  ntnuopenstack::common::logging { [
+    'neutron-server',
+    'neutron-rpc-server',
+  ]:
     project => 'neutron',
   }
 }
