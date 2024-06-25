@@ -37,6 +37,11 @@ class ntnuopenstack::nova::compute::libvirt (
     'value_type'    => Integer,
   })
 
+  $workarounds = lookup('ntnuopenstack::nova::workarounds', {
+    'default_value' => undef,
+    'value_type'    => Optional[Array[String]],
+  })
+
   if($slversion == 1) {
     $management_if = lookup('profile::interfaces::management')
     $management_ip = getvar("::ipaddress_${management_if}")
@@ -78,6 +83,12 @@ class ntnuopenstack::nova::compute::libvirt (
   } else {
     $cpuconfig = {
       cpu_mode => 'host-passthrough',
+    }
+  }
+
+  if($workarounds) {
+    class { '::ntnuopenstack::nova::workarounds':
+      workarounds => $workarounds
     }
   }
 
