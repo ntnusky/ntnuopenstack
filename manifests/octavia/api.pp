@@ -26,6 +26,6 @@ class ntnuopenstack::octavia::api {
 
   class { '::octavia::wsgi::apache':
     access_log_format => 'forwarded',
-    port              => $api_port,
+    port              => Integer($api_port),
   }
 }
