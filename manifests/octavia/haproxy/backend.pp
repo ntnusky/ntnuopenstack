@@ -4,7 +4,7 @@ class ntnuopenstack::octavia::haproxy::backend {
     'default_value' => $::sl2['server']['primary_interface']['name'],
     'value_type'    => String,
   })
-  $port = lookup('ntnuopenstack::octavia::api::port', String)
+  $port = lookup('ntnuopenstack::octavia::api::port', Integer)
 
   ::profile::services::haproxy::backend { 'OctaviaPublic':
     backend   => 'bk_octavia_public',
