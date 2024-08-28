@@ -1,6 +1,6 @@
 # Installs all scripts needed by zabbix to monitor our openstack platforms.
 class ntnuopenstack::zabbix::scripts {
-  include ::tnuopenstack::common::pydb
+  include ::ntnuopenstack::common::pydb
 
   $scripts = [
     'discover-openstack-externalnets.py',
