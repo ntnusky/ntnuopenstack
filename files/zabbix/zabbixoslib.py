@@ -53,8 +53,8 @@ def glance_metrics(host, username, password):
       counts[data['images'][i]['visibility']] = 1 
 
   for t in sizes:
-    data['%s-images' % t] = counts[t]
-    data['%s-imagesize' % t] = sizes[t]
+    data['%s_images' % t] = counts[t]
+    data['%s_imagesize' % t] = sizes[t]
 
   return data
 
@@ -199,17 +199,17 @@ def neutron_metrics(host, username, password):
 
   # Get L2-identifiers usage
   keys = ['free', 'allocated']
-  data['ml2-l2ids'] = {'VLAN':{}, 'VXLAN':{}}
+  data['ml2_l2ids'] = {'VLAN':{}, 'VXLAN':{}}
 
   c.execute("SELECT allocated, COUNT(allocated) AS c "\
     "FROM ml2_vxlan_allocations GROUP BY allocated")
   for v in c.fetchall():
-    data['ml2-l2ids']['VXLAN'][keys[v['allocated']]] = v['c']
+    data['ml2_l2ids']['VXLAN'][keys[v['allocated']]] = v['c']
 
   c.execute("SELECT allocated, COUNT(allocated) AS c "\
     "FROM ml2_vlan_allocations GROUP BY allocated")
   for v in c.fetchall():
-    data['ml2-l2ids']['VLAN'][keys[v['allocated']]] = v['c']
+    data['ml2_l2ids']['VLAN'][keys[v['allocated']]] = v['c']
 
   # Get subnet-pool statistics
   data['subnet_pools'] = {}
