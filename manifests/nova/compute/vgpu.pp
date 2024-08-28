@@ -5,7 +5,23 @@ class ntnuopenstack::nova::compute::vgpu {
   # here even though this class is not using it...
   $mdev_type = lookup('nova::compute::mdev::mdev_types', Hash)
 
-  include ::profile::monitoring::munin::plugin::vgpu
+  $installmunin = lookup('profile::munin::install', {
+    'default_value' => true,
+    'value_type'    => Boolean,
+  })
+
+  $zabbix_servers = lookup('profile::zabbix::servers', {
+    'default_value' => [],
+    'value_type'    => Array[Stdlib::IP::Address::Nosubnet],
+  })
+
+  if($installmunin) {
+    include ::profile::monitoring::munin::plugin::vgpu
+  }
+
+  if($servers =~ Array[Stdlib::IP::Address::Nosubnet, 1]) {
+    include ::ntnuopenstack::nova::zabbix::vgpu
+  }
 
   # Ensure SR-IOV virtual functions are enabled on boot
   # This has no effect on GPUs that don't support SR-IOV
