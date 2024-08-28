@@ -19,7 +19,7 @@ class ntnuopenstack::nova::compute::vgpu {
     include ::profile::monitoring::munin::plugin::vgpu
   }
 
-  if($servers =~ Array[Stdlib::IP::Address::Nosubnet, 1]) {
+  if($zabbix_servers =~ Array[Stdlib::IP::Address::Nosubnet, 1]) {
     include ::ntnuopenstack::nova::zabbix::vgpu
   }
 
