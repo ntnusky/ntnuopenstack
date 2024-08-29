@@ -35,8 +35,7 @@ def glance_metrics(host, username, password):
 
   data['size'] = 0
   data['no_images'] = 0
-  sizes = {}
-  counts = {}
+  data['visibilities'] = {}
   
   for i in data['images']:
     if not data['images'][i]['size']:
@@ -46,15 +45,15 @@ def glance_metrics(host, username, password):
     data['no_images'] += 1
 
     try:
-      sizes[data['images'][i]['visibility']] += data['images'][i]['size']
-      counts[data['images'][i]['visibility']] += 1 
+      data['visibilities'][data['images'][i]['visibility']]['size'] += \
+        data['images'][i]['size']
+      data['visibilities'][data['images'][i]['visibility']]['no_images'] += 1 
     except KeyError:
-      sizes[data['images'][i]['visibility']] = data['images'][i]['size']
-      counts[data['images'][i]['visibility']] = 1 
-
-  for t in sizes:
-    data['%s_images' % t] = counts[t]
-    data['%s_imagesize' % t] = sizes[t]
+      data['visibilities'][data['images'][i]['visibility']] = {
+        'name': data['images'][i]['visibility'],
+        'size': data['images'][i]['size'],
+        'no_images': 1
+      }
 
   return data
 
@@ -91,6 +90,7 @@ def magnum_metrics(host, username, password):
   data['templates'] = {
     x['uuid']: {
       'name': x['name'], 
+      'uuid': x['uuid'],
       'hidden': x['hidden'], 
       'clusters': 0
     } for x in c.fetchall()
@@ -108,9 +108,12 @@ def magnum_metrics(host, username, password):
     # Add do summary
     for v in ['health_status', 'status']:
       try:
-        data[v][cluster[v]] += 1
+        data[v][cluster[v]]['value'] += 1
       except KeyError:
-        data[v][cluster[v]] = 1
+        data[v][cluster[v]] = {
+          'value': 1,
+          'name': cluster[v],
+        }
         
   return data
 
@@ -182,7 +185,7 @@ def neutron_metrics(host, username, password):
     "INNER JOIN agents ON routerl3agentbindings.l3_agent_id = agents.id " \
     "GROUP BY host")
   data['network_agents'] = { 
-    x['host']: { 'routers': x['COUNT(host)']} for x in c.fetchall()
+    x['host']: { 'routers': x['COUNT(host)'], 'hostname': x['host']} for x in c.fetchall()
   }
   c.execute("SELECT COUNT(id) FROM routers")
   data['no_routers'] = c.fetchone()['COUNT(id)']
@@ -199,17 +202,29 @@ def neutron_metrics(host, username, password):
 
   # Get L2-identifiers usage
   keys = ['free', 'allocated']
-  data['ml2_l2ids'] = {'VLAN':{}, 'VXLAN':{}}
+  data['ml2_l2ids'] = {}
 
   c.execute("SELECT allocated, COUNT(allocated) AS c "\
     "FROM ml2_vxlan_allocations GROUP BY allocated")
   for v in c.fetchall():
-    data['ml2_l2ids']['VXLAN'][keys[v['allocated']]] = v['c']
+    try:
+      data['ml2_l2ids']['VXLAN'][keys[v['allocated']]] = v['c']
+    except KeyError:
+      data['ml2_l2ids']['VXLAN'] = {
+        'type': 'VXLAN',
+        keys[v['allocated']]: v['c'],
+      }
 
   c.execute("SELECT allocated, COUNT(allocated) AS c "\
     "FROM ml2_vlan_allocations GROUP BY allocated")
   for v in c.fetchall():
-    data['ml2_l2ids']['VLAN'][keys[v['allocated']]] = v['c']
+    try:
+      data['ml2_l2ids']['VLAN'][keys[v['allocated']]] = v['c']
+    except KeyError:
+      data['ml2_l2ids']['VLAN'] = {
+        'type': 'VLAN',
+        keys[v['allocated']]: v['c'],
+      }
 
   # Get subnet-pool statistics
   data['subnet_pools'] = {}
@@ -222,6 +237,7 @@ def neutron_metrics(host, username, password):
     except KeyError:
       data['subnet_pools'][pool['subnetpool_id']] = {
         'prefixes': [pool['cidr']],
+        'uuid': pool['subnetpool_id'],
         'name': pool['name'],
         'size': 0,
         'used': 0,
@@ -265,37 +281,29 @@ def nova_metrics(host, username, password):
     'root_gb': 0,
     'ephemeral_gb': 0,
   }
-  data['per_compute'] = {}
   data['vmstates'] = {}
   data['images'] = {}
 
   for row in c.fetchall():
-    if row['host'] not in data['per_compute']:
-      data['per_compute'][row['host']] = {
-        'memory_mb': 0,
-        'vcpus': 0,
-        'vms': 0,
-        'root_gb': 0,
-        'ephemeral_gb': 0,
-      }
-
     for f in data['vm_total']:
       if f == 'vms':
         data['vm_total'][f] += 1
-        data['per_compute'][row['host']][f] += 1
       else:
         data['vm_total'][f] += row[f]
-        data['per_compute'][row['host']][f] += row[f]
+
+    if(len(row['image_ref'])):
+      try:
+        data['images'][row['image_ref']] += 1
+      except KeyError:
+        data['images'][row['image_ref']] = 1
 
     try:
-      data['images'][row['image_ref']] += 1
+      data['vmstates'][row['vm_state']]['value'] += 1
     except KeyError:
-      data['images'][row['image_ref']] = 1
-
-    try:
-      data['vmstates'][row['vm_state']] += 1
-    except KeyError:
-      data['vmstates'][row['vm_state']] = 1
+      data['vmstates'][row['vm_state']] = {
+        'value': 1,
+        'name': row['vm_state'],
+      }
 
   c.execute("SELECT hypervisor_hostname, running_vms, vcpus, memory_mb, " \
     "vcpus_used, memory_mb_used, local_gb, local_gb_used " \
@@ -351,9 +359,13 @@ def octavia_metrics(host, username, password):
   for lb in data['loadbalancers']:
     for status in statuses:
       try:
-        statuses[status][data['loadbalancers'][lb][status]] += 1
+        statuses[status][data['loadbalancers'][lb][status]]['value'] += 1
       except KeyError:
-        statuses[status][data['loadbalancers'][lb][status]] = 1
+        statuses[status][data['loadbalancers'][lb][status]] = {
+          'name': data['loadbalancers'][lb][status],
+          'value': 1
+        }
+
   data['loadbalancer_status_summary'] = statuses
   return data
 
@@ -369,8 +381,13 @@ def createOSSummary(data):
     if m:
       os = m.groups()[0]
       try:
-        summary[os] += data['nova']['images'][id]
+        summary[os]['value'] += data['nova']['images'][id]
+        summary[os]['images'] += 1 
       except KeyError:
-        summary[os] = data['nova']['images'][id]
+        summary[os] = {
+          'name': os,
+          'value': data['nova']['images'][id],
+          'images': 1
+        }
 
   return summary
