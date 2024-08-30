@@ -20,4 +20,11 @@ class ntnuopenstack::nova::zabbix::vgpu {
   zabbix::userparameters { 'vgpu':
     content => 'UserParameter=vgpu.data,/usr/local/sbin/get-vgpu-data.py',
   }
+
+  zabbix::userparameters { 'nvidia_gpus':
+    content => join([
+      "UserParameter=gpu.discovery,nvidia-smi --query-gpu=gpu_bus_id,name,driver_version --format=csv,noheader,nounits | sed -e 's/, /,/g'",
+      "UserParameter=gpu.card[*],nvidia-smi --query-gpu=temperature.gpu,memory.total,memory.used,fan.speed,utilization.gpu,power.draw --format=csv,noheader,nounits -i \$1 | sed -e 's/, /,/g'",
+    ], "\n"),
+  }
 }
