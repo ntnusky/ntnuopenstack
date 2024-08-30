@@ -86,7 +86,7 @@ def magnum_metrics(host, username, password):
   c = db.cursor(MySQLdb.cursors.DictCursor)
   
   # Collect cluster templates 
-  c.execute("SELECT uuid, name, hidden FROM cluster_template")
+  c.execute("SELECT uuid, name, hidden FROM cluster_template WHERE public = 1")
   data['templates'] = {
     x['uuid']: {
       'name': x['name'], 
