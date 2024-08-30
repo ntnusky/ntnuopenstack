@@ -15,6 +15,49 @@ ospattern = re.compile(r'('\
   r')'
 )
 
+def cinder_metrics(host, username, password):
+  data = {}  
+  db = MySQLdb.connect(host=host, user=username, 
+    password=password, database='cinder')
+
+  c = db.cursor(MySQLdb.cursors.DictCursor)
+  c.execute("SELECT volumes.id, size, status, volume_types.name AS volumetype "\
+    "FROM volumes INNER JOIN volume_types "\
+    "ON volumes.volume_type_id = volume_types.id where volumes.deleted = '0';")
+
+  data['volumetypes'] = {}
+  data['statuses'] = {}
+  data['gigabytes'] = 0
+  data['volumes'] = 0
+  for volume in c.fetchall():
+    # Add to the totals 
+    data['volumes'] += 1
+    data['gigabytes'] += volume['size']
+
+    # Add to the per-volume-type totals
+    try:
+      data['volumetypes'][volume['volumetype']]['volumes'] += 1
+      data['volumetypes'][volume['volumetype']]['gigabytes'] += volume['size']
+    except KeyError:
+      data['volumetypes'][volume['volumetype']] = {
+        'name': volume['volumetype'],
+        'volumes': 1,
+        'gigabytes': volume['size'],
+      }
+
+    # Add to the per-volume-status totals
+    try:
+      data['statuses'][volume['status']]['value'] += 1
+      data['statuses'][volume['status']]['gigabytes'] += volume['size']
+    except KeyError:
+      data['statuses'][volume['status']] = {
+        'name': volume['status'],
+        'value': 1,
+        'gigabytes': volume['size'],
+      }
+      
+  return data
+
 def glance_metrics(host, username, password):
   data = {}
   db = MySQLdb.connect(host=host, user=username, 
@@ -53,6 +96,49 @@ def glance_metrics(host, username, password):
         'name': data['images'][i]['visibility'],
         'size': data['images'][i]['size'],
         'no_images': 1
+      }
+
+  return data
+
+def heat_metrics(host, username, password):
+  data = {}  
+  db = MySQLdb.connect(host=host, user=username, 
+    password=password, database='heat')
+  
+  c = db.cursor(MySQLdb.cursors.DictCursor)
+  c.execute("SELECT id, action, status FROM stack "\
+    "WHERE deleted_at IS NULL AND nested_depth = 0")
+
+  data['actions'] = {}
+  data['statuses'] = {}
+  data['stack_status'] = {}
+  data['stacks'] = 0
+  for stack in c.fetchall():
+    stack_status = '%s_%s' % (stack['action'], stack['status'])
+    data['stacks'] += 1
+
+    try:
+      data['actions'][stack['action']]['value'] += 1
+    except KeyError:
+      data['actions'][stack['action']] = {
+        'name': stack['action'],
+        'value': 1,
+      }
+
+    try:
+      data['statuses'][stack['status']]['value'] += 1
+    except KeyError:
+      data['statuses'][stack['status']] = {
+        'name': stack['status'],
+        'value': 1,
+      }
+
+    try:
+      data['stack_status'][stack_status]['value'] += 1
+    except KeyError:
+      data['stack_status'][stack_status] = {
+        'name': stack_status,
+        'value': 1,
       }
 
   return data
