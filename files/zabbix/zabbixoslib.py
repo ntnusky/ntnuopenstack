@@ -47,12 +47,12 @@ def cinder_metrics(host, username, password):
 
     # Add to the per-volume-status totals
     try:
-      data['statuses'][volume['status']]['value'] += 1
+      data['statuses'][volume['status']]['volumes'] += 1
       data['statuses'][volume['status']]['gigabytes'] += volume['size']
     except KeyError:
       data['statuses'][volume['status']] = {
         'name': volume['status'],
-        'value': 1,
+        'volumes': 1,
         'gigabytes': volume['size'],
       }
       
