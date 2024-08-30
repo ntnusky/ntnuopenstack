@@ -25,6 +25,7 @@ class ntnuopenstack::magnum::base {
   require ::ntnuopenstack::repo
   require ::ntnuopenstack::magnum::auth
   require ::ntnuopenstack::magnum::dbconnection
+  include ::ntnuopenstack::magnum::logrotate
 
   class { '::magnum':
     default_transport_url => $transport_url,
