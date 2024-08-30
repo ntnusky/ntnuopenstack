@@ -9,7 +9,9 @@ class ntnuopenstack::zabbix::database {
   })
 
   $databases = [
+    'cinder',
     'glance',
+    'heat',
     'keystone',
     'magnum', 
     'neutron',
