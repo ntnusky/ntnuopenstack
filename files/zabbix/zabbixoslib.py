@@ -331,7 +331,7 @@ def octavia_metrics(host, username, password):
   
   c = db.cursor(MySQLdb.cursors.DictCursor)
   c.execute("select id, name, provisioning_status, operating_status, topology from load_balancer")
-  data['loadbalancers'] = {x['id']: {
+  loadbalancers = {x['id']: {
       'id': x['id'],
       'name': x['name'],
       'provisioning_status': x['provisioning_status'],
@@ -359,13 +359,13 @@ def octavia_metrics(host, username, password):
     'operating_status': {},
     'topology': {},
   }
-  for lb in data['loadbalancers']:
+  for lb in loadbalancers:
     for status in statuses:
       try:
-        statuses[status][data['loadbalancers'][lb][status]]['value'] += 1
+        statuses[status][loadbalancers[lb][status]]['value'] += 1
       except KeyError:
-        statuses[status][data['loadbalancers'][lb][status]] = {
-          'name': data['loadbalancers'][lb][status],
+        statuses[status][loadbalancers[lb][status]] = {
+          'name': loadbalancers[lb][status],
           'value': 1
         }
 
