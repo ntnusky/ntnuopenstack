@@ -344,9 +344,12 @@ def octavia_metrics(host, username, password):
   c.execute("SELECT status FROM amphora")
   for r in c.fetchall():
     try:
-      data['amphora_statuses'][r['status']] += 1
+      data['amphora_statuses'][r['status']]['value'] += 1
     except KeyError:
-      data['amphora_statuses'][r['status']] = 1
+      data['amphora_statuses'][r['status']] = {
+        'value': 1,
+        'name': r['status'],
+      }
 
   c.close()
   db.close()
