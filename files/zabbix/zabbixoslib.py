@@ -355,7 +355,10 @@ def nova_metrics(host, username, password):
   db = MySQLdb.connect(host=host, user=username, 
     password=password, database='nova')
   c = db.cursor(MySQLdb.cursors.DictCursor)
-  
+  dbapi = MySQLdb.connect(host=host, user=username, 
+    password=password, database='nova_api')
+  capi = dbapi.cursor(MySQLdb.cursors.DictCursor)
+
   # Get instances
   c.execute("SELECT vm_state, memory_mb, vcpus, host, root_gb, ephemeral_gb," \
     "image_ref FROM instances where deleted = 0")
@@ -391,8 +394,29 @@ def nova_metrics(host, username, password):
         'name': row['vm_state'],
       }
 
-  c.execute("SELECT hypervisor_hostname, running_vms, vcpus, memory_mb, " \
-    "vcpus_used, memory_mb_used, local_gb, local_gb_used " \
+  # Get host-aggregates
+  capi.execute("SELECT aggregates.name AS a, aggregate_hosts.host AS h " \
+    "FROM aggregate_hosts INNER JOIN aggregates " \
+    "ON aggregates.id = aggregate_hosts.aggregate_id")
+  data['aggregates'] = {}
+  for ha in capi.fetchall():
+    try:
+      data['aggregates'][ha['a']]['hosts'].append(ha['h'])
+    except KeyError:
+      data['aggregates'][ha['a']] = {
+        'hosts': [ ha['h'] ],
+        'name': ha['a'],
+        'vcpus': 0,
+        'vcpus_used': 0,
+        'memory_mb': 0, 
+        'memory_mb_used': 0,
+        'local_gb': 0,
+        'local_gb_used': 0,
+      }
+
+  # Get hypervisors
+  c.execute("SELECT hypervisor_hostname, host, running_vms, " \
+    "vcpus, memory_mb, vcpus_used, memory_mb_used, local_gb, local_gb_used " \
     "FROM compute_nodes WHERE deleted = 0")
   data['hypervisors'] = {x['hypervisor_hostname']: x for x in c.fetchall()}
 
@@ -403,6 +427,11 @@ def nova_metrics(host, username, password):
     'vcpus': 0,
   }
   for h in data['hypervisors']:
+    for a in data['aggregates']:
+      if data['hypervisors'][h]['host'] in data['aggregates'][a]['hosts']:
+        for metric in ['vcpus', 'vcpus_used', 'memory_mb', 'memory_mb_used',
+            'local_gb', 'local_gb_used']:
+          data['aggregates'][a][metric] += data['hypervisors'][h][metric]
     for v in data['hypervisor_totals']:
       data['hypervisor_totals'][v] += data['hypervisors'][h][v]
 
