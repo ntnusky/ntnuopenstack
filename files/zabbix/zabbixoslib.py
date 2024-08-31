@@ -406,6 +406,7 @@ def nova_metrics(host, username, password):
       data['aggregates'][ha['a']] = {
         'hosts': [ ha['h'] ],
         'name': ha['a'],
+        'running_vms': 0,
         'vcpus': 0,
         'vcpus_used': 0,
         'memory_mb': 0, 
@@ -430,7 +431,7 @@ def nova_metrics(host, username, password):
     for a in data['aggregates']:
       if data['hypervisors'][h]['host'] in data['aggregates'][a]['hosts']:
         for metric in ['vcpus', 'vcpus_used', 'memory_mb', 'memory_mb_used',
-            'local_gb', 'local_gb_used']:
+            'local_gb', 'local_gb_used', 'running_vms']:
           data['aggregates'][a][metric] += data['hypervisors'][h][metric]
     for v in data['hypervisor_totals']:
       data['hypervisor_totals'][v] += data['hypervisors'][h][v]
