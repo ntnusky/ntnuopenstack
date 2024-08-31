@@ -16,6 +16,7 @@ class ntnuopenstack::zabbix::database {
     'magnum', 
     'neutron',
     'nova', 
+    'nova_api', 
     'octavia',
   ]
 
