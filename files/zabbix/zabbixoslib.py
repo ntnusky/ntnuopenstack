@@ -1,5 +1,7 @@
 #!/usr/bin/python3
+import datetime
 import ipaddress
+import json
 import MySQLdb
 import MySQLdb.cursors
 import re
@@ -152,14 +154,40 @@ def keystone_metrics(host, username, password):
   c = db.cursor(MySQLdb.cursors.DictCursor)
   c.execute("SELECT id FROM project WHERE is_domain = 1 AND name = 'NTNU'")
   domain_id = c.fetchone()['id']
+
+  # Get all project tags:
+  c.execute("SELECT project_id, name FROM project_tag")
+  tags = {'notified_delete':[]}
+  for t in c.fetchall():
+    try:
+      tags[t['name']].append(t['project_id'])
+    except KeyError:
+      tags[t['name']] = [t['project_id']]
   
   # Get the project-list
-  c.execute("SELECT id, name FROM project WHERE is_domain = 0 AND domain_id = %s",
+  c.execute("SELECT id, name, extra FROM project WHERE is_domain = 0 AND domain_id = %s",
     (domain_id,))
-  data['projects'] = {x['id']: x['name'] for x in c.fetchall()}
+  data['projects'] = {x['id']: {
+    'id': x['id'],
+    'name': x['name'],
+    'extra': json.loads(x['extra']),
+  } for x in c.fetchall()}
+
+  for p in data['projects']:
+    try:
+      day,month,year = data['projects'][p]['extra']['expiry'].split('.')
+      d = datetime.date(day=int(day), month=int(month), year=int(year))
+      data['projects'][p]['expiry'] = d.strftime("%s")
+    except (KeyError, ValueError):
+      data['projects'][p]['expiry'] = '0'
+
+    data['projects'][p]['notified'] = '1' if p in tags['notified_delete'] else '0'
+
+    data['projects'][p].pop('extra')
   
   # Add summaries
   data['no_projects'] = len(data['projects'])
+
 
   c.close()
   db.close()
