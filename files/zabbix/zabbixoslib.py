@@ -21,7 +21,7 @@ ospattern = re.compile(r'('\
 def cinder_metrics(host, username, password):
   data = {}  
   db = MySQLdb.connect(host=host, user=username, 
-    password=password, database='cinder')
+    password=password, database='cinder', charset='utf8')
 
   c = db.cursor(MySQLdb.cursors.DictCursor)
   c.execute("SELECT volumes.id, size, status, volume_types.name AS volumetype "\
@@ -64,7 +64,7 @@ def cinder_metrics(host, username, password):
 def glance_metrics(host, username, password):
   data = {}
   db = MySQLdb.connect(host=host, user=username, 
-    password=password, database='glance')
+    password=password, database='glance', charset='utf8')
 
   c = db.cursor(MySQLdb.cursors.DictCursor)
   c.execute("SELECT id, name, size, visibility FROM images WHERE deleted = 0")
@@ -106,7 +106,7 @@ def glance_metrics(host, username, password):
 def heat_metrics(host, username, password):
   data = {}  
   db = MySQLdb.connect(host=host, user=username, 
-    password=password, database='heat')
+    password=password, database='heat', charset='utf8')
   
   c = db.cursor(MySQLdb.cursors.DictCursor)
   c.execute("SELECT id, action, status FROM stack "\
@@ -149,7 +149,7 @@ def heat_metrics(host, username, password):
 def keystone_metrics(host, username, password):
   data = {}  
   db = MySQLdb.connect(host=host, user=username, 
-    password=password, database='keystone')
+    password=password, database='keystone', charset='utf8')
   
   # Get the Domain ID
   c = db.cursor(MySQLdb.cursors.DictCursor)
@@ -196,7 +196,7 @@ def keystone_metrics(host, username, password):
 def magnum_metrics(host, username, password):
   data = {'clusters': {}}
   db = MySQLdb.connect(host=host, user=username, 
-    password=password, database='magnum')
+    password=password, database='magnum', charset='utf8')
   c = db.cursor(MySQLdb.cursors.DictCursor)
   
   # Collect cluster templates 
@@ -236,7 +236,7 @@ def neutron_metrics(host, username, password):
     'external_networks': {},
   }
   db = MySQLdb.connect(host=host, user=username, 
-    password=password, database='neutron')
+    password=password, database='neutron', charset='utf8')
   c = db.cursor(MySQLdb.cursors.DictCursor)
   c2 = db.cursor(MySQLdb.cursors.DictCursor)
   c3 = db.cursor(MySQLdb.cursors.DictCursor)
@@ -381,10 +381,10 @@ def neutron_metrics(host, username, password):
 def nova_metrics(host, username, password):
   data = {} 
   db = MySQLdb.connect(host=host, user=username, 
-    password=password, database='nova')
+    password=password, database='nova', charset='utf8')
   c = db.cursor(MySQLdb.cursors.DictCursor)
   dbapi = MySQLdb.connect(host=host, user=username, 
-    password=password, database='nova_api')
+    password=password, database='nova_api', charset='utf8')
   capi = dbapi.cursor(MySQLdb.cursors.DictCursor)
 
   # Get instances
@@ -444,8 +444,8 @@ def nova_metrics(host, username, password):
       }
 
   # Collect services
-  c.execute("SELECT host, disabled, last_seen_up FROM services "\
-    "WHERE topic = 'compute'")
+  c.execute("SELECT host, disabled, last_seen_up, disabled_reason " \
+    "FROM services WHERE topic = 'compute'")
   services = {}
   tz_from = tz.tzutc()
   tz_to = tz.tzlocal()
@@ -454,6 +454,7 @@ def nova_metrics(host, username, password):
     utctime = service['last_seen_up'].replace(tzinfo=tz_from)
     services[service['host']] = {
       'disabled': service['disabled'],
+      'disabled_reason': service['disabled_reason'],
       'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
     }
 
@@ -485,6 +486,8 @@ def nova_metrics(host, username, password):
     if data['hypervisors'][h]['host'] in services:
       data['hypervisors'][h]['disabled'] = \
         services[data['hypervisors'][h]['host']]['disabled']
+      data['hypervisors'][h]['disabled_reason'] = \
+        services[data['hypervisors'][h]['host']]['disabled_reason']
       data['hypervisors'][h]['last_seen_up'] = \
         services[data['hypervisors'][h]['host']]['last_seen_up']
 
@@ -495,7 +498,7 @@ def nova_metrics(host, username, password):
 def octavia_metrics(host, username, password):
   data = {}  
   db = MySQLdb.connect(host=host, user=username, 
-    password=password, database='octavia')
+    password=password, database='octavia', charset='utf8')
   
   c = db.cursor(MySQLdb.cursors.DictCursor)
   c.execute("select id, name, provisioning_status, operating_status, topology from load_balancer")
