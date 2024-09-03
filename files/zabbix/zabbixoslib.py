@@ -454,7 +454,7 @@ def nova_metrics(host, username, password):
     utctime = service['last_seen_up'].replace(tzinfo=tz_from)
     services[service['host']] = {
       'disabled': service['disabled'],
-      'disabled_reason': service['disabled_reason'],
+      'disabled_reason': service['disabled_reason'] if service['disabled_reason'] else '',
       'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
     }
 
