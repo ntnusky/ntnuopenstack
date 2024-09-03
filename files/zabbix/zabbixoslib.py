@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import datetime
+from dateutil import tz
 import ipaddress
 import json
 import MySQLdb
@@ -187,7 +188,6 @@ def keystone_metrics(host, username, password):
   
   # Add summaries
   data['no_projects'] = len(data['projects'])
-
 
   c.close()
   db.close()
@@ -447,10 +447,14 @@ def nova_metrics(host, username, password):
   c.execute("SELECT host, disabled, last_seen_up FROM services "\
     "WHERE topic = 'compute'")
   services = {}
+  tz_from = tz.tzutc()
+  tz_to = tz.tzlocal()
+
   for service in c.fetchall():
+    utctime = service['last_seen_up'].replace(tzinfo=tz_from)
     services[service['host']] = {
       'disabled': service['disabled'],
-      'last_seen_up': service['last_seen_up'].strftime('%s'),
+      'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
     }
 
   # Get hypervisors
@@ -477,6 +481,7 @@ def nova_metrics(host, username, password):
     for v in data['hypervisor_totals']:
       data['hypervisor_totals'][v] += data['hypervisors'][h][v]
 
+    # Add service-info to the hypervisor data
     if data['hypervisors'][h]['host'] in services:
       data['hypervisors'][h]['disabled'] = \
         services[data['hypervisors'][h]['host']]['disabled']
