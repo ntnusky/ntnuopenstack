@@ -443,6 +443,16 @@ def nova_metrics(host, username, password):
         'local_gb_used': 0,
       }
 
+  # Collect services
+  c.execute("SELECT host, disabled, last_seen_up FROM services "\
+    "WHERE topic = 'compute'")
+  services = {}
+  for service in c.fetchall():
+    services[service['host']] = {
+      'disabled': service['disabled'],
+      'last_seen_up': service['last_seen_up'].strftime('%s'),
+    }
+
   # Get hypervisors
   c.execute("SELECT hypervisor_hostname, host, running_vms, " \
     "vcpus, memory_mb, vcpus_used, memory_mb_used, local_gb, local_gb_used " \
@@ -456,13 +466,22 @@ def nova_metrics(host, username, password):
     'vcpus': 0,
   }
   for h in data['hypervisors']:
+    # Add hypervisor usage to the aggregate usage
     for a in data['aggregates']:
       if data['hypervisors'][h]['host'] in data['aggregates'][a]['hosts']:
         for metric in ['vcpus', 'vcpus_used', 'memory_mb', 'memory_mb_used',
             'local_gb', 'local_gb_used', 'running_vms']:
           data['aggregates'][a][metric] += data['hypervisors'][h][metric]
+
+    # Add hypervisor usage to the global summary
     for v in data['hypervisor_totals']:
       data['hypervisor_totals'][v] += data['hypervisors'][h][v]
+
+    if data['hypervisors'][h]['host'] in services:
+      data['hypervisors'][h]['disabled'] = \
+        services[data['hypervisors'][h]['host']]['disabled']
+      data['hypervisors'][h]['last_seen_up'] = \
+        services[data['hypervisors'][h]['host']]['last_seen_up']
 
   c.close()
   db.close()
