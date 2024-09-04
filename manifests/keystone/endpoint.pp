@@ -5,6 +5,11 @@ class ntnuopenstack::keystone::endpoint {
     'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
   })
 
+  $designate = lookup('ntnuopenstack::designate::keystone::password', {
+    'default_value' => false,
+    'value_type'    => Variant[Boolean, String],
+  })
+
   include ::ntnuopenstack::keystone::bootstrap
 
   $keystone_admin = $services[$keystone_region]['url']['admin']
@@ -130,5 +135,10 @@ class ntnuopenstack::keystone::endpoint {
         *        => $common
       }
     }
+  }
+
+  # If there is a password for designate in hiera, define an endpoint for designate.
+  if($designate) {
+    include ::ntnuopenstack::designate::endpoint
   }
 }
