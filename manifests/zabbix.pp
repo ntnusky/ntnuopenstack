@@ -1,7 +1,7 @@
 # Configures zabbix to monitor openstack-resources using read-access to the
 # databases.
 class ntnuopenstack::zabbix {
-  $zabbixservers = lookup('profile::zabbix::servers', {
+  $zabbixservers = lookup('profile::zabbix::agent::servers', {
     'default_value' => [],
     'value_type'    => Array[Stdlib::IP::Address::Nosubnet],
   })
