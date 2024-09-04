@@ -28,11 +28,17 @@ class ntnuopenstack::keystone::endpoint {
     'value_type'    => Variant[Boolean, String],
   })
 
+  $designate = lookup('ntnuopenstack::designate::keystone::password', {
+    'default_value' => false,
+    'value_type'    => Variant[Boolean, String],
+  })
+
   include ::ntnuopenstack::keystone::bootstrap
 
   # We need to define the endpoints on the keystone hosts, so include the other
   # endpoints here.
   include ::ntnuopenstack::cinder::endpoint
+  include ::ntnuopenstack::designate::endpoint
   include ::ntnuopenstack::glance::endpoint
   include ::ntnuopenstack::heat::endpoint
   include ::ntnuopenstack::neutron::endpoint
@@ -64,5 +70,10 @@ class ntnuopenstack::keystone::endpoint {
   if($magnum) {
     include ::ntnuopenstack::magnum::endpoint
     include ::ntnuopenstack::magnum::domain
+  }
+
+  # If there is a password for designate in hiera, define an endpoint for designate.
+  if($designate) {
+    include ::ntnuopenstack::designate::endpoint
   }
 }
