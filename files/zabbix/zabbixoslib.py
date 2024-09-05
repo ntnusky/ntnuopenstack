@@ -195,7 +195,12 @@ def keystone_metrics(host, username, password):
   return data
 
 def magnum_metrics(host, username, password):
-  data = {'clusters': {}}
+  data = {
+    'clusters': {},
+    'templates': {},
+    'health_status': {},
+    'status': {},
+  }
 
   try:
     db = MySQLdb.connect(host=host, user=username, 
@@ -215,9 +220,6 @@ def magnum_metrics(host, username, password):
       'clusters': 0
     } for x in c.fetchall()
   }
-
-  data['health_status'] = {}
-  data['status'] = {}
 
   # Collect clusters
   c.execute("SELECT uuid, name, cluster_template_id, status, health_status FROM cluster")
