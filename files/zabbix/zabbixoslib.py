@@ -509,8 +509,8 @@ def octavia_metrics(host, username, password):
       'provisioning_status': {},
       'operating_status': {},
       'topology': {},
-    }
-    'amphora_statuses': {}
+    },
+    'amphora_statuses': {},
   }  
 
   try:
