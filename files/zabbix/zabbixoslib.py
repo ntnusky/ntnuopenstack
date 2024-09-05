@@ -5,6 +5,7 @@ import ipaddress
 import json
 import MySQLdb
 import MySQLdb.cursors
+import MySQLdb._exceptions
 import re
 
 ospattern = re.compile(r'('\
@@ -195,8 +196,13 @@ def keystone_metrics(host, username, password):
 
 def magnum_metrics(host, username, password):
   data = {'clusters': {}}
-  db = MySQLdb.connect(host=host, user=username, 
-    password=password, database='magnum', charset='utf8')
+
+  try:
+    db = MySQLdb.connect(host=host, user=username, 
+      password=password, database='magnum', charset='utf8')
+  except MySQLdb._exceptions.OperationalError:
+    return data
+
   c = db.cursor(MySQLdb.cursors.DictCursor)
   
   # Collect cluster templates 
