@@ -504,9 +504,20 @@ def nova_metrics(host, username, password):
   return data
 
 def octavia_metrics(host, username, password):
-  data = {}  
-  db = MySQLdb.connect(host=host, user=username, 
-    password=password, database='octavia', charset='utf8')
+  data = {
+    'loadbalancer_status_summary': {
+      'provisioning_status': {},
+      'operating_status': {},
+      'topology': {},
+    }
+    'amphora_statuses': {}
+  }  
+
+  try:
+    db = MySQLdb.connect(host=host, user=username, 
+      password=password, database='octavia', charset='utf8')
+  except MySQLdb._exceptions.OperationalError:
+    return data
   
   c = db.cursor(MySQLdb.cursors.DictCursor)
   c.execute("select id, name, provisioning_status, operating_status, topology from load_balancer")
@@ -519,7 +530,6 @@ def octavia_metrics(host, username, password):
     } for x in c.fetchall()
   }
 
-  data['amphora_statuses'] = {}
   c.execute("SELECT status FROM amphora")
   for r in c.fetchall():
     try:
@@ -533,22 +543,16 @@ def octavia_metrics(host, username, password):
   c.close()
   db.close()
 
-  statuses = {
-    'provisioning_status': {},
-    'operating_status': {},
-    'topology': {},
-  }
   for lb in loadbalancers:
-    for status in statuses:
+    for status in data['loadbalancer_status_summary']:
       try:
-        statuses[status][loadbalancers[lb][status]]['value'] += 1
+        data['loadbalancer_status_summary'][status][loadbalancers[lb][status]]['value'] += 1
       except KeyError:
-        statuses[status][loadbalancers[lb][status]] = {
+        data['loadbalancer_status_summary'][status][loadbalancers[lb][status]] = {
           'name': loadbalancers[lb][status],
           'value': 1
         }
 
-  data['loadbalancer_status_summary'] = statuses
   return data
 
 def createOSSummary(data):
