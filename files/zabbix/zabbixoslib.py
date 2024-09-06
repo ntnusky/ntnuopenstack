@@ -555,6 +555,89 @@ def octavia_metrics(host, username, password):
 
   return data
 
+def service_status(host, username, password):
+  data = {}
+
+  tz_from = tz.tzutc()
+  tz_to = tz.tzlocal()
+
+  # Collect Novas services
+  db = MySQLdb.connect(host=host, user=username, 
+    password=password, database='nova', charset='utf8')
+  c = db.cursor(MySQLdb.cursors.DictCursor)
+  c.execute("SELECT * FROM services WHERE topic IS NOT NULL and topic != 'compute'")
+  for s in c.fetchall():
+    utctime = s['last_seen_up'].replace(tzinfo=tz_from)
+    data[s['uuid']] = {
+      'uuid': s['uuid'],
+      'project': 'nova',
+      'host': s['host'],
+      'service': s['binary'], 
+      'service_id': '', 
+      'disabled': s['disabled'],
+      'disabled_reason': s['disabled_reason'] if s['disabled_reason'] else '',
+      'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
+    }
+
+  # Collect neutron agents 
+  db = MySQLdb.connect(host=host, user=username, 
+    password=password, database='neutron', charset='utf8')
+  c = db.cursor(MySQLdb.cursors.DictCursor)
+  c.execute("SELECT id, agent_type, `binary`, host, admin_state_up, " \
+    "heartbeat_timestamp FROM agents")
+  for s in c.fetchall():
+    utctime = s['heartbeat_timestamp'].replace(tzinfo=tz_from)
+    data[s['id']] = {
+      'uuid': s['id'],
+      'project': 'neutron',
+      'host': s['host'],
+      'service': s['binary'],
+      'service_id': '', 
+      'disabled': 0,
+      'disabled_reason': '',
+      'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
+    }
+
+  # Collect cinder services
+  db = MySQLdb.connect(host=host, user=username, 
+    password=password, database='cinder', charset='utf8')
+  c = db.cursor(MySQLdb.cursors.DictCursor)
+  c.execute("SELECT uuid, host, `binary`, topic, updated_at, disabled, "\
+    "disabled_reason FROM services WHERE deleted = '0'")
+  for s in c.fetchall():
+    utctime = s['updated_at'].replace(tzinfo=tz_from)
+    data[s['uuid']] = {
+      'uuid': s['uuid'],
+      'project': 'cinder',
+      'host': s['host'],
+      'service': s['binary'], 
+      'service_id': '', 
+      'disabled': s['disabled'],
+      'disabled_reason': s['disabled_reason'] if s['disabled_reason'] else '',
+      'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
+    }
+
+  # Collect heat services
+  db = MySQLdb.connect(host=host, user=username, 
+    password=password, database='heat', charset='utf8')
+  c = db.cursor(MySQLdb.cursors.DictCursor)
+  c.execute("SELECT id, engine_id, host, `binary`, updated_at "\
+    "FROM service WHERE deleted_at IS NULL")
+  for s in c.fetchall():
+    utctime = s['updated_at'].replace(tzinfo=tz_from)
+    data[s['id']] = {
+      'uuid': s['id'],
+      'project': 'heat',
+      'host': s['host'], 
+      'service': s['binary'], 
+      'service_id': s['engine_id'],
+      'disabled': 0, 
+      'disabled_reason': '', 
+      'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
+    }
+
+  return data
+
 def createOSSummary(data):
   summary = {}
   
