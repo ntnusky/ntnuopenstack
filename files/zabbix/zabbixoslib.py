@@ -179,9 +179,11 @@ def keystone_metrics(host, username, password):
     try:
       day,month,year = data['projects'][p]['extra']['expiry'].split('.')
       d = datetime.date(day=int(day), month=int(month), year=int(year))
-      data['projects'][p]['expiry'] = d.strftime("%s")
+      data['projects'][p]['expiry'] = data['projects'][p]['extra']['expiry']
+      data['projects'][p]['expiry_timestamp'] = d.strftime("%s")
     except (KeyError, ValueError):
-      data['projects'][p]['expiry'] = '0'
+      data['projects'][p]['expiry'] = ''
+      data['projects'][p]['expiry_timestamp'] = '0'
 
     data['projects'][p]['notified'] = '1' if p in tags['notified_delete'] else '0'
 
@@ -498,6 +500,45 @@ def nova_metrics(host, username, password):
         services[data['hypervisors'][h]['host']]['disabled_reason']
       data['hypervisors'][h]['last_seen_up'] = \
         services[data['hypervisors'][h]['host']]['last_seen_up']
+
+  # Get the MISC project ID
+  kdb = MySQLdb.connect(host=host, user=username, 
+    password=password, database='keystone', charset='utf8')
+  kc = kdb.cursor(MySQLdb.cursors.DictCursor)
+  kc.execute("SELECT id FROM project WHERE name = 'MISC'")
+  try:
+    projectID = kc.fetchone()['id']
+  except:
+    projectID = None
+  kc.close()
+  kdb.close()
+
+  # Get MISC VM's
+  data['misc_vms'] = {}
+  if projectID:
+    c.execute("SELECT i.uuid,i.hostname,md.key,md.value FROM instances i " \
+      "INNER JOIN instance_metadata md ON i.uuid = md.instance_uuid " \
+      "WHERE i.project_id=%s AND i.deleted=0", (projectID,))
+    for t in c.fetchall():
+      if t['uuid'] not in data['misc_vms']:
+        data['misc_vms'][t['uuid']] = {
+          'expire': '',
+          'expire_timestamp': 0,
+          'contact': '',
+          'owner': '',
+          'topdesk': '',
+        }
+
+      if t['key'] in data['misc_vms'][t['uuid']]:
+        data['misc_vms'][t['uuid']][t['key']] = t['value']
+
+      if t['key'] == 'expire':
+        try:
+          day,month,year = t['value'].split('.')
+          d = datetime.date(day=int(day), month=int(month), year=int(year))
+          data['misc_vms'][t['uuid']]['expire_timestamp'] = d.strftime("%s")
+        except (KeyError, ValueError):
+          pass
 
   c.close()
   db.close()
