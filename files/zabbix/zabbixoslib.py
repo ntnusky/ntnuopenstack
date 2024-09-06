@@ -522,6 +522,7 @@ def nova_metrics(host, username, password):
     for t in c.fetchall():
       if t['uuid'] not in data['misc_vms']:
         data['misc_vms'][t['uuid']] = {
+          'uuid': t['uuid'],
           'expire': '',
           'expire_timestamp': 0,
           'contact': '',
