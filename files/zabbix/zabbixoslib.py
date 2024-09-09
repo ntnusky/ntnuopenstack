@@ -608,7 +608,8 @@ def service_status(host, username, password):
   db = MySQLdb.connect(host=host, user=username, 
     password=password, database='nova', charset='utf8')
   c = db.cursor(MySQLdb.cursors.DictCursor)
-  c.execute("SELECT * FROM services WHERE topic IS NOT NULL and topic != 'compute'")
+  c.execute("SELECT * FROM services WHERE topic IS NOT NULL AND "\
+    "topic != 'compute' AND deleted = '0'")
   for s in c.fetchall():
     utctime = s['last_seen_up'].replace(tzinfo=tz_from)
     data[s['uuid']] = {
