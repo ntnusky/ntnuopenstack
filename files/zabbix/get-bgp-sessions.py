@@ -20,6 +20,7 @@ for c in connections:
   if local == 179 or remote == 179 and c.status == 'ESTABLISHED':
     active[c.raddr.ip] = {
       'initiator': 'local' if remote == 179 else 'remote',
+      'status': 1,
       'local_port': local,
       'remote_port': remote,
       'local_ip': c.laddr.ip,
