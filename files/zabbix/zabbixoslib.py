@@ -513,6 +513,10 @@ def nova_metrics(host, username, password):
   kc.close()
   kdb.close()
 
+  # Get UUID of VMs where the deletion-notification is set
+  c.execute("SELECT resource_id FROM tags WHERE tag = 'notified_delete'")
+  notified = [x['resource_id'] for x in c.fetchall()]
+
   # Get MISC VM's
   data['misc_vms'] = {}
   if projectID:
@@ -524,6 +528,7 @@ def nova_metrics(host, username, password):
         data['misc_vms'][t['uuid']] = {
           'uuid': t['uuid'],
           'hostname': t['hostname'],
+          'notified': 1 if t['uuid'] in notified else 0,
           'expire': '',
           'expire_timestamp': 0,
           'contact': '',
