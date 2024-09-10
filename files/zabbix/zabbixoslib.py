@@ -167,11 +167,12 @@ def keystone_metrics(host, username, password):
       tags[t['name']] = [t['project_id']]
   
   # Get the project-list
-  c.execute("SELECT id, name, extra FROM project WHERE is_domain = 0 AND domain_id = %s",
+  c.execute("SELECT id, name, extra, enabled FROM project WHERE is_domain = 0 AND domain_id = %s",
     (domain_id,))
   data['projects'] = {x['id']: {
     'id': x['id'],
     'name': x['name'],
+    'enabled': x['enabled'],
     'extra': json.loads(x['extra']),
   } for x in c.fetchall()}
 
@@ -520,7 +521,7 @@ def nova_metrics(host, username, password):
   # Get MISC VM's
   data['misc_vms'] = {}
   if projectID:
-    c.execute("SELECT i.uuid,i.hostname,md.key,md.value FROM instances i " \
+    c.execute("SELECT i.uuid,i.hostname,i.vm_state,md.key,md.value FROM instances i " \
       "INNER JOIN instance_metadata md ON i.uuid = md.instance_uuid " \
       "WHERE i.project_id=%s AND i.deleted=0", (projectID,))
     for t in c.fetchall():
@@ -528,6 +529,7 @@ def nova_metrics(host, username, password):
         data['misc_vms'][t['uuid']] = {
           'uuid': t['uuid'],
           'hostname': t['hostname'],
+          'running': 1 if t['vm_state'] == 'active' else 0,
           'notified': 1 if t['uuid'] in notified else 0,
           'expire': '',
           'expire_timestamp': 0,
