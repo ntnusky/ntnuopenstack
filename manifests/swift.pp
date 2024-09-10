@@ -5,4 +5,5 @@ class ntnuopenstack::swift {
   include ::ntnuopenstack::swift::haproxy::backend
   include ::ntnuopenstack::swift::munin::plugins
   include ::ntnuopenstack::swift::radosgw
+  include ::profile::ceph::zabbix::radosgw
 }
