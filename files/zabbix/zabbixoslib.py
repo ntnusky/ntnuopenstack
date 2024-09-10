@@ -545,7 +545,7 @@ def nova_metrics(host, username, password):
           d = datetime.date(day=int(day), month=int(month), year=int(year))
           data['misc_vms'][t['uuid']]['expire_timestamp'] = d.strftime("%s")
         except (KeyError, ValueError):
-          pass
+          data['misc_vms'][t['uuid']]['expire_timestamp'] = '0'
 
   c.close()
   db.close()
