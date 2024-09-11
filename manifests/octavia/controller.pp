@@ -31,7 +31,7 @@ class ntnuopenstack::octavia::controller {
   include ::ntnuopenstack::octavia::firewall::controller
   require ::ntnuopenstack::repo
 
-  if($installmunin {
+  if($installmunin) {
     include ::profile::monitoring::munin::plugin::openstack::octavia
   }
 
