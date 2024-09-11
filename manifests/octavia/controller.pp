@@ -20,12 +20,20 @@ class ntnuopenstack::octavia::controller {
       'value_type'    => Stdlib::IP::Address::V4,
       'default_value' => $mip,
   })
+  $installmunin = lookup('profile::munin::install', {
+    'default_value' => true,
+    'value_type'    => Boolean,
+  })
+
 
   include ::ntnuopenstack::octavia::base
   require ::ntnuopenstack::octavia::dbconnection
   include ::ntnuopenstack::octavia::firewall::controller
   require ::ntnuopenstack::repo
-  include ::profile::monitoring::munin::plugin::openstack::octavia
+
+  if($installmunin {
+    include ::profile::monitoring::munin::plugin::openstack::octavia
+  }
 
   class { '::octavia::controller':
     amp_boot_network_list   => [$network_id],

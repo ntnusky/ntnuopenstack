@@ -1,6 +1,10 @@
 # Installs the Magnum API
 class ntnuopenstack::magnum::api {
   $sync_db = lookup('ntnuopenstack::magnum::db::sync', Boolean)
+  $installmunin = lookup('profile::munin::install', {
+    'default_value' => true,
+    'value_type'    => Boolean,
+  })
 
   require ::ntnuopenstack::magnum::auth
   include ::ntnuopenstack::magnum::base
@@ -8,7 +12,10 @@ class ntnuopenstack::magnum::api {
   require ::ntnuopenstack::magnum::dbconnection
   include ::ntnuopenstack::magnum::firewall::api
   include ::ntnuopenstack::magnum::haproxy::backend
-  include ::profile::monitoring::munin::plugin::openstack::magnum
+
+  if($installmunin) {
+    include ::profile::monitoring::munin::plugin::openstack::magnum
+  }
 
   class { '::magnum::api':
     enabled        => false,

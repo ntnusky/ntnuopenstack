@@ -10,7 +10,6 @@ class ntnuopenstack::nova::compute (
   include ::ntnuopenstack::nova::compute::logging
   include ::ntnuopenstack::nova::compute::service
   include ::ntnuopenstack::nova::compute::sudo
-  include ::ntnuopenstack::nova::munin::compute
   require ::ntnuopenstack::repo
 
   # In focal we need at least version '2.13.3-7ubuntu5.2' of apparmor to run
@@ -32,5 +31,14 @@ class ntnuopenstack::nova::compute (
   })
   if ($install_sensu) {
     sensu::subscription { 'os-compute': }
+  }
+
+  $installmunin = lookup('profile::munin::install', {
+    'default_value' => true,
+    'value_type'    => Boolean,
+  })
+
+  if($installmunin) {
+    include ::ntnuopenstack::nova::munin::compute
   }
 }
