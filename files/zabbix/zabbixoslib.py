@@ -1,7 +1,11 @@
 #!/usr/bin/python3
+import datetime
+from dateutil import tz
 import ipaddress
+import json
 import MySQLdb
 import MySQLdb.cursors
+import MySQLdb._exceptions
 import re
 
 ospattern = re.compile(r'('\
@@ -15,10 +19,53 @@ ospattern = re.compile(r'('\
   r')'
 )
 
+def cinder_metrics(host, username, password):
+  data = {}  
+  db = MySQLdb.connect(host=host, user=username, 
+    password=password, database='cinder', charset='utf8')
+
+  c = db.cursor(MySQLdb.cursors.DictCursor)
+  c.execute("SELECT volumes.id, size, status, volume_types.name AS volumetype "\
+    "FROM volumes INNER JOIN volume_types "\
+    "ON volumes.volume_type_id = volume_types.id where volumes.deleted = '0';")
+
+  data['volumetypes'] = {}
+  data['statuses'] = {}
+  data['gigabytes'] = 0
+  data['volumes'] = 0
+  for volume in c.fetchall():
+    # Add to the totals 
+    data['volumes'] += 1
+    data['gigabytes'] += volume['size']
+
+    # Add to the per-volume-type totals
+    try:
+      data['volumetypes'][volume['volumetype']]['volumes'] += 1
+      data['volumetypes'][volume['volumetype']]['gigabytes'] += volume['size']
+    except KeyError:
+      data['volumetypes'][volume['volumetype']] = {
+        'name': volume['volumetype'],
+        'volumes': 1,
+        'gigabytes': volume['size'],
+      }
+
+    # Add to the per-volume-status totals
+    try:
+      data['statuses'][volume['status']]['volumes'] += 1
+      data['statuses'][volume['status']]['gigabytes'] += volume['size']
+    except KeyError:
+      data['statuses'][volume['status']] = {
+        'name': volume['status'],
+        'volumes': 1,
+        'gigabytes': volume['size'],
+      }
+      
+  return data
+
 def glance_metrics(host, username, password):
   data = {}
   db = MySQLdb.connect(host=host, user=username, 
-    password=password, database='glance')
+    password=password, database='glance', charset='utf8')
 
   c = db.cursor(MySQLdb.cursors.DictCursor)
   c.execute("SELECT id, name, size, visibility FROM images WHERE deleted = 0")
@@ -57,20 +104,91 @@ def glance_metrics(host, username, password):
 
   return data
 
+def heat_metrics(host, username, password):
+  data = {}  
+  db = MySQLdb.connect(host=host, user=username, 
+    password=password, database='heat', charset='utf8')
+  
+  c = db.cursor(MySQLdb.cursors.DictCursor)
+  c.execute("SELECT id, action, status FROM stack "\
+    "WHERE deleted_at IS NULL AND nested_depth = 0")
+
+  data['actions'] = {}
+  data['statuses'] = {}
+  data['stack_status'] = {}
+  data['stacks'] = 0
+  for stack in c.fetchall():
+    stack_status = '%s_%s' % (stack['action'], stack['status'])
+    data['stacks'] += 1
+
+    try:
+      data['actions'][stack['action']]['value'] += 1
+    except KeyError:
+      data['actions'][stack['action']] = {
+        'name': stack['action'],
+        'value': 1,
+      }
+
+    try:
+      data['statuses'][stack['status']]['value'] += 1
+    except KeyError:
+      data['statuses'][stack['status']] = {
+        'name': stack['status'],
+        'value': 1,
+      }
+
+    try:
+      data['stack_status'][stack_status]['value'] += 1
+    except KeyError:
+      data['stack_status'][stack_status] = {
+        'name': stack_status,
+        'value': 1,
+      }
+
+  return data
+
 def keystone_metrics(host, username, password):
   data = {}  
   db = MySQLdb.connect(host=host, user=username, 
-    password=password, database='keystone')
+    password=password, database='keystone', charset='utf8')
   
   # Get the Domain ID
   c = db.cursor(MySQLdb.cursors.DictCursor)
   c.execute("SELECT id FROM project WHERE is_domain = 1 AND name = 'NTNU'")
   domain_id = c.fetchone()['id']
+
+  # Get all project tags:
+  c.execute("SELECT project_id, name FROM project_tag")
+  tags = {'notified_delete':[]}
+  for t in c.fetchall():
+    try:
+      tags[t['name']].append(t['project_id'])
+    except KeyError:
+      tags[t['name']] = [t['project_id']]
   
   # Get the project-list
-  c.execute("SELECT id, name FROM project WHERE is_domain = 0 AND domain_id = %s",
+  c.execute("SELECT id, name, extra, enabled FROM project WHERE is_domain = 0 AND domain_id = %s",
     (domain_id,))
-  data['projects'] = {x['id']: x['name'] for x in c.fetchall()}
+  data['projects'] = {x['id']: {
+    'id': x['id'],
+    'name': x['name'],
+    'enabled': x['enabled'],
+    'extra': json.loads(x['extra']),
+  } for x in c.fetchall()}
+
+  for p in data['projects']:
+    try:
+      day,month,year = data['projects'][p]['extra']['expiry'].split('.')
+      d = datetime.date(day=int(day), month=int(month), year=int(year))
+      data['projects'][p]['expiry'] = data['projects'][p]['extra']['expiry']
+      data['projects'][p]['expiry_timestamp'] = d.strftime("%s")
+    except (KeyError, ValueError):
+      data['projects'][p]['expiry'] = ''
+      data['projects'][p]['expiry_timestamp'] = '0'
+
+    data['projects'][p]['notified'] = '1' if p in tags['notified_delete'] else '0'
+
+    data['projects'][p].pop('extra')
   
   # Add summaries
   data['no_projects'] = len(data['projects'])
@@ -80,9 +198,19 @@ def keystone_metrics(host, username, password):
   return data
 
 def magnum_metrics(host, username, password):
-  data = {'clusters': {}}
-  db = MySQLdb.connect(host=host, user=username, 
-    password=password, database='magnum')
+  data = {
+    'clusters': {},
+    'templates': {},
+    'health_status': {},
+    'status': {},
+  }
+
+  try:
+    db = MySQLdb.connect(host=host, user=username, 
+      password=password, database='magnum', charset='utf8')
+  except MySQLdb._exceptions.OperationalError:
+    return data
+
   c = db.cursor(MySQLdb.cursors.DictCursor)
   
   # Collect cluster templates 
@@ -95,9 +223,6 @@ def magnum_metrics(host, username, password):
       'clusters': 0
     } for x in c.fetchall()
   }
-
-  data['health_status'] = {}
-  data['status'] = {}
 
   # Collect clusters
   c.execute("SELECT uuid, name, cluster_template_id, status, health_status FROM cluster")
@@ -122,7 +247,7 @@ def neutron_metrics(host, username, password):
     'external_networks': {},
   }
   db = MySQLdb.connect(host=host, user=username, 
-    password=password, database='neutron')
+    password=password, database='neutron', charset='utf8')
   c = db.cursor(MySQLdb.cursors.DictCursor)
   c2 = db.cursor(MySQLdb.cursors.DictCursor)
   c3 = db.cursor(MySQLdb.cursors.DictCursor)
@@ -267,9 +392,12 @@ def neutron_metrics(host, username, password):
 def nova_metrics(host, username, password):
   data = {} 
   db = MySQLdb.connect(host=host, user=username, 
-    password=password, database='nova')
+    password=password, database='nova', charset='utf8')
   c = db.cursor(MySQLdb.cursors.DictCursor)
-  
+  dbapi = MySQLdb.connect(host=host, user=username, 
+    password=password, database='nova_api', charset='utf8')
+  capi = dbapi.cursor(MySQLdb.cursors.DictCursor)
+
   # Get instances
   c.execute("SELECT vm_state, memory_mb, vcpus, host, root_gb, ephemeral_gb," \
     "image_ref FROM instances where deleted = 0")
@@ -305,8 +433,45 @@ def nova_metrics(host, username, password):
         'name': row['vm_state'],
       }
 
-  c.execute("SELECT hypervisor_hostname, running_vms, vcpus, memory_mb, " \
-    "vcpus_used, memory_mb_used, local_gb, local_gb_used " \
+  # Get host-aggregates
+  capi.execute("SELECT aggregates.name AS a, aggregate_hosts.host AS h " \
+    "FROM aggregate_hosts INNER JOIN aggregates " \
+    "ON aggregates.id = aggregate_hosts.aggregate_id")
+  data['aggregates'] = {}
+  for ha in capi.fetchall():
+    try:
+      data['aggregates'][ha['a']]['hosts'].append(ha['h'])
+    except KeyError:
+      data['aggregates'][ha['a']] = {
+        'hosts': [ ha['h'] ],
+        'name': ha['a'],
+        'running_vms': 0,
+        'vcpus': 0,
+        'vcpus_used': 0,
+        'memory_mb': 0, 
+        'memory_mb_used': 0,
+        'local_gb': 0,
+        'local_gb_used': 0,
+      }
+
+  # Collect services
+  c.execute("SELECT host, disabled, last_seen_up, disabled_reason " \
+    "FROM services WHERE topic = 'compute'")
+  services = {}
+  tz_from = tz.tzutc()
+  tz_to = tz.tzlocal()
+
+  for service in c.fetchall():
+    utctime = service['last_seen_up'].replace(tzinfo=tz_from)
+    services[service['host']] = {
+      'disabled': service['disabled'],
+      'disabled_reason': service['disabled_reason'] if service['disabled_reason'] else '',
+      'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
+    }
+
+  # Get hypervisors
+  c.execute("SELECT hypervisor_hostname, host, running_vms, " \
+    "vcpus, memory_mb, vcpus_used, memory_mb_used, local_gb, local_gb_used " \
     "FROM compute_nodes WHERE deleted = 0")
   data['hypervisors'] = {x['hypervisor_hostname']: x for x in c.fetchall()}
 
@@ -317,21 +482,96 @@ def nova_metrics(host, username, password):
     'vcpus': 0,
   }
   for h in data['hypervisors']:
+    # Add hypervisor usage to the aggregate usage
+    for a in data['aggregates']:
+      if data['hypervisors'][h]['host'] in data['aggregates'][a]['hosts']:
+        for metric in ['vcpus', 'vcpus_used', 'memory_mb', 'memory_mb_used',
+            'local_gb', 'local_gb_used', 'running_vms']:
+          data['aggregates'][a][metric] += data['hypervisors'][h][metric]
+
+    # Add hypervisor usage to the global summary
     for v in data['hypervisor_totals']:
       data['hypervisor_totals'][v] += data['hypervisors'][h][v]
+
+    # Add service-info to the hypervisor data
+    if data['hypervisors'][h]['host'] in services:
+      data['hypervisors'][h]['disabled'] = \
+        services[data['hypervisors'][h]['host']]['disabled']
+      data['hypervisors'][h]['disabled_reason'] = \
+        services[data['hypervisors'][h]['host']]['disabled_reason']
+      data['hypervisors'][h]['last_seen_up'] = \
+        services[data['hypervisors'][h]['host']]['last_seen_up']
+
+  # Get the MISC project ID
+  kdb = MySQLdb.connect(host=host, user=username, 
+    password=password, database='keystone', charset='utf8')
+  kc = kdb.cursor(MySQLdb.cursors.DictCursor)
+  kc.execute("SELECT id FROM project WHERE name = 'MISC'")
+  try:
+    projectID = kc.fetchone()['id']
+  except:
+    projectID = None
+  kc.close()
+  kdb.close()
+
+  # Get UUID of VMs where the deletion-notification is set
+  c.execute("SELECT resource_id FROM tags WHERE tag = 'notified_delete'")
+  notified = [x['resource_id'] for x in c.fetchall()]
+
+  # Get MISC VM's
+  data['misc_vms'] = {}
+  if projectID:
+    c.execute("SELECT i.uuid,i.hostname,i.vm_state,md.key,md.value FROM instances i " \
+      "INNER JOIN instance_metadata md ON i.uuid = md.instance_uuid " \
+      "WHERE i.project_id=%s AND i.deleted=0", (projectID,))
+    for t in c.fetchall():
+      if t['uuid'] not in data['misc_vms']:
+        data['misc_vms'][t['uuid']] = {
+          'uuid': t['uuid'],
+          'hostname': t['hostname'],
+          'running': 1 if t['vm_state'] == 'active' else 0,
+          'notified': 1 if t['uuid'] in notified else 0,
+          'expire': '',
+          'expire_timestamp': 0,
+          'contact': '',
+          'owner': '',
+          'topdesk': '',
+        }
+
+      if t['key'] in data['misc_vms'][t['uuid']]:
+        data['misc_vms'][t['uuid']][t['key']] = t['value']
+
+      if t['key'] == 'expire':
+        try:
+          day,month,year = t['value'].split('.')
+          d = datetime.date(day=int(day), month=int(month), year=int(year))
+          data['misc_vms'][t['uuid']]['expire_timestamp'] = d.strftime("%s")
+        except (KeyError, ValueError):
+          data['misc_vms'][t['uuid']]['expire_timestamp'] = '0'
 
   c.close()
   db.close()
   return data
 
 def octavia_metrics(host, username, password):
-  data = {}  
-  db = MySQLdb.connect(host=host, user=username, 
-    password=password, database='octavia')
+  data = {
+    'loadbalancer_status_summary': {
+      'provisioning_status': {},
+      'operating_status': {},
+      'topology': {},
+    },
+    'amphora_statuses': {},
+  }  
+
+  try:
+    db = MySQLdb.connect(host=host, user=username, 
+      password=password, database='octavia', charset='utf8')
+  except MySQLdb._exceptions.OperationalError:
+    return data
   
   c = db.cursor(MySQLdb.cursors.DictCursor)
   c.execute("select id, name, provisioning_status, operating_status, topology from load_balancer")
-  data['loadbalancers'] = {x['id']: {
+  loadbalancers = {x['id']: {
       'id': x['id'],
       'name': x['name'],
       'provisioning_status': x['provisioning_status'],
@@ -340,7 +580,6 @@ def octavia_metrics(host, username, password):
     } for x in c.fetchall()
   }
 
-  data['amphora_statuses'] = {}
   c.execute("SELECT status FROM amphora")
   for r in c.fetchall():
     try:
@@ -354,22 +593,100 @@ def octavia_metrics(host, username, password):
   c.close()
   db.close()
 
-  statuses = {
-    'provisioning_status': {},
-    'operating_status': {},
-    'topology': {},
-  }
-  for lb in data['loadbalancers']:
-    for status in statuses:
+  for lb in loadbalancers:
+    for status in data['loadbalancer_status_summary']:
       try:
-        statuses[status][data['loadbalancers'][lb][status]]['value'] += 1
+        data['loadbalancer_status_summary'][status][loadbalancers[lb][status]]['value'] += 1
       except KeyError:
-        statuses[status][data['loadbalancers'][lb][status]] = {
-          'name': data['loadbalancers'][lb][status],
+        data['loadbalancer_status_summary'][status][loadbalancers[lb][status]] = {
+          'name': loadbalancers[lb][status],
           'value': 1
         }
 
-  data['loadbalancer_status_summary'] = statuses
+  return data
+
+def service_status(host, username, password):
+  data = {}
+
+  tz_from = tz.tzutc()
+  tz_to = tz.tzlocal()
+
+  # Collect Novas services
+  db = MySQLdb.connect(host=host, user=username, 
+    password=password, database='nova', charset='utf8')
+  c = db.cursor(MySQLdb.cursors.DictCursor)
+  c.execute("SELECT * FROM services WHERE topic IS NOT NULL AND "\
+    "topic != 'compute' AND deleted = '0'")
+  for s in c.fetchall():
+    utctime = s['last_seen_up'].replace(tzinfo=tz_from)
+    data[s['uuid']] = {
+      'uuid': s['uuid'],
+      'project': 'nova',
+      'host': s['host'],
+      'service': s['binary'], 
+      'service_id': '', 
+      'disabled': s['disabled'],
+      'disabled_reason': s['disabled_reason'] if s['disabled_reason'] else '',
+      'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
+    }
+
+  # Collect neutron agents 
+  db = MySQLdb.connect(host=host, user=username, 
+    password=password, database='neutron', charset='utf8')
+  c = db.cursor(MySQLdb.cursors.DictCursor)
+  c.execute("SELECT id, agent_type, `binary`, host, admin_state_up, " \
+    "heartbeat_timestamp FROM agents")
+  for s in c.fetchall():
+    utctime = s['heartbeat_timestamp'].replace(tzinfo=tz_from)
+    data[s['id']] = {
+      'uuid': s['id'],
+      'project': 'neutron',
+      'host': s['host'],
+      'service': s['binary'],
+      'service_id': '', 
+      'disabled': 0,
+      'disabled_reason': '',
+      'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
+    }
+
+  # Collect cinder services
+  db = MySQLdb.connect(host=host, user=username, 
+    password=password, database='cinder', charset='utf8')
+  c = db.cursor(MySQLdb.cursors.DictCursor)
+  c.execute("SELECT uuid, host, `binary`, topic, updated_at, disabled, "\
+    "disabled_reason FROM services WHERE deleted = '0'")
+  for s in c.fetchall():
+    utctime = s['updated_at'].replace(tzinfo=tz_from)
+    data[s['uuid']] = {
+      'uuid': s['uuid'],
+      'project': 'cinder',
+      'host': s['host'],
+      'service': s['binary'], 
+      'service_id': '', 
+      'disabled': s['disabled'],
+      'disabled_reason': s['disabled_reason'] if s['disabled_reason'] else '',
+      'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
+    }
+
+  # Collect heat services
+  db = MySQLdb.connect(host=host, user=username, 
+    password=password, database='heat', charset='utf8')
+  c = db.cursor(MySQLdb.cursors.DictCursor)
+  c.execute("SELECT id, engine_id, host, `binary`, updated_at "\
+    "FROM service WHERE deleted_at IS NULL")
+  for s in c.fetchall():
+    utctime = s['updated_at'].replace(tzinfo=tz_from)
+    data[s['id']] = {
+      'uuid': s['id'],
+      'project': 'heat',
+      'host': s['host'], 
+      'service': s['binary'], 
+      'service_id': s['engine_id'],
+      'disabled': 0, 
+      'disabled_reason': '', 
+      'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
+    }
+
   return data
 
 def createOSSummary(data):

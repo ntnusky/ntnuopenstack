@@ -23,7 +23,7 @@ class ntnuopenstack::databases {
     'default_value' => false,
   })
 
-  $zabbixservers = lookup('profile::zabbix::servers', {
+  $zabbixservers = lookup('profile::zabbix::agent::servers', {
     'default_value' => [],
     'value_type'    => Array[Stdlib::IP::Address::Nosubnet],
   })

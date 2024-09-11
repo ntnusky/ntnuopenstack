@@ -9,6 +9,7 @@ class ntnuopenstack::swift {
   include ::ntnuopenstack::swift::firewall::server
   include ::ntnuopenstack::swift::haproxy::backend
   include ::ntnuopenstack::swift::radosgw
+  include ::profile::ceph::zabbix::radosgw
 
   if($installmunin) {
     include ::ntnuopenstack::swift::munin::plugins
