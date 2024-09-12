@@ -1,5 +1,5 @@
 # Designate DNS Backend (bind9)
-class ntnuopenstack::designate::api {
+class ntnuopenstack::designate::backend {
 
   include designate::dns
 
