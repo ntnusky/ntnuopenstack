@@ -1,9 +1,8 @@
 # Installs the designate API.
 class ntnuopenstack::designate::api {
-  $keystone_password = lookup('ntnuopenstack::designate::keystone::password', String, 'first', undef)
+  require ::ntnuopenstack::designate::auth
 
   class { '::designate::api':
-    auth_strategy     => "keystone",
-    keystone_password => $keystone_password,
+    auth_strategy     => 'keystone',
   }
 }
