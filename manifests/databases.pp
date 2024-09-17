@@ -23,6 +23,11 @@ class ntnuopenstack::databases {
     'default_value' => false,
   })
 
+  $zabbixservers = lookup('profile::zabbix::agent::servers', {
+    'default_value' => [],
+    'value_type'    => Array[Stdlib::IP::Address::Nosubnet],
+  })
+
   if($barbican) {
     include ::ntnuopenstack::barbican::database
   }
@@ -33,5 +38,9 @@ class ntnuopenstack::databases {
 
   if($octavia) {
     include ::ntnuopenstack::octavia::database
+  }
+
+  if($zabbixservers =~ Array[Stdlib::IP::Address::Nosubnet, 1]) {
+    include ::ntnuopenstack::zabbix::database
   }
 }

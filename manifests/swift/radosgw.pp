@@ -26,4 +26,8 @@ class ntnuopenstack::swift::radosgw {
     rgw_keystone_admin_user     => 'swift',
     rgw_keystone_admin_password => $keystone_password,
   }
+
+  ceph_config {
+    "client.radosgw.${hostname}/rgw_enable_usage_log": value => true; 
+  }
 }

@@ -19,13 +19,13 @@ class ntnuopenstack::octavia::api {
     api_v1_enabled               => false,
     enable_proxy_headers_parsing => $register_loadbalancer,
     enabled                      => false,
-    port                         => $api_port,
+    port                         => Integer($api_port),
     service_name                 => 'httpd',
     sync_db                      => $dbsync,
   }
 
   class { '::octavia::wsgi::apache':
     access_log_format => 'forwarded',
-    port              => $api_port,
+    port              => Integer($api_port),
   }
 }

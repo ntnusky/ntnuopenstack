@@ -17,6 +17,7 @@ class ntnuopenstack::neutron::bgp {
   require ::ntnuopenstack::neutron::base
   include ::ntnuopenstack::neutron::logging::dragent
   require ::ntnuopenstack::repo
+  include ::ntnuopenstack::zabbix::neutron::bgp
 
   if($bgp_router_id != '0.0.0.0') {
     class { '::neutron::agents::bgp_dragent':
