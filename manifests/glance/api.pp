@@ -16,9 +16,14 @@ class ntnuopenstack::glance::api {
     'value_type'    => Array[String],
     'default_value' => ['bare'],
   })
-  
+
   $use_keystone_limits = lookup('ntnuopenstack::glance::keystone::limits', {
     'default_value' => false,
+    'value_type'    => Boolean,
+  })
+
+  $installmunin = lookup('profile::munin::install', {
+    'default_value' => true,
     'value_type'    => Boolean,
   })
 
@@ -31,7 +36,10 @@ class ntnuopenstack::glance::api {
   include ::ntnuopenstack::glance::rabbit
   include ::ntnuopenstack::glance::sudo
   require ::ntnuopenstack::repo
-  include ::profile::monitoring::munin::plugin::openstack::glance
+
+  if($installmunin) {
+    include ::profile::monitoring::munin::plugin::openstack::glance
+  }
 
   # If this server should be placed behind haproxy, export a haproxy
   # configuration snippet.
