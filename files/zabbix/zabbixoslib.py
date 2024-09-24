@@ -228,7 +228,8 @@ def magnum_metrics(host, username, password):
   c.execute("SELECT uuid, name, cluster_template_id, status, health_status FROM cluster")
   for cluster in c.fetchall():
     data['clusters'][cluster['uuid']] = cluster
-    data['templates'][cluster['cluster_template_id']]['clusters'] += 1
+    if cluster['cluster_template_id'] in data['templates']:
+      data['templates'][cluster['cluster_template_id']]['clusters'] += 1
 
     # Add do summary
     for v in ['health_status', 'status']:
@@ -462,7 +463,11 @@ def nova_metrics(host, username, password):
   tz_to = tz.tzlocal()
 
   for service in c.fetchall():
-    utctime = service['last_seen_up'].replace(tzinfo=tz_from)
+    try:
+      utctime = service['last_seen_up'].replace(tzinfo=tz_from)
+    except AttributeError:
+      utctime = datetime.datetime(year=2010, day=1, month=1)
+
     services[service['host']] = {
       'disabled': service['disabled'],
       'disabled_reason': service['disabled_reason'] if service['disabled_reason'] else '',
