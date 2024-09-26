@@ -38,7 +38,6 @@ class ntnuopenstack::keystone::endpoint {
   # We need to define the endpoints on the keystone hosts, so include the other
   # endpoints here.
   include ::ntnuopenstack::cinder::endpoint
-  include ::ntnuopenstack::designate::endpoint
   include ::ntnuopenstack::glance::endpoint
   include ::ntnuopenstack::heat::endpoint
   include ::ntnuopenstack::neutron::endpoint

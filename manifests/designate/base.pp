@@ -25,7 +25,7 @@ class ntnuopenstack::designate::base {
 
   require ::ntnuopenstack::designate::dbconnection
 
-  class { 'designate':
+  class { '::designate':
     default_transport_url => $transport_url,
     *                     => $ha_transport_conf,
   }
