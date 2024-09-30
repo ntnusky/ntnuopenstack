@@ -2,7 +2,7 @@
 class ntnuopenstack::designate::base {
   # Keystone authentication setup
   $keystone_password = lookup('ntnuopenstack::designate::keystone::password', String, 'first', undef)
-  class {'designate::keystone::auth':
+  class {'::designate::keystone::auth':
     password => $keystone_password,
   }
 
