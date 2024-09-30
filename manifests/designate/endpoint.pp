@@ -1,4 +1,4 @@
-# Configures the endpoint and keystone user for swift
+# Configures the endpoint and keystone user for designate
 class ntnuopenstack::designate::endpoint {
   $endpoint_admin = lookup('ntnuopenstack::designate::endpoint::admin')
   $endpoint_internal = lookup('ntnuopenstack::designate::endpoint::internal')
@@ -11,7 +11,7 @@ class ntnuopenstack::designate::endpoint {
   $public = "${endpoint_public}:9876"
   $internal = "${endpoint_internal}:9876"
 
-  class { 'designate::keystone::auth':
+  class { '::designate::keystone::auth':
     admin_url    => $admin,
     internal_url => $internal,
     password     => $keystone_password,
