@@ -1,10 +1,7 @@
 # Performs basic designate configuration.
 class ntnuopenstack::designate::base {
-  # Keystone authentication setup
-  $keystone_password = lookup('ntnuopenstack::designate::keystone::password', String, 'first', undef)
-  class {'::designate::keystone::auth':
-    password => $keystone_password,
-  }
+  require ::ntnuopenstack::designate::dbconnection
+  require ::ntnuopenstack::designate::endpoint
 
   # RabbitMQ connection-information
   $rabbitservers = lookup('profile::rabbitmq::servers', {
@@ -22,8 +19,6 @@ class ntnuopenstack::designate::base {
   }
 
   $transport_url = lookup('ntnuopenstack::transport::url')
-
-  require ::ntnuopenstack::designate::dbconnection
 
   class { '::designate':
     default_transport_url => $transport_url,
