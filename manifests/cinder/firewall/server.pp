@@ -1,7 +1,6 @@
 # Configures the firewall to accept incoming traffic to the cinder API. 
 class ntnuopenstack::cinder::firewall::server {
-  ::profile::baseconfig::firewall::service::infra { 'Cinder-API':
-    protocol => 'tcp',
+  ::profile::firewall::infra::region { 'Cinder-API':
     port     => 8776,
   }
 }

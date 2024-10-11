@@ -8,9 +8,9 @@ class ntnuopenstack::swift::firewall::haproxy {
   # endpoint at port 7480. If name is set swift is placed at port 80/443 under
   # the supplied name.
   if(! $swiftname) {
-    ::profile::baseconfig::firewall::service::global { 'Swift-API':
-      protocol => 'tcp',
-      port     => 7480,
+    ::profile::firewall::custom { 'Swift-API':
+      hiera_key => 'profile::networks::openstack::users',
+      port      => 7480,
     }
   }
 }

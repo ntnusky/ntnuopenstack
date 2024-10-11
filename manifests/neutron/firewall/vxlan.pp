@@ -2,12 +2,11 @@
 class ntnuopenstack::neutron::firewall::vxlan {
   $tenantnet = lookup('profile::networks::tenant::ipv4::prefix')
 
-  require ::profile::baseconfig::firewall
-
-  firewall { '800 accept VXLAN':
-    source => $tenantnet,
-    proto  => 'udp',
-    dport  => '4789',
-    action => 'accept',
+  profile::firewall::custom { 'VXLAN':
+    port               => 4789,
+    prefixes           => [ $tenantnet ], 
+    transport_protocol => 'udp',
+    # Is this always true?
+    #interface          => 'br-provider',
   }
 }

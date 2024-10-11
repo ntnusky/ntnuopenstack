@@ -1,7 +1,7 @@
 # Opens the firewall for the keystone port from any source
 class ntnuopenstack::keystone::firewall::haproxy::services {
-  ::profile::baseconfig::firewall::service::global { 'Keystone-Public':
-    protocol => 'tcp',
-    port     => 5000,
+  ::profile::firewall::custom { 'Keystone-Public':
+    hiera_key => 'profile::networks::openstack::users', 
+    port      => 5000,
   }
 }

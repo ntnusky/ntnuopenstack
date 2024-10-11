@@ -1,7 +1,7 @@
 # Configure firewall rules for haproxy-barbican
 class ntnuopenstack::barbican::firewall::haproxy {
-  ::profile::baseconfig::firewall::service::global { 'barbican-API':
-    protocol => 'tcp',
-    port     => 9311,
+  ::profile::firewall::custom { 'barbican-API':
+    hiera_key => 'profile::networks::openstack::users',
+    port      => 9311,
   }
 }

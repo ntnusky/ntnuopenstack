@@ -1,7 +1,6 @@
 # Configures the firewall to pass incoming traffic to the neutron API.
 class ntnuopenstack::neutron::firewall::api {
-  ::profile::baseconfig::firewall::service::infra { 'Neutron-API':
-    protocol => 'tcp',
+  ::profile::firewall::infra::region { 'Neutron-API':
     port     => 9696,
   }
 }

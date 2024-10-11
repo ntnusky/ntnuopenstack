@@ -2,8 +2,7 @@
 class ntnuopenstack::octavia::firewall::api {
   $api_port = lookup('ntnuopenstack::octavia::api::port')
 
-  ::profile::baseconfig::firewall::service::infra { 'octavia API':
-    protocol => 'tcp',
-    port     => $api_port,
+  ::profile::firewall::infra::region { 'octavia API':
+    port => $api_port,
   }
 }
