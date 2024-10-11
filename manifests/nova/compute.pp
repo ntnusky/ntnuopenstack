@@ -22,23 +22,4 @@ class ntnuopenstack::nova::compute (
   class { '::ntnuopenstack::nova::compute::libvirt':
     localdisk => $localdisk,
   }
-
-  # Determine if sensu should be installed, and in that case include a sensu
-  # subscription.
-  $install_sensu = lookup('profile::sensu::install', {
-    'default_value' => true,
-    'value_type'    => Boolean,
-  })
-  if ($install_sensu) {
-    sensu::subscription { 'os-compute': }
-  }
-
-  $installmunin = lookup('profile::munin::install', {
-    'default_value' => true,
-    'value_type'    => Boolean,
-  })
-
-  if($installmunin) {
-    include ::ntnuopenstack::nova::munin::compute
-  }
 }

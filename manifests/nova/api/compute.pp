@@ -11,7 +11,6 @@ class ntnuopenstack::nova::api::compute {
   require ::ntnuopenstack::nova::dbconnection
   contain ::ntnuopenstack::nova::firewall::server
   contain ::ntnuopenstack::nova::haproxy::backend::api
-  include ::ntnuopenstack::nova::munin::api
   include ::ntnuopenstack::nova::quota
   require ::ntnuopenstack::nova::services::base
   require ::ntnuopenstack::repo
