@@ -1,8 +1,8 @@
 # Defines the databases used by openstack
 class ntnuopenstack::databases {
-  $zabbixservers = lookup('profile::zabbix::agent::servers', {
-    'default_value' => [],
-    'value_type'    => Array[Stdlib::IP::Address::Nosubnet],
+  $zabbixpw = lookup('ntnuopenstack::zabbix::database::password', {
+    'default_value' => undef,
+    'value_type'    => Optional[String],
   })
 
   # Create databases for the openstack-services needed in the current region.
@@ -21,7 +21,7 @@ class ntnuopenstack::databases {
   }
 
   # If we are monitoring this platform with zabbix, ensure 
-  if($zabbixservers =~ Array[Stdlib::IP::Address::Nosubnet, 1]) {
+  if($zabbixpw) {
     include ::ntnuopenstack::zabbix::database
   }
 }
