@@ -22,11 +22,6 @@ class ntnuopenstack::glance::api {
     'value_type'    => Boolean,
   })
 
-  $installmunin = lookup('profile::munin::install', {
-    'default_value' => true,
-    'value_type'    => Boolean,
-  })
-
   require ::ntnuopenstack::glance::auth
   contain ::ntnuopenstack::glance::ceph
   include ::ntnuopenstack::glance::dbconnection
@@ -36,10 +31,6 @@ class ntnuopenstack::glance::api {
   include ::ntnuopenstack::glance::rabbit
   include ::ntnuopenstack::glance::sudo
   require ::ntnuopenstack::repo
-
-  if($installmunin) {
-    include ::profile::monitoring::munin::plugin::openstack::glance
-  }
 
   # If this server should be placed behind haproxy, export a haproxy
   # configuration snippet.
