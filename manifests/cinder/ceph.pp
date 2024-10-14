@@ -7,7 +7,7 @@ class ntnuopenstack::cinder::ceph {
   require ::profile::ceph::client
 
   ceph_config {
-    "client.${ceph_user}/key": value => $users[$ceph_user]['secret'];
+    "client.${ceph_user}/key": value => $users["client.${ceph_user}"]['secret'];
   }
 
   ::profile::ceph::key { $ceph_user: }
