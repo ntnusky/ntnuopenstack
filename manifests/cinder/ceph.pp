@@ -10,5 +10,5 @@ class ntnuopenstack::cinder::ceph {
     "client.${ceph_user}/key": value => $users["client.${ceph_user}"]['secret'];
   }
 
-  ::profile::ceph::key { $ceph_user: }
+  ::profile::ceph::key { "client.${ceph_user}": }
 }
