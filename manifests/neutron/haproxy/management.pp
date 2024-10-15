@@ -8,7 +8,7 @@ class ntnuopenstack::neutron::haproxy::management {
   })
 
   if($certificate) {
-    include ::ntnuopenstack::cert::api
+    include ::ntnuopenstack::cert::adminapi
 
     $certfile = lookup('ntnuopenstack::endpoint::admin::cert::path', {
       'value_type'    => String,
