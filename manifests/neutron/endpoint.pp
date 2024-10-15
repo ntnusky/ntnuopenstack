@@ -1,24 +1,18 @@
 # Configures the neutron endpoint in keystone
-class ntnuopenstack::neutron::endpoint {
-  # Openstack settings
-  $region = lookup('ntnuopenstack::region', String)
-  $keystone_password = lookup('ntnuopenstack::neutron::keystone::password',
-                                String)
-
-  # Determine the endpoint addresses
-  $neutron_admin    = lookup('ntnuopenstack::neutron::endpoint::admin',
-                                Stdlib::Httpurl)
-  $neutron_internal = lookup('ntnuopenstack::neutron::endpoint::internal',
-                                Stdlib::Httpurl)
-  $neutron_public   = lookup('ntnuopenstack::neutron::endpoint::public',
-                                Stdlib::Httpurl)
-
-  # Configure the neutron API endpoint in keystone
+define ntnuopenstack::neutron::endpoint (
+  Stdlib::Httpurl $adminurl,
+  Stdlib::Httpurl $internalurl,
+  String          $password,
+  Stdlib::Httpurl $publicurl,
+  String          $region,
+  String          $username,
+) {
   class { '::neutron::keystone::auth':
-    admin_url    => "${neutron_admin}:9696",
-    internal_url => "${neutron_internal}:9696",
-    password     => $keystone_password,
-    public_url   => "${neutron_public}:9696",
+    admin_url    => "${adminurl}:9696",
+    auth_name    => $username,
+    internal_url => "${internalurl}:9696",
+    password     => $password,
+    public_url   => "${publicurl}:9696",
     region       => $region,
   }
 }

@@ -1,16 +1,13 @@
 # Configures the endpoint and keystone user for swift
-class ntnuopenstack::swift::endpoint {
-  $endpoint_admin = lookup('ntnuopenstack::endpoint::admin')
-  $endpoint_internal = lookup('ntnuopenstack::endpoint::internal')
-  $endpoint_public = lookup('ntnuopenstack::endpoint::public')
-
-  $keystone_password = lookup('ntnuopenstack::swift::keystone::password')
-  $region = lookup('ntnuopenstack::region')
-
+define ntnuopenstack::swift::endpoint (
+  Stdlib::Httpurl $adminurl,
+  Stdlib::Httpurl $internalurl,
+  String          $password,
+  Stdlib::Httpurl $publicurl,
+  String          $region,
+  String          $username,
+) {
   $swiftname = lookup('ntnuopenstack::swift::dns::name', {
-    'default_value' => false,
-  })
-  $certificate = lookup('profile::haproxy::services::webcert', {
     'default_value' => false,
   })
 
@@ -18,6 +15,10 @@ class ntnuopenstack::swift::endpoint {
   # endpoint at port 7480. If name is set swift is placed at port 80/443 under
   # the supplied name.
   if($swiftname) {
+    $certificate = lookup('profile::haproxy::services::webcert', {
+      'default_value' => false,
+    })
+
     if($certificate) {
       $proto='https'
     } else {
@@ -28,20 +29,20 @@ class ntnuopenstack::swift::endpoint {
     $admin = "${proto}://${swiftname}/swift/v1/%(project_id)s"
     $internal = "${proto}://${swiftname}/swift/v1/%(project_id)s"
   } else {
-    $public = "${endpoint_public}:7480/swift/v1/%(project_id)s"
-    $admin = "${endpoint_admin}:7480/swift/v1/%(project_id)s"
-    $internal = "${endpoint_internal}:7480/swift/v1/%(project_id)s"
+    $public = "${publicurl}:7480/swift/v1/%(project_id)s"
+    $admin = "${adminurl}:7480/swift/v1/%(project_id)s"
+    $internal = "${internalurl}:7480/swift/v1/%(project_id)s"
   }
 
   keystone::resource::service_identity { 'swift':
     admin_url           => $admin,
-    auth_name           => 'swift',
+    auth_name           => $username,
     email               => 'swift@localhost',
     configure_endpoint  => true,
     configure_user      => true,
     configure_user_role => true,
     internal_url        => $internal,
-    password            => $keystone_password,
+    password            => $password,
     public_url          => $public,
     region              => $region,
     service_description => 'Openstack Object-Store Service',

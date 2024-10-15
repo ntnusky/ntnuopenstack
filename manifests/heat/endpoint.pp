@@ -1,31 +1,32 @@
 # Registers the heat endpoints in keystone
-class ntnuopenstack::heat::endpoint {
-  $region = lookup('ntnuopenstack::region', String)
-  $password = lookup('ntnuopenstack::heat::keystone::password', String)
-
-  $heat_admin    = lookup('ntnuopenstack::heat::endpoint::admin',
-                              Stdlib::Httpurl)
-  $heat_internal = lookup('ntnuopenstack::heat::endpoint::internal',
-                              Stdlib::Httpurl)
-  $heat_public   = lookup('ntnuopenstack::heat::endpoint::public',
-                              Stdlib::Httpurl)
-
-  require ::ntnuopenstack::repo
-
+define ntnuopenstack::heat::endpoint (
+  Stdlib::Httpurl $adminurl,
+  Stdlib::Httpurl $internalurl,
+  String          $password,
+  Stdlib::Httpurl $publicurl,
+  String          $region,
+  String          $username,
+) {
   class  { '::heat::keystone::auth':
-    admin_url    => "${heat_admin}:8004/v1/%(tenant_id)s",
-    internal_url => "${heat_internal}:8004/v1/%(tenant_id)s",
+    admin_url    => "${adminurl}:8004/v1/%(tenant_id)s",
+    auth_name    => $username,
+    internal_url => "${internalurl}:8004/v1/%(tenant_id)s",
     password     => $password,
-    public_url   => "${heat_public}:8004/v1/%(tenant_id)s",
+    public_url   => "${publicurl}:8004/v1/%(tenant_id)s",
     region       => $region,
   }
 
   class { '::heat::keystone::auth_cfn':
-    admin_url    => "${heat_admin}:8000/v1",
-    internal_url => "${heat_internal}:8000/v1",
+    admin_url    => "${adminurl}:8000/v1",
+    auth_name    => $username,
+    internal_url => "${internalurl}:8000/v1",
     password     => $password,
-    public_url   => "${heat_public}:8000/v1",
+    public_url   => "${publicurl}:8000/v1",
     service_name => 'heat-cfn',
     region       => $region,
+  }
+
+  class { '::ntnuopenstack::heat::domain':
+    create_domain => true,
   }
 }

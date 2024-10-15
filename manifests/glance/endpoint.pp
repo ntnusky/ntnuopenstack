@@ -1,20 +1,18 @@
 # Registers the glance endpoint in keystone
-class ntnuopenstack::glance::endpoint {
-  $region = lookup('ntnuopenstack::region', String)
-  $password = lookup('ntnuopenstack::glance::keystone::password', String)
-
-  $glance_admin    = lookup('ntnuopenstack::glance::endpoint::admin',
-                              Stdlib::Httpurl)
-  $glance_internal = lookup('ntnuopenstack::glance::endpoint::internal',
-                              Stdlib::Httpurl)
-  $glance_public   = lookup('ntnuopenstack::glance::endpoint::public',
-                              Stdlib::Httpurl)
-
+define ntnuopenstack::glance::endpoint (
+  Stdlib::Httpurl $adminurl,
+  Stdlib::Httpurl $internalurl,
+  String          $password,
+  Stdlib::Httpurl $publicurl,
+  String          $region,
+  String          $username,
+) {
   class  { '::glance::keystone::auth':
-    admin_url    => "${glance_admin}:9292",
-    internal_url => "${glance_internal}:9292",
+    admin_url    => "${adminurl}:9292",
+    auth_name    => $username,
+    internal_url => "${internalurl}:9292",
     password     => $password,
-    public_url   => "${glance_public}:9292",
+    public_url   => "${publicurl}:9292",
     region       => $region,
   }
 }

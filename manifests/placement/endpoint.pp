@@ -1,22 +1,18 @@
 # Configures the placement API endpoint in keystone 
-class ntnuopenstack::placement::endpoint {
-  # Openstack settings
-  $region = lookup('ntnuopenstack::region', String)
-  $password = lookup('ntnuopenstack::placement::keystone::password', String)
-
-  # Determine the endpoint addresses
-  $placement_admin    = lookup('ntnuopenstack::placement::endpoint::admin',
-                                Stdlib::Httpurl)
-  $placement_internal = lookup('ntnuopenstack::placement::endpoint::internal',
-                                Stdlib::Httpurl)
-  $placement_public   = lookup('ntnuopenstack::placement::endpoint::public',
-                                Stdlib::Httpurl)
-
+define ntnuopenstack::placement::endpoint (
+  Stdlib::Httpurl $adminurl,
+  Stdlib::Httpurl $internalurl,
+  String          $password,
+  Stdlib::Httpurl $publicurl,
+  String          $region,
+  String          $username,
+) {
   class { '::placement::keystone::auth':
-    admin_url    => "${placement_admin}:8778/placement",
-    internal_url => "${placement_internal}:8778/placement",
+    admin_url    => "${adminurl}:8778/placement",
+    auth_name    => $username,
+    internal_url => "${internalurl}:8778/placement",
     password     => $password,
-    public_url   => "${placement_public}:8778/placement",
+    public_url   => "${publicurl}:8778/placement",
     region       => $region,
   }
 }
