@@ -9,8 +9,8 @@ define ntnuopenstack::cinder::endpoint (
 ) {
   include ::cinder::deps
 
-  Keystone::Resource::Service_identity['cinder'] -> Anchor['cinder::service::end']
-  Keystone::Resource::Service_identity['cinderv3'] -> Anchor['cinder::service::end']
+  Keystone::Resource::Service_identity["cinder-${region}"] -> Anchor['cinder::service::end']
+  Keystone::Resource::Service_identity["cinderv3-${region}"] -> Anchor['cinder::service::end']
 
   # Always configure the original user and user roles, as these
   # can be used by the v3 service.
