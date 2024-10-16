@@ -18,7 +18,7 @@ class ntnuopenstack::keystone::endpoint {
       configure_user      => false,
       configure_user_role => false,
       configure_endpoint  => true,
-      configure_service   => true,
+      configure_service   => false,
       service_type        => 'identity',
       service_name        => 'keystone',
       region              => $region,
