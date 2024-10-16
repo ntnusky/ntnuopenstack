@@ -7,6 +7,10 @@ class ntnuopenstack::nova::compute::ceph (
   $ephemeral_storage,
 ) {
   $nova_uuid = lookup('ntnuopenstack::nova::ceph::uuid')
+  $ceph_user = lookup('ntnuopenstack::nova::ceph::user', {
+    'default_value' => 'nova',
+    'value_type'    => String, 
+  })
   $ceph_pool = lookup('ntnuopenstack::nova::ceph::ephemeral::pool', {
     'default_value' => 'volumes',
     'value_type'    => String,
@@ -16,7 +20,7 @@ class ntnuopenstack::nova::compute::ceph (
 
   # Configure nova to use ceph.
   class { '::nova::compute::rbd':
-    libvirt_rbd_user        => 'nova',
+    libvirt_rbd_user        => $ceph_user, 
     libvirt_images_rbd_pool => $ceph_pool,
     libvirt_rbd_secret_uuid => $nova_uuid,
     manage_ceph_client      => false,
