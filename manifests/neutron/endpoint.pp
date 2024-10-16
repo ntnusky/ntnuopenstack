@@ -7,12 +7,28 @@ define ntnuopenstack::neutron::endpoint (
   String          $region,
   String          $username,
 ) {
-  class { '::neutron::keystone::auth':
-    admin_url    => "${adminurl}:9696",
-    auth_name    => $username,
-    internal_url => "${internalurl}:9696",
-    password     => $password,
-    public_url   => "${publicurl}:9696",
-    region       => $region,
+  include ::neutron::deps
+
+  Keystone::Resource::Service_identity["neutron-${region}"] -> Anchor['neutron::service::end']
+
+  keystone::resource::service_identity { "neutron-${region}":
+    configure_user      => true,
+    configure_user_role => true,
+    configure_endpoint  => true,
+    configure_service   => true,
+    service_type        => 'network',
+    service_description => 'Openstack Networking Service',
+    service_name        => 'neutron',
+    region              => $region,
+    auth_name           => $username,
+    password            => $password,
+    email               => 'neutron@localhost',
+    tenant              => 'services',
+    roles               => ['admin'],
+    system_scope        => 'all',
+    system_roles        => [],
+    public_url          => "${publicurl}:9696",
+    admin_url           => "${adminurl}:9696",
+    internal_url        => "${internalurl}:9696",
   }
 }

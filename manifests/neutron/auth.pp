@@ -1,5 +1,12 @@
 # Configures auth for neutron 
 class ntnuopenstack::neutron::auth {
+  $services = lookup('ntnuopenstack::services', {
+    'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
+  })
+
+  $auth_url = lookup('ntnuopenstack::keystone::auth::url')
+  $www_authenticate_uri = lookup('ntnuopenstack::keystone::auth::uri')
+  $region = lookup('ntnuopenstack::region', String)
   $cache_servers = lookup('profile::memcache::servers', {
     'value_type' => Array[Stdlib::IP::Address],
     'merge'      => 'unique',
@@ -8,28 +15,23 @@ class ntnuopenstack::neutron::auth {
     "${server}:11211"
   }
 
-  $keystone_admin = lookup('ntnuopenstack::keystone::endpoint::admin', 
-      Stdlib::Httpurl)
-  $keystone_public = lookup('ntnuopenstack::keystone::endpoint::public', 
-      Stdlib::Httpurl)
-  $neutron_password = lookup('ntnuopenstack::neutron::keystone::password', 
-      String)
-  $nova_password = lookup('ntnuopenstack::nova::keystone::password', String)
-  $region = lookup('ntnuopenstack::region', String)
-
   include ::neutron::server::notifications
 
   class { '::neutron::keystone::authtoken':
-    auth_url             => "${keystone_admin}:5000/",
+    auth_url             => $auth_url, 
     memcached_servers    => $memcache,
-    password             => $neutron_password,
+    password             =>
+      $services[$region_name]['services']['neutron']['keystone']['password'],
     region_name          => $region,
-    www_authenticate_uri => "${keystone_public}:5000/",
+    username             =>
+      $services[$region_name]['services']['neutron']['keystone']['username'],
+    www_authenticate_uri => $www_authenticate_uri, 
   }
 
   class { '::neutron::server::notifications::nova':
-    auth_url     => "${keystone_admin}:5000",
-    password     => $nova_password,
+    auth_url     => $auth_url, 
+    password     =>
+      $services[$region_name]['services']['nova']['keystone']['password'],
     region_name  => $region,
   }
 }

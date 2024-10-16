@@ -7,12 +7,28 @@ define ntnuopenstack::placement::endpoint (
   String          $region,
   String          $username,
 ) {
-  class { '::placement::keystone::auth':
-    admin_url    => "${adminurl}:8778/placement",
-    auth_name    => $username,
-    internal_url => "${internalurl}:8778/placement",
-    password     => $password,
-    public_url   => "${publicurl}:8778/placement",
-    region       => $region,
+  include ::placement::deps
+
+  Keystone::Resource::Service_identity["placement-${region}"] -> Anchor['placement::service::end']
+
+  keystone::resource::service_identity { "placement-${region}":
+    configure_user      => true,
+    configure_user_role => true,
+    configure_endpoint  => true,
+    configure_service   => true,
+    service_type        => 'placement',
+    service_description => 'Openstack Placement Service',
+    service_name        => 'placement',
+    region              => $region,
+    auth_name           => $username,
+    password            => $password,
+    email               => 'placement@localhost',
+    tenant              => 'services',
+    roles               => ['admin', 'service'],
+    system_scope        => 'all',
+    system_roles        => [],
+    public_url          => "${publicurl}:8778/placement",
+    admin_url           => "${adminurl}:8778/placement",
+    internal_url        => "${internalurl}:8778/placement",
   }
 }
