@@ -19,12 +19,12 @@ class ntnuopenstack::placement::auth {
     auth_url                     => $auth_url, 
     memcached_servers            => $memcache,
     password                     =>
-      $services[$region_name]['services']['cinder']['keystone']['password'],
+      $services[$region_name]['services']['placement']['keystone']['password'],
     region_name                  => $region_name,
     service_token_roles          => [ 'admin', 'service' ],
     service_token_roles_required => true,
     username                     =>
-      $services[$region_name]['services']['cinder']['keystone']['username'],
+      $services[$region_name]['services']['placement']['keystone']['username'],
     www_authenticate_uri         => $www_authenticate_uri 
   }
 }
