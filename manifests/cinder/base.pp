@@ -44,7 +44,9 @@ class ntnuopenstack::cinder::base {
     auth_url     => $auth_url,
     interface    => 'internal',
     password     =>
-      $services[$region_name]['services']['cinder']['keystone']['password'],
+      $services[$region_name]['services']['nova']['keystone']['password'],
     region_name  => $region_name,
+    username                =>
+      $services[$region_name]['services']['nova']['keystone']['username'],
   }
 }
