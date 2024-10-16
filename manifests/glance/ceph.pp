@@ -1,25 +1,24 @@
 # Configures ceph for glance use
 class ntnuopenstack::glance::ceph {
-  $glance_key = lookup('ntnuopenstack::glance::ceph::key', String)
+  $ceph_pool = lookup('ntnuopenstack::glance::ceph::pool', String)
+  $ceph_user = lookup('ntnuopenstack::glance::ceph::user', String)
+  $users = lookup('profile::ceph::keys', Hash)
 
   require ::profile::ceph::client
 
   ceph_config {
-      'client.glance/key': value => $glance_key;
+    "client.${ceph_user}/key": value => $users["client.${ceph_user}"]['secret'];
   }
 
-  ceph::key { 'client.glance':
-    secret  => $glance_key,
-    cap_mon => 'allow r, allow command "osd blocklist"',
-    cap_osd =>
-      'allow class-read object_prefix rbd_children, allow rwx pool=images',
-    inject  => true,
+  ::profile::ceph::key { "client.${ceph_user}": 
+    group => 'glance',
+    mode  => '0640',
   }
 
   ::glance::backend::multistore::rbd { 'ceph-default' :
     manage_packages   => false,
-    rbd_store_pool    => 'images',
-    rbd_store_user    => 'glance',
+    rbd_store_pool    => $ceph_pool,
+    rbd_store_user    => $ceph_user,
     store_description => 'Default CEPH store',
   }
 }
