@@ -8,11 +8,13 @@ class ntnuopenstack::cinder::base {
   })
 
   # Get the internal url to the glance API:
-  $glance_internal = lookup('ntnuopenstack::glance::endpoint::internal',
-                              Stdlib::Httpurl)
-  $auth_url = lookup('ntnuopenstack::keystone::auth::url')
-  $password = lookup('ntnuopenstack::cinder::keystone::password')
+  $services = lookup('ntnuopenstack::services', {
+    'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
+  })
   $region_name = lookup('ntnuopenstack::region')
+  $api_internal = $services[$region_name]['url']['internal']
+
+  $auth_url = lookup('ntnuopenstack::keystone::auth::url')
 
   if ($rabbitservers) {
     $ha_transport_conf = {
@@ -35,13 +37,14 @@ class ntnuopenstack::cinder::base {
   }
   
   class { '::cinder::glance':
-    glance_api_servers => "${glance_internal}:9292",
+    glance_api_servers => "${api_internal}:9292",
   }
 
   class { '::cinder::nova':
     auth_url     => $auth_url,
     interface    => 'internal',
-    password     => $password,
+    password     =>
+      $services[$region_name]['services']['cinder']['keystone']['password'],
     region_name  => $region_name,
   }
 }
