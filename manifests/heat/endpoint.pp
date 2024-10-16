@@ -18,7 +18,7 @@ define ntnuopenstack::heat::endpoint (
 
   class { '::heat::keystone::auth_cfn':
     admin_url    => "${adminurl}:8000/v1",
-    auth_name    => $username,
+    auth_name    => "${username}-cfn",
     internal_url => "${internalurl}:8000/v1",
     password     => $password,
     public_url   => "${publicurl}:8000/v1",
