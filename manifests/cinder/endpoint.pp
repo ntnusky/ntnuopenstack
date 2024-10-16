@@ -7,6 +7,11 @@ define ntnuopenstack::cinder::endpoint (
   String          $region,
   String          $username,
 ) {
+  include ::cinder::deps
+
+  Keystone::Resource::Service_identity['cinder'] -> Anchor['cinder::service::end']
+  Keystone::Resource::Service_identity['cinderv3'] -> Anchor['cinder::service::end']
+
   # Always configure the original user and user roles, as these
   # can be used by the v3 service.
   keystone::resource::service_identity { "cinder-${region}":
