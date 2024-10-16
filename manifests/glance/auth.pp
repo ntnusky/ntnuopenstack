@@ -19,10 +19,10 @@ class ntnuopenstack::glance::auth {
     auth_url             => $auth_url, 
     memcached_servers    => $memcache,
     password             =>
-      $services[$region_name]['services']['glance']['keystone']['password'],
+      $services[$region]['services']['glance']['keystone']['password'],
     region_name          => $region,
     username             =>
-      $services[$region_name]['services']['glance']['keystone']['username'],
+      $services[$region]['services']['glance']['keystone']['username'],
     www_authenticate_uri => $www_authenticate_uri, 
   }
 }

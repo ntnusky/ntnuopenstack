@@ -19,29 +19,29 @@ class ntnuopenstack::nova::auth {
     auth_url             => $auth_url,
     memcached_servers    => $memcache,
     password             =>
-      $services[$region_name]['services']['nova']['keystone']['password'],
+      $services[$region]['services']['nova']['keystone']['password'],
     region_name          => $region,
     username             =>
-      $services[$region_name]['services']['nova']['keystone']['username'],
+      $services[$region]['services']['nova']['keystone']['username'],
     www_authenticate_uri => $www_authenticate_uri, 
   }
 
   class { '::nova::keystone::service_user':
     auth_url                => $auth_url,
     password                => 
-      $services[$region_name]['services']['nova']['keystone']['password'],
+      $services[$region]['services']['nova']['keystone']['password'],
     region_name             => $region,
     send_service_user_token => true,
     username                =>
-      $services[$region_name]['services']['nova']['keystone']['username'],
+      $services[$region]['services']['nova']['keystone']['username'],
   }
 
   class { '::nova::keystone':
     auth_url    => $auth_url,
     password    => 
-      $services[$region_name]['services']['nova']['keystone']['password'],
+      $services[$region]['services']['nova']['keystone']['password'],
     region_name => $region,
     username    =>
-      $services[$region_name]['services']['nova']['keystone']['username'],
+      $services[$region]['services']['nova']['keystone']['username'],
   }
 }

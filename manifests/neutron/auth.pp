@@ -21,10 +21,10 @@ class ntnuopenstack::neutron::auth {
     auth_url             => $auth_url, 
     memcached_servers    => $memcache,
     password             =>
-      $services[$region_name]['services']['neutron']['keystone']['password'],
+      $services[$region]['services']['neutron']['keystone']['password'],
     region_name          => $region,
     username             =>
-      $services[$region_name]['services']['neutron']['keystone']['username'],
+      $services[$region]['services']['neutron']['keystone']['username'],
     www_authenticate_uri => $www_authenticate_uri, 
   }
 
