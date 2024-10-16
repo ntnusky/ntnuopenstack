@@ -14,6 +14,19 @@ class ntnuopenstack::keystone::endpoint {
       region      => $region,
     }
 
+    keystone::resource::service_identity { "keystone-${region}":
+      configure_user      => false,
+      configure_user_role => false,
+      configure_endpoint  => true,
+      configure_service   => true,
+      service_type        => 'identity',
+      service_name        => 'keystone',
+      region              => $region,
+      admin_url           => "${data['url']['admin']}:5000",
+      internal_url        => "${data['url']['internal']}:5000",
+      public_url          => "${data['url']['public']}:5000",
+    }
+
     if('barbican' in $data['services']) {
       ::ntnuopenstack::barbican::endpoint { $region:
         password => $data['services']['barbican']['keystone']['password'],
