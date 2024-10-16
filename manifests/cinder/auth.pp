@@ -36,4 +36,16 @@ class ntnuopenstack::cinder::auth {
     username                =>
       $services[$region_name]['services']['cinder']['keystone']['username'],
   }
+
+  openstacklib::clouds { '/etc/openstack/puppet/admin-clouds.yaml':
+    username     =>
+      $services[$region_name]['services']['cinder']['keystone']['username'],
+    password     =>
+      $services[$region_name]['services']['cinder']['keystone']['password'],
+    auth_url     => $auth_url,
+    project_name => 'services',
+    system_scope => 'all',
+    region_name  => $region_name,
+    interface    => 'internal',
+  }
 }
