@@ -28,7 +28,6 @@ class ntnuopenstack::cinder::base {
   require ::ntnuopenstack::cinder::auth
   include ::ntnuopenstack::cinder::dbconnection
   require ::ntnuopenstack::cinder::sudo
-  require ::ntnuopenstack::keystone::bootstrap
   require ::ntnuopenstack::repo
 
   class { '::cinder':
