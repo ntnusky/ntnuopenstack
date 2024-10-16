@@ -1,10 +1,15 @@
 # Configures the required endpoints in keystone
 class ntnuopenstack::keystone::endpoint {
+  $keystone_region = lookup('ntnuopenstack::keystone::region', String)
   $services = lookup('ntnuopenstack::services', {
     'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
   })
 
   include ::ntnuopenstack::keystone::bootstrap
+
+  $keystone_admin = $services[$keystone_region]['url']['admin']
+  $keystone_internal = $services[$keystone_region]['url']['internal']
+  $keystone_public = $services[$keystone_region]['url']['public']
 
   $services.each | $region, $data | {
     $common = {
@@ -22,9 +27,9 @@ class ntnuopenstack::keystone::endpoint {
       service_type        => 'identity',
       service_name        => 'keystone',
       region              => $region,
-      admin_url           => "${data['url']['admin']}:5000",
-      internal_url        => "${data['url']['internal']}:5000",
-      public_url          => "${data['url']['public']}:5000",
+      admin_url           => "${$keystone_admin}:5000",
+      internal_url        => "${$keystone_internal}:5000",
+      public_url          => "${$keystone_public}:5000",
     }
 
     if('barbican' in $data['services']) {
