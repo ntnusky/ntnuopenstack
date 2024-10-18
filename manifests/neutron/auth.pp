@@ -31,7 +31,9 @@ class ntnuopenstack::neutron::auth {
   class { '::neutron::server::notifications::nova':
     auth_url     => $auth_url, 
     password     =>
-      $services[$region_name]['services']['nova']['keystone']['password'],
+      $services[$region]['services']['nova']['keystone']['password'],
     region_name  => $region,
+    username     =>
+      $services[$region]['services']['nova']['keystone']['username'],
   }
 }
