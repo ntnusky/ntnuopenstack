@@ -7,6 +7,8 @@ class ntnuopenstack::nova::common::placement {
   $region = lookup('ntnuopenstack::region')
 
   class { '::nova::placement':
+    username    =>
+      $services[$region]['services']['placement']['keystone']['username'],
     password    =>
       $services[$region]['services']['placement']['keystone']['password'],
     auth_url    => $auth_url, 
