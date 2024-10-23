@@ -13,6 +13,7 @@ ntnuopenstack::cinder::endpoint::internal: "%{alias('ntnuopenstack::endpoint::in
 ntnuopenstack::cinder::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"
 ntnuopenstack::cinder::mysql::ip: "%{alias('ntnuopenstack::endpoint::admin::ipv4')}"
 
+ntnuopenstack::designate::api::port: "9001"
 ntnuopenstack::designate::endpoint::admin: "%{alias('ntnuopenstack::endpoint::admin')}"
 ntnuopenstack::designate::endpoint::internal: "%{alias('ntnuopenstack::endpoint::internal')}"
 ntnuopenstack::designate::endpoint::public: "%{alias('ntnuopenstack::endpoint::public')}"

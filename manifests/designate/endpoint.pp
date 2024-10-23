@@ -7,9 +7,9 @@ class ntnuopenstack::designate::endpoint {
   $keystone_password = lookup('ntnuopenstack::designate::keystone::password')
   $region = lookup('ntnuopenstack::region')
 
-  $admin = "${endpoint_admin}:9876"
-  $public = "${endpoint_public}:9876"
-  $internal = "${endpoint_internal}:9876"
+  $admin = "${endpoint_admin}:9001"
+  $public = "${endpoint_public}:9001"
+  $internal = "${endpoint_internal}:9001"
 
   class { '::designate::keystone::auth':
     admin_url    => $admin,
