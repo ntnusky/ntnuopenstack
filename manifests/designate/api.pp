@@ -4,6 +4,14 @@ class ntnuopenstack::designate::api {
   require ::ntnuopenstack::designate::auth
 
   class { '::designate::api':
-    auth_strategy     => 'keystone',
+    auth_strategy    => 'keystone',
+    enable_api_v2    => true,
+    enable_api_admin => true,
+    api_base_uri     => 'httpd',
+  }
+
+  class { '::designate::wsgi::apache':
+    access_log_format => 'forwarded',
+    workers           => 2,
   }
 }
