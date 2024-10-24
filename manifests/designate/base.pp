@@ -29,6 +29,11 @@ class ntnuopenstack::designate::base {
   include designate::central
   include designate::client
 
+  class { 'designate::mdns':
+    listen  =>  "0.0.0.0:5354",
+    workers => 2,
+  }
+
   class { 'designate::producer':
     workers => 2,
   }
