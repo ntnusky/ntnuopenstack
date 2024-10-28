@@ -25,7 +25,7 @@ class ntnuopenstack::nova::compute::ceph (
     libvirt_images_rbd_pool => $ceph_pool,
     libvirt_rbd_secret_uuid => $nova_uuid,
     libvirt_rbd_secret_key  => $users["client.${ceph_user}"]['secret'],
-    $rbd_keyring            => $ceph_user,
+    rbd_keyring             => $ceph_user,
     manage_ceph_client      => false,
     ephemeral_storage       => $ephemeral_storage,
   }
