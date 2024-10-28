@@ -1,9 +1,5 @@
 # This class installs the ceph client and configures the nova-key. 
 class ntnuopenstack::nova::compute::ceph::client {
-  $nova_pool = lookup('ntnuopenstack::nova::ceph::ephemeral::pool', {
-    'default_value' => 'volumes',
-    'value_type'    => String,
-  })
   $ceph_user = lookup('ntnuopenstack::nova::ceph::user', {
     'default_value' => 'nova',
     'value_type'    => String,
