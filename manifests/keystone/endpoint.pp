@@ -11,6 +11,22 @@ class ntnuopenstack::keystone::endpoint {
   $keystone_internal = $services[$keystone_region]['url']['internal']
   $keystone_public = $services[$keystone_region]['url']['public']
 
+  # Check if any of the regions contains heat; and in that case create the heat
+  # domain and roles.
+  $heats = $services.map | $region | { 'heat' in $services[$region]['services']}
+  if(true in $heats) {
+    keystone_role { [
+      'heat_stack_owner',
+      'heat_stack_user',
+    ] :
+      ensure => present,
+    }
+
+    class { '::ntnuopenstack::heat::domain':
+      create_domain => true,
+    }
+  }
+
   $services.each | $region, $data | {
     $common = {
       adminurl    => $data['url']['admin'],

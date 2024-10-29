@@ -56,14 +56,4 @@ define ntnuopenstack::heat::endpoint (
     internal_url        => "${internalurl}:8000/v1",
   }
 
-  keystone_role { [
-    'heat_stack_owner',
-    'heat_stack_user',
-  ] :
-    ensure => present,
-  }
-
-  class { '::ntnuopenstack::heat::domain':
-    create_domain => true,
-  }
 }
