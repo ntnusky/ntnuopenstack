@@ -13,8 +13,8 @@ class ntnuopenstack::keystone::endpoint {
 
   # Check if any of the regions contains heat; and in that case create the heat
   # domain and roles.
-  $heats = $services.map | $region | { 
-    $exists = 'heat' in $services[$region]['services']
+  $heats = $services.map | $region, $data | { 
+    $exists = 'heat' in $data['services']
     $exists
   }
   if(true in $heats) {
