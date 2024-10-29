@@ -24,7 +24,7 @@ class ntnuopenstack::heat::auth {
       $services[$region]['services']['heat']['keystone']['password'],
     region_name          => $region,
     username             => 
-      $services[$region]['services']['heat']['keystone']['username']
+      $services[$region]['services']['heat']['keystone']['username'],
     www_authenticate_uri => "${public_endpoint}:5000/v3",
   }
 
