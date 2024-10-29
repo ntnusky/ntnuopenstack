@@ -44,7 +44,7 @@ define ntnuopenstack::heat::endpoint (
     service_description => 'Openstack Cloudformation Service',
     service_name        => 'heat-cfn',
     region              => $region,
-    auth_name           => $username,
+    auth_name           => "${username}-cfn",
     password            => $password,
     email               => 'heat-cfn@localhost',
     tenant              => 'services',
