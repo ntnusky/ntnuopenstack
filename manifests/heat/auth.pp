@@ -4,8 +4,8 @@ class ntnuopenstack::heat::auth {
     'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
   })
 
-  $public_endpoint = lookup('ntnuopenstack::endpoint::public')
   $internal_endpoint = lookup('ntnuopenstack::endpoint::internal')
+  $www_authenticate_uri = lookup('ntnuopenstack::keystone::auth::uri')
   $region = lookup('ntnuopenstack::region')
 
   # Retrieve addresses for the memcached servers
@@ -25,12 +25,12 @@ class ntnuopenstack::heat::auth {
     region_name          => $region,
     username             => 
       $services[$region]['services']['heat']['keystone']['username'],
-    www_authenticate_uri => "${public_endpoint}:5000/v3",
+    www_authenticate_uri => $www_authenticate_uri,
   }
 
   class { '::heat::trustee':
     auth_url => "${internal_endpoint}:5000/",
-    username             => 
+    username => 
       $services[$region]['services']['heat']['keystone']['username'],
     password => 
       $services[$region]['services']['heat']['keystone']['password'],
