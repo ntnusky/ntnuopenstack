@@ -34,7 +34,7 @@ define ntnuopenstack::swift::endpoint (
     $internal = "${internalurl}:7480/swift/v1/%(project_id)s"
   }
 
-  keystone::resource::service_identity { 'swift':
+  keystone::resource::service_identity { "swift-${region}":
     admin_url           => $admin,
     auth_name           => $username,
     email               => 'swift@localhost',

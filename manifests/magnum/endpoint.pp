@@ -9,6 +9,8 @@ define ntnuopenstack::magnum::endpoint (
 ) {
   include ::ntnuopenstack::magnum::domain
 
+  # Denne klassen gidder vi ikke skrive om slik at den kan lage magnum i mer enn
+  # én region; for vi tenker jo egentlig å fase ut magnum.
   class { 'magnum::keystone::auth':
     admin_url    => "${adminurl}:9511/v1",
     auth_name    => $username,
