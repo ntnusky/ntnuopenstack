@@ -31,7 +31,7 @@ class ntnuopenstack::heat::auth {
   class { '::heat::trustee':
     auth_url => "${internal_endpoint}:5000/",
     username             => 
-      $services[$region]['services']['heat']['keystone']['username']
+      $services[$region]['services']['heat']['keystone']['username'],
     password => 
       $services[$region]['services']['heat']['keystone']['password'],
   }
