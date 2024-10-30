@@ -1,5 +1,13 @@
 # This class configures the keystone authentication for octavia
 class ntnuopenstack::octavia::auth {
+  $services = lookup('ntnuopenstack::services', {
+    'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
+  })
+
+  $auth_url = lookup('ntnuopenstack::keystone::auth::url')
+  $www_authenticate_uri = lookup('ntnuopenstack::keystone::auth::uri')
+  $region = lookup('ntnuopenstack::region')
+
   $cache_servers = lookup('profile::memcache::servers', {
     'value_type' => Array[Stdlib::IP::Address],
     'merge'      => 'unique',
@@ -8,26 +16,24 @@ class ntnuopenstack::octavia::auth {
     "${server}:11211"
   }
 
-  $keystone_password = lookup('ntnuopenstack::octavia::keystone::password')
-  $keystone_internal = lookup('ntnuopenstack::keystone::endpoint::internal',
-      Stdlib::Httpurl)
-  $keystone_public = lookup('ntnuopenstack::keystone::endpoint::public', 
-      Stdlib::Httpurl)
-  $region = lookup('ntnuopenstack::region', String)
-
   class { '::octavia::keystone::authtoken':
-    auth_url             => "${keystone_internal}:5000/",
-    memcached_servers    => $memcache,
-    password             => $keystone_password,
+    auth_url             => $auth_url,
+    memcached_servers    => $memcache, 
+    password             => 
+      $services[$region]['services']['octavia']['keystone']['password'],
     region_name          => $region,
-    www_authenticate_uri => "${keystone_public}:5000/",
+    username             => 
+      $services[$region]['services']['octavia']['keystone']['username'],
+    www_authenticate_uri => $www_authenticate_uri,
   }
 
   class { '::octavia::service_auth':
-    auth_url            => "${keystone_internal}:5000/v3",
-    username            => 'octavia',
+    auth_url             => $auth_url,
+    password             => 
+      $services[$region]['services']['octavia']['keystone']['password'],
+    username             => 
+      $services[$region]['services']['octavia']['keystone']['username'],
     project_name        => 'services',
-    password            => $keystone_password,
     user_domain_name    => 'default',
     project_domain_name => 'default',
     auth_type           => 'password',
