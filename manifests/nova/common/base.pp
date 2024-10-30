@@ -2,6 +2,7 @@
 class ntnuopenstack::nova::common::base (
   Hash    $extra_options = {},
 ){
+  include ::ntnuopenstack::nova::common::glance
   include ::ntnuopenstack::nova::common::placement
   include ::ntnuopenstack::nova::common::sudo
 
