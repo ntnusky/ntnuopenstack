@@ -3,7 +3,6 @@ class ntnuopenstack::designate::base {
   require ::ntnuopenstack::designate::dbconnection
   include ::ntnuopenstack::designate::firewall::api
   include ::ntnuopenstack::designate::firewall::dns
-  include ::ntnuopenstack::designate::policy
 
   # RabbitMQ connection-information
   $rabbitservers = lookup('profile::rabbitmq::servers', {
@@ -25,6 +24,11 @@ class ntnuopenstack::designate::base {
   class { '::designate':
     default_transport_url => $transport_url,
     *                     => $ha_transport_conf,
+  }
+
+  include ::ntnuopenstack::designate::policy
+  $barbican =   class {'::designate::policy':
+    policies => $designatePolicies,
   }
 
   include designate::central
