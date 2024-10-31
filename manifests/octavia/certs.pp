@@ -9,9 +9,6 @@ class ntnuopenstack::octavia::certs {
   $client_ca_cert = lookup('ntnuopenstack::octavia::certs::clientca::cert')
   $client_cert = lookup('ntnuopenstack::octavia::certs::client::cert')
 
-  $keystone_password = lookup('ntnuopenstack::octavia::keystone::password')
-  $internal_endpoint = lookup('ntnuopenstack::endpoint::internal')
-
   class { '::octavia::certificates':
     cert_generator              => local_cert_generator,
 

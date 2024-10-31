@@ -2,19 +2,8 @@
 class ntnuopenstack::clients {
   require ::ntnuopenstack::repo
 
-  $barbican = lookup('ntnuopenstack::barbican::keystone::password', {
-    'default_value' => false,
-    'value_type'    => Variant[Boolean, String],
-  })
-
-  $octavia = lookup('ntnuopenstack::octavia::keystone::password', {
-    'default_value' => false,
-    'value_type'    => Variant[Boolean, String],
-  })
-
-  $magnum = lookup('ntnuopenstack::magnum::keystone::password', {
-    'default_value' => false,
-    'value_type'    => Variant[Boolean, String],
+  $services = lookup('ntnuopenstack::services', {
+    'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
   })
 
   include ::keystone::client
@@ -24,22 +13,14 @@ class ntnuopenstack::clients {
   include ::glance::client
   include ::heat::client
 
-  if($barbican) {
-    include ::barbican::client
-  }
-
-  if($octavia) {
-    include ::octavia::client
-  }
-
-  if($magnum) {
-    if($::osfamily == 'Debian') {
-      package { 'python-magnumclient':
-        ensure   => '3.0.0',
-        provider => 'pip3',
-        tag      => 'openstack',
-      }
-    } else {
+  $services.each | $region, $data | {
+    if('barbican' in $data['services']) {
+      include ::barbican::client
+    }
+    if('octavia' in $data['services']) {
+      include ::octavia::client
+    }
+    if('magnum' in $data['services']) {
       include ::magnum::client
     }
   }
