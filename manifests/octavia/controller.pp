@@ -1,6 +1,9 @@
 # Installs and configures the octavia controller services
 class ntnuopenstack::octavia::controller {
-  $flavor_id = lookup('ntnuopenstack::octavia::flavor::id', Optional[String], undef)
+  $flavor_id = lookup('ntnuopenstack::octavia::flavor::id', {
+    'default_value' => undef,
+    'value_type'    => Optional[String],
+  })
   $image_tag = lookup('ntnuopenstack::octavia::image::tag', String, undef,
                       'amphora')
   $secgroup_id = lookup('ntnuopenstack::octavia::secgroup::id', String)
