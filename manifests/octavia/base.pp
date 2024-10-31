@@ -1,10 +1,10 @@
 # Performs basic octavia configuration.
 class ntnuopenstack::octavia::base {
-  # RabbitMQ connection-information
   $rabbitservers = lookup('profile::rabbitmq::servers', {
     'value_type'    => Variant[Array[String], Boolean],
     'default_value' => false,
   })
+  $region = lookup('ntnuopenstack::region', String)
 
   if ($rabbitservers) {
     $ha_transport_conf = {
@@ -24,5 +24,20 @@ class ntnuopenstack::octavia::base {
   class { '::octavia':
     default_transport_url => $transport_url,
     *                     => $ha_transport_conf,
+  }
+
+  class { '::octavia::cinder':
+    region_name => $region, 
+  }
+  class { '::octavia::glance':
+    region_name => $region, 
+  }
+  class { '::octavia::neutron':
+    region_name => $region, 
+  }
+  class { '::octavia::nova':
+    anti_affinity_policy => 'anti-affinity',
+    enable_anti_affinity => true,
+    region_name          => $region, 
   }
 }
