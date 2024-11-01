@@ -31,7 +31,14 @@ class ntnuopenstack::designate::base {
     policies => $designatePolicies,
   }
 
-  include designate::central
+  class { 'designate::central':
+    managed_resource_email     => 'hostmaster@ntnu.no',
+    managed_resource_tenant_id => lookup('ntnuopenstack::admin_project_id', {
+      'value_type'    => String,
+      'default_value' => '00000000-0000-0000-0000-000000000000',
+    }),
+  }
+
   include designate::client
 
   class { 'designate::mdns':
