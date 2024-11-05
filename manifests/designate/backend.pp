@@ -1,10 +1,8 @@
 # Designate DNS Backend (bind9)
 class ntnuopenstack::designate::backend {
   class {'::designate::backend::bind9':
-    ns_records       => {
-      1 => 'ns1.ntnu.no.',
-      2 => 'ns2.ntnu.no.',
-    },
+    ns_records       => lookup('ntnuopenstack::designate::ns_records'),
+
     rndc_config_file => '/etc/rndc.conf',
     rndc_key_file    => '/etc/bind/rndc.key'
   }
