@@ -7,6 +7,7 @@ class ntnuopenstack::nova::api::compute {
   })
 
   require ::ntnuopenstack::nova::auth
+  include ::ntnuopenstack::nova::common::cinder
   include ::ntnuopenstack::nova::common::neutron
   require ::ntnuopenstack::nova::dbconnection
   contain ::ntnuopenstack::nova::firewall::server
