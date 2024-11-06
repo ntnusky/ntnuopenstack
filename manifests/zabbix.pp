@@ -15,7 +15,7 @@ class ntnuopenstack::zabbix {
       group   => 'zabbix_agent',
       mode    => '0644',
       content => join([
-        "UserParameter=openstack.metrics[*],/usr/local/sbin/get-openstack-metrics.py \$1 \$2 \$3",
+        "UserParameter=openstack.metrics[*],/usr/local/sbin/get-openstack-metrics.py \$1 \$2 \$3 \$4",
       ], "\n"),
       require => Package['zabbix-agent2'],
       notify  => Service['zabbix-agent2'],
