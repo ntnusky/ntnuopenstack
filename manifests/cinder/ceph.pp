@@ -19,9 +19,14 @@ class ntnuopenstack::cinder::ceph {
   ::profile::ceph::key { [
     "client.${ceph_cinder_user}",
     "client.${ceph_nova_user}",
-  ] : 
-    group  => 'cinder',
-    mode   => '0640',
-    before => Anchor['cinder::config::end'],
+  ] :
+    group => 'cinder',
+    mode  => '0640',
+    tag   => 'cinder-keys',
   }
+
+  Ceph::Key["client.${ceph_cinder_user}"]
+    ~> Service<| tag == 'cinder-service' |>
+  Ceph::Key["client.${ceph_nova_user}"]
+    ~> Service<| tag == 'cinder-service' |>
 }
