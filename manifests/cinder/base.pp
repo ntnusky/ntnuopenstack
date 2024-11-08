@@ -28,6 +28,7 @@ class ntnuopenstack::cinder::base {
   require ::ntnuopenstack::cinder::auth
   include ::ntnuopenstack::cinder::dbconnection
   require ::ntnuopenstack::cinder::sudo
+  include ::ntnuopenstack::nova::compute::ceph::client
   require ::ntnuopenstack::repo
 
   class { '::cinder':
