@@ -26,9 +26,6 @@ class ntnuopenstack::octavia::base {
     *                     => $ha_transport_conf,
   }
 
-  class { '::octavia::certificates':
-    region_name => $region, 
-  }
   class { '::octavia::cinder':
     region_name => $region, 
   }
