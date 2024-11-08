@@ -26,6 +26,10 @@ class ntnuopenstack::octavia::base {
     *                     => $ha_transport_conf,
   }
 
+  octavia_config {
+    'barbican/region_name': value => $region;
+  }
+
   class { '::octavia::cinder':
     region_name => $region, 
   }
