@@ -8,6 +8,7 @@ class ntnuopenstack::cinder::ceph {
   })
   $users = lookup('profile::ceph::keys', Hash)
 
+  include ::cinder::deps
   require ::profile::ceph::client
 
   ceph_config {
@@ -19,7 +20,8 @@ class ntnuopenstack::cinder::ceph {
     "client.${ceph_cinder_user}",
     "client.${ceph_nova_user}",
   ] : 
-    group => 'cinder',
-    mode  => '0640',
+    group  => 'cinder',
+    mode   => '0640',
+    before => Anchor['cinder::config::end'],
   }
 }
