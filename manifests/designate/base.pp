@@ -2,7 +2,6 @@
 class ntnuopenstack::designate::base {
   require ::ntnuopenstack::designate::dbconnection
   include ::ntnuopenstack::designate::firewall::api
-  include ::ntnuopenstack::designate::firewall::dns
 
   # RabbitMQ connection-information
   $rabbitservers = lookup('profile::rabbitmq::servers', {

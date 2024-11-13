@@ -1,8 +1,11 @@
-# Installs the designate API.
+# Configures a Designate API server, running most designate components
 class ntnuopenstack::designate::api {
+  require ::ntnuopenstack::repo
+
   $api_port = lookup('ntnuopenstack::designate::api::port')
 
   require ::ntnuopenstack::designate::base
+  require ::ntnuopenstack::designate::backend
   require ::ntnuopenstack::designate::auth
   contain ::ntnuopenstack::designate::haproxy::backend
   include ::ntnuopenstack::designate::sudo
