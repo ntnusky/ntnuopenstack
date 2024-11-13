@@ -12,14 +12,10 @@ class ntnuopenstack::horizon::plugins {
       include ::horizon::dashboards::octavia
     }
     if('magnum' in $data['services']) {
-      if($magnum and $::osfamily == 'RedHat') {
-        horizon::dashboard { 'magnum': }
-      } elsif ($magnum and $::osfamily == 'Debian') {
-        ensure_packages('python3-magnum-ui', {
-          'ensure' => 'present',
-          'tag'    => ['horizon-package']
-        })
-      }
+      ensure_packages('python3-magnum-ui', {
+        'ensure' => 'present',
+        'tag'    => ['horizon-package']
+      })
     }
   }
 }
