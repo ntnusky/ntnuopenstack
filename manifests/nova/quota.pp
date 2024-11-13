@@ -28,6 +28,8 @@ class ntnuopenstack::nova::quota {
       password    =>
         $services[$region]['services']['nova']['keystone']['password'],
       region_name => $region,
+      username    =>
+        $services[$region]['services']['nova']['keystone']['username'],
     }
     $driver_opts = {
       'driver' => 'nova.quota.UnifiedLimitsDriver',
