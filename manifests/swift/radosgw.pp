@@ -4,6 +4,7 @@ class ntnuopenstack::swift::radosgw {
     'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
   })
   $auth_url = lookup('ntnuopenstack::keystone::auth::url')
+  $region = lookup('ntnuopenstack::region', String)
 
   $swift_dns_name = lookup('ntnuopenstack::swift::dns::name')
   $keystone_roles = lookup('ntnuopenstack::swift::keystone::roles', {
