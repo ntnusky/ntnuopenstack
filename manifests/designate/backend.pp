@@ -14,16 +14,22 @@ class ntnuopenstack::designate::backend {
   file { '/etc/rndc.conf':
     ensure => present,
     owner  => 'root',
-    group  => 'bind',
+    group  => 'designate',
     mode   => '0644',
     source =>
       'puppet:///modules/ntnuopenstack/designate/rndc.conf',
     before => Anchor['designate::service::begin'],
   }
 
-  class {'dns::key':
-    keydir   => '/etc',
-    filename => 'rndc.key',
-    secret   => lookup('ntnuopenstack::designate::rndc_key', string),
+  $rndc_algorithm = 'hmac-md5';
+  $rndc_name = 'rndc-key';
+  $rndc_secret = lookup('ntnuopenstack::designate::rndc_key', String);
+
+  file { '/etc/rndc.key':
+    ensure  => file,
+    owner   => 'designate',
+    group   => 'designate',
+    mode    => '0640',
+    content => template('ntnuopenstack/designate/rndc-key.erb'),
   }
 }
