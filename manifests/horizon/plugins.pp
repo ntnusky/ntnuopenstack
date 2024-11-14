@@ -19,9 +19,6 @@ class ntnuopenstack::horizon::plugins {
     }
     if('designate' in $data['services']) {
       include ::horizon::dashboards::designate
-      class {'::horizon::dashboards::designate':
-        policies => $designatePolicies,
-      }
     }
   }
 }

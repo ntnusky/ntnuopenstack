@@ -25,10 +25,10 @@ class ntnuopenstack::designate::base {
     *                     => $ha_transport_conf,
   }
 
-  include ::ntnuopenstack::designate::policy
-  $barbican =   class {'::designate::policy':
-    policies => $designatePolicies,
-  }
+  # include ::ntnuopenstack::designate::policy
+  # class {'::designate::policy':
+  #   policies => $designatePolicies,
+  # }
 
   class { 'designate::central':
     managed_resource_email     => 'hostmaster@ntnu.no',
