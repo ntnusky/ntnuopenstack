@@ -39,6 +39,10 @@ class ntnuopenstack::designate::base {
   }
 
   include designate::client
+  ensure_packages('bind9-utils', {
+    'ensure' => 'present'
+  })
+
 
   class { 'designate::mdns':
     listen  =>  "0.0.0.0:5354",
