@@ -1,6 +1,7 @@
 # Designate interop with DNS Backend
 class ntnuopenstack::designate::backend {
-  $ns_servers = lookup('ntnuopenstack::designate::ns_servers', Array[String]);
+  $ns_servers = lookup('ntnuopenstack::designate::ns_servers', Array[Stdlib::IP::Address]);
+  $api_servers = lookup('ntnuopenstack::designate::api_servers', Array[Stdlib::IP::Address]);
 
   class {'::designate::backend::bind9':
     ns_records       => lookup('ntnuopenstack::designate::ns_records', Hash[Integer, String]),
@@ -8,6 +9,7 @@ class ntnuopenstack::designate::backend {
     rndc_config_file => '/etc/rndc.conf',
     rndc_key_file    => '/etc/rndc.key',
 
+    mdns_hosts       => $api_servers,
     bind9_hosts      => $ns_servers,
     nameservers      => $ns_servers,
     configure_bind   => false,
