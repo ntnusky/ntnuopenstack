@@ -17,7 +17,7 @@ define ntnuopenstack::glance::endpoint (
     configure_endpoint  => true,
     configure_service   => true,
     service_type        => 'image',
-    service_description => 'Openstack Image Service',
+    service_description => 'OpenStack Image Service',
     service_name        => 'glance',
     region              => $region,
     auth_name           => $username,

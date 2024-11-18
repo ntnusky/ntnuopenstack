@@ -45,7 +45,7 @@ define ntnuopenstack::swift::endpoint (
     password            => $password,
     public_url          => $public,
     region              => $region,
-    service_description => 'Openstack Object-Store Service',
+    service_description => 'OpenStack Object-Store Service',
     service_name        => 'swift',
     service_type        => 'object-store',
     tenant              => 'services',
