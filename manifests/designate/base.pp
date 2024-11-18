@@ -44,6 +44,7 @@ class ntnuopenstack::designate::base {
   })
 
 
+  include ::ntnuopenstack::designate::firewall::mdns
   class { 'designate::mdns':
     listen  =>  "0.0.0.0:5354",
     workers => 2,
