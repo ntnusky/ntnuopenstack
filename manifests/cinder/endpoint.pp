@@ -20,7 +20,7 @@ define ntnuopenstack::cinder::endpoint (
     configure_endpoint  => true,
     configure_service   => true,
     service_type        => 'block-storage',
-    service_description => 'Openstack Block Storage Service',
+    service_description => 'OpenStack Block Storage Service',
     service_name        => 'cinder',
     region              => $region,
     auth_name           => $username,

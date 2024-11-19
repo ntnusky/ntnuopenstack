@@ -17,7 +17,7 @@ define ntnuopenstack::neutron::endpoint (
     configure_endpoint  => true,
     configure_service   => true,
     service_type        => 'network',
-    service_description => 'Openstack Networking Service',
+    service_description => 'OpenStack Networking Service',
     service_name        => 'neutron',
     region              => $region,
     auth_name           => $username,

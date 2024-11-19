@@ -17,7 +17,7 @@ define ntnuopenstack::nova::endpoint (
     configure_endpoint  => true,
     configure_service   => true,
     service_type        => 'compute',
-    service_description => 'Openstack Compute Service',
+    service_description => 'OpenStack Compute Service',
     service_name        => 'nova',
     region              => $region,
     auth_name           => $username,

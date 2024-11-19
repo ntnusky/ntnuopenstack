@@ -17,7 +17,7 @@ define ntnuopenstack::placement::endpoint (
     configure_endpoint  => true,
     configure_service   => true,
     service_type        => 'placement',
-    service_description => 'Openstack Placement Service',
+    service_description => 'OpenStack Placement Service',
     service_name        => 'placement',
     region              => $region,
     auth_name           => $username,
