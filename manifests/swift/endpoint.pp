@@ -7,9 +7,14 @@ define ntnuopenstack::swift::endpoint (
   String          $region,
   String          $username,
 ) {
-  $swiftname = lookup('ntnuopenstack::swift::dns::name', {
-    'default_value' => false,
+  $services = lookup('ntnuopenstack::services', {
+    'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
   })
+  if('dnsname' in $services[$region]['services']['swift']) {
+    $swiftname = $services[$region]['services']['swift']['dnsname']
+  } else {
+    $swiftname = false
+  }
 
   # If no name is set for swift, the service is placed under the regular API
   # endpoint at port 7480. If name is set swift is placed at port 80/443 under
