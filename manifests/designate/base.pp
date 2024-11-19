@@ -25,11 +25,6 @@ class ntnuopenstack::designate::base {
     *                     => $ha_transport_conf,
   }
 
-  # include ::ntnuopenstack::designate::policy
-  # class {'::designate::policy':
-  #   policies => $designatePolicies,
-  # }
-
   class { 'designate::central':
     managed_resource_email     => 'hostmaster@ntnu.no',
     managed_resource_tenant_id => lookup('ntnuopenstack::admin_project_id', {
@@ -46,7 +41,7 @@ class ntnuopenstack::designate::base {
 
   include ::ntnuopenstack::designate::firewall::mdns
   class { 'designate::mdns':
-    listen  =>  "0.0.0.0:5354",
+    listen  =>  '0.0.0.0:5354',
     workers => 2,
   }
 

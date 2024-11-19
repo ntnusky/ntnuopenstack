@@ -14,7 +14,7 @@ class ntnuopenstack::designate::api {
     auth_strategy    => 'keystone',
     enable_api_v2    => true,
     enable_api_admin => true,
-    api_base_uri     => 'httpd',
+    service_name     => 'httpd',
   }
 
   class { '::designate::wsgi::apache':
