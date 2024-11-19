@@ -1,5 +1,6 @@
 # Configures the haproxy frontend for the swift API 
 class ntnuopenstack::swift::haproxy::management {
+  $region   = lookup('ntnuopenstack::region', String)
   $services = lookup('ntnuopenstack::services', {
     'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
   })

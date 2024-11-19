@@ -1,5 +1,6 @@
 # Configures the firewall to accept incoming traffic to the swift API. 
 class ntnuopenstack::swift::firewall::haproxy {
+  $region   = lookup('ntnuopenstack::region', String)
   $services = lookup('ntnuopenstack::services', {
     'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
   })
