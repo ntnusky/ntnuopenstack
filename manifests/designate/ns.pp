@@ -4,7 +4,9 @@ class ntnuopenstack::designate::ns {
   include ::ntnuopenstack::designate::firewall::dns
   include ::ntnuopenstack::designate::firewall::rndc
 
-  $designate_api_servers = lookup('ntnuopenstack::designate::api_servers', Array[Stdlib::IP::Address]);
+  $api_servers = lookup('ntnuopenstack::designate::api_servers', Array[Stdlib::IP::Address]);
+  $transfer_addresses = lookup('ntnuopenstack::designate::transfer_addresses', Array[String]);
+
   $listen_on = 'any';
   $listen_on_v6 = 'any';
 
@@ -12,12 +14,15 @@ class ntnuopenstack::designate::ns {
     recursion          => 'no',
     allow_recursion    => [],
     listen_on_v6       => false, # Overwritten by additional_options
+    localzonepath      => 'unmanaged',
     additional_options => {
       'listen-on'         => "port 53 { ${listen_on}; }",
       'listen-on-v6'      => "port 53 { ${listen_on_v6}; }",
-      # TODO: allow-notify / allow-update from allowlist
       'auth-nxdomain'     => 'no',
       'allow-new-zones'   => 'yes',
+      'allow-notify'      => "{ ${join($api_servers, '; ')}; }",
+      'allow-update'      => "{ ${join($api_servers, '; ')}; }",
+      'allow-transfer'    => "{ ${join($api_servers + $transfer_addresses, '; ')}; }",
 
       # https://docs.openstack.org/designate/latest/admin/production-guidelines.html#bind9-mitigation
       'minimal-responses' => 'yes',
@@ -25,7 +30,7 @@ class ntnuopenstack::designate::ns {
     controls           => {
       '*' => {
         'port'              => 953,
-        'allowed_addresses' => $designate_api_servers,
+        'allowed_addresses' => $api_servers,
         'keys'              => ['designate-rndc-key'],
       }
     },
