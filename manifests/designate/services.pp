@@ -68,6 +68,11 @@ class ntnuopenstack::designate::services {
     workers => 2,
   }
 
+  # designate-sink
+  class { 'designate::sink':
+    workers => 2,
+  }
+
   # designate-worker
   class { 'designate::worker':
     workers => 2,
