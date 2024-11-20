@@ -1,45 +1,20 @@
 # This class installs the ceph client and configures the nova-key. 
 class ntnuopenstack::nova::compute::ceph::client {
-  $nova_key = lookup('ntnuopenstack::cinder::ceph::key')
-
-  $nova_pool = lookup('ntnuopenstack::nova::ceph::ephemeral::pool', {
-    'default_value' => 'volumes',
+  $ceph_user = lookup('ntnuopenstack::nova::ceph::user', {
+    'default_value' => 'nova',
     'value_type'    => String,
   })
-
-  $backends = lookup('ntnuopenstack::cinder::rbd::backends', {
-    'value_type'    => Hash[String, String],
-    'default_value' => {
-      'rbd-images' => 'volumes',
-    },
-  })
-
-
-  # For each unique backend (avoid configuring the same backend multiple times
-  # even if it is used for multiple cinder volume types), add relevant ceph
-  # parameters giving access to the relevant pools.
-  $allpools = [ $nova_pool ] + $backends.values()
-  $pools = $allpools.unique
-  $poolaccess = $pools.map | $pool | {
-    "allow rwx pool=${pool}"
-  }
+  $users = lookup('profile::ceph::keys', Hash)
 
   require ::profile::ceph::client
 
   # Configure ceph to accept the ceph-key for nova
   ceph_config {
-    'client.nova/key': value => $nova_key;
+    "client.${ceph_user}/key": value => $users["client.${ceph_user}"]['secret'];
   }
-
-  # Configure the ceph nova-user to have read/write/execute access to all the
-  # relevant pools.
-  $top = 'allow class-read object_prefix rbd_children'
-  $volumes = $poolaccess.join(', ')
-  $images = 'allow rwx pool=images'
-  ceph::key { 'client.nova':
-    secret  => $nova_key,
-    cap_mon => 'allow r, allow command "osd blocklist"',
-    cap_osd => "${top}, ${volumes}, ${images}",
-    inject  => true,
+  
+  ::profile::ceph::key { "client.${ceph_user}":
+    group => 'nova',
+    mode  => '0640',
   }
 }

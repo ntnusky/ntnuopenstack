@@ -2,6 +2,10 @@
 # storage.
 class ntnuopenstack::cinder::volume {
   $ceph_uuid = lookup('ntnuopenstack::nova::ceph::uuid', String)
+  $ceph_user = lookup('ntnuopenstack::nova::ceph::user', {
+    'default_value' => 'nova',
+    'value_type'    => String,
+  })
 
   $backends = lookup('ntnuopenstack::cinder::rbd::backends', {
     'value_type'    => Hash[String, String],
@@ -35,7 +39,7 @@ class ntnuopenstack::cinder::volume {
   $backends.each | $bname, $pool | {
     cinder::backend::rbd { $bname :
       rbd_pool        => $pool,
-      rbd_user        => 'cinder',
+      rbd_user        => $ceph_user,
       rbd_secret_uuid => $ceph_uuid,
     }
   }

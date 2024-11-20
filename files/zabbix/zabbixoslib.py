@@ -149,8 +149,11 @@ def heat_metrics(host, username, password):
 
 def keystone_metrics(host, username, password):
   data = {}  
-  db = MySQLdb.connect(host=host, user=username, 
-    password=password, database='keystone', charset='utf8')
+  try:
+    db = MySQLdb.connect(host=host, user=username, 
+      password=password, database='keystone', charset='utf8')
+  except:
+    return data
   
   # Get the Domain ID
   c = db.cursor(MySQLdb.cursors.DictCursor)
@@ -390,7 +393,7 @@ def neutron_metrics(host, username, password):
 
   return data
 
-def nova_metrics(host, username, password):
+def nova_metrics(host, username, password, misc = None):
   data = {} 
   db = MySQLdb.connect(host=host, user=username, 
     password=password, database='nova', charset='utf8')
@@ -507,17 +510,20 @@ def nova_metrics(host, username, password):
       data['hypervisors'][h]['last_seen_up'] = \
         services[data['hypervisors'][h]['host']]['last_seen_up']
 
-  # Get the MISC project ID
-  kdb = MySQLdb.connect(host=host, user=username, 
-    password=password, database='keystone', charset='utf8')
-  kc = kdb.cursor(MySQLdb.cursors.DictCursor)
-  kc.execute("SELECT id FROM project WHERE name = 'MISC'")
-  try:
-    projectID = kc.fetchone()['id']
-  except:
-    projectID = None
-  kc.close()
-  kdb.close()
+  if misc:
+    projectID = misc
+  else:
+    # Get the MISC project ID
+    kdb = MySQLdb.connect(host=host, user=username, 
+      password=password, database='keystone', charset='utf8')
+    kc = kdb.cursor(MySQLdb.cursors.DictCursor)
+    kc.execute("SELECT id FROM project WHERE name = 'MISC'")
+    try:
+      projectID = kc.fetchone()['id']
+    except:
+      projectID = None
+    kc.close()
+    kdb.close()
 
   # Get UUID of VMs where the deletion-notification is set
   c.execute("SELECT resource_id FROM tags WHERE tag = 'notified_delete'")

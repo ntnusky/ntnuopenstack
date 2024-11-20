@@ -1,19 +1,14 @@
 # Configures ceph for swift use
 class ntnuopenstack::swift::ceph {
-  $cephx_key = lookup('ntnuopenstack::swift::ceph::key', String)
-
+  $users = lookup('profile::ceph::keys', Hash)
   $hostname = $trusted['hostname']
 
   require ::profile::ceph::client
 
   ceph_config {
-      "client.radosgw.${hostname}/key": value => $cephx_key;
+    "client.radosgw.${hostname}/key": 
+      value => $users["client.radosgw.${hostname}"]['secret'];
   }
 
-  ceph::key { "client.radosgw.${hostname}":
-    secret  => $cephx_key,
-    cap_mon => 'allow rwx',
-    cap_osd => 'allow rwx',
-    inject  => true,
-  }
+  ::profile::ceph::key { "client.radosgw.${hostname}": }
 }

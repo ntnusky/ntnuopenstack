@@ -1,9 +1,12 @@
 # Configures auth for barbican. 
 class ntnuopenstack::barbican::auth {
+  $services = lookup('ntnuopenstack::services', {
+    'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
+  })
+
   $auth_url = lookup('ntnuopenstack::keystone::auth::url')
-  $password = lookup('ntnuopenstack::barbican::keystone::password')
-  $region_name = lookup('ntnuopenstack::region')
   $www_authenticate_uri = lookup('ntnuopenstack::keystone::auth::uri')
+  $region = lookup('ntnuopenstack::region')
 
   $memcache_servers = lookup('profile::memcache::servers', {
     'value_type'    => Array[Stdlib::IP::Address],
@@ -16,8 +19,11 @@ class ntnuopenstack::barbican::auth {
   class { '::barbican::keystone::authtoken':
     auth_url             => $auth_url,
     memcached_servers    => $memcache, 
-    password             => $password,
-    region_name          => $region_name,
+    password             => 
+      $services[$region]['services']['barbican']['keystone']['password'],
+    region_name          => $region,
+    username             => 
+      $services[$region]['services']['barbican']['keystone']['username'],
     www_authenticate_uri => $www_authenticate_uri,
   }
 }

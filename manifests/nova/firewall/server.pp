@@ -1,15 +1,12 @@
 # Configures the firewall to accept incoming traffic to the nova API. 
 class ntnuopenstack::nova::firewall::server {
-  ::profile::baseconfig::firewall::service::infra { 'Nova-API':
-    protocol => 'tcp',
-    port     => 8774,
+  ::profile::firewall::infra::region { 'Nova-API':
+    port => 8774,
   }
-  ::profile::baseconfig::firewall::service::infra { 'Nova-Metadata':
-    protocol => 'tcp',
-    port     => 8775,
+  ::profile::firewall::infra::region { 'Nova-Metadata':
+    port => 8775,
   }
-  ::profile::baseconfig::firewall::service::infra { 'Nova-Placement':
-    protocol => 'tcp',
-    port     => 8778,
+  ::profile::firewall::infra::region { 'Nova-Placement':
+    port => 8778,
   }
 }

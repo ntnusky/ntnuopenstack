@@ -1,20 +1,34 @@
 # Registers the glance endpoint in keystone
-class ntnuopenstack::glance::endpoint {
-  $region = lookup('ntnuopenstack::region', String)
-  $password = lookup('ntnuopenstack::glance::keystone::password', String)
+define ntnuopenstack::glance::endpoint (
+  Stdlib::Httpurl $adminurl,
+  Stdlib::Httpurl $internalurl,
+  String          $password,
+  Stdlib::Httpurl $publicurl,
+  String          $region,
+  String          $username,
+) {
+  include ::glance::deps
 
-  $glance_admin    = lookup('ntnuopenstack::glance::endpoint::admin',
-                              Stdlib::Httpurl)
-  $glance_internal = lookup('ntnuopenstack::glance::endpoint::internal',
-                              Stdlib::Httpurl)
-  $glance_public   = lookup('ntnuopenstack::glance::endpoint::public',
-                              Stdlib::Httpurl)
+  Keystone::Resource::Service_identity["glance-${region}"] -> Anchor['glance::service::end']
 
-  class  { '::glance::keystone::auth':
-    admin_url    => "${glance_admin}:9292",
-    internal_url => "${glance_internal}:9292",
-    password     => $password,
-    public_url   => "${glance_public}:9292",
-    region       => $region,
+  keystone::resource::service_identity { "glance-${region}":
+    configure_user      => true,
+    configure_user_role => true,
+    configure_endpoint  => true,
+    configure_service   => true,
+    service_type        => 'image',
+    service_description => 'OpenStack Image Service',
+    service_name        => 'glance',
+    region              => $region,
+    auth_name           => $username,
+    password            => $password,
+    email               => 'glance@localhost',
+    tenant              => 'services',
+    roles               => ['admin'],
+    system_scope        => 'all',
+    system_roles        => [],
+    public_url          => "${publicurl}:9292",
+    admin_url           => "${adminurl}:9292",
+    internal_url        => "${internalurl}:9292",
   }
 }

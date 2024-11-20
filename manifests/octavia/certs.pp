@@ -8,11 +8,10 @@ class ntnuopenstack::octavia::certs {
       'ntnuopenstack::octavia::certs::server::passphrase')
   $client_ca_cert = lookup('ntnuopenstack::octavia::certs::clientca::cert')
   $client_cert = lookup('ntnuopenstack::octavia::certs::client::cert')
-
-  $keystone_password = lookup('ntnuopenstack::octavia::keystone::password')
-  $internal_endpoint = lookup('ntnuopenstack::endpoint::internal')
+  $region = lookup('ntnuopenstack::region', String)
 
   class { '::octavia::certificates':
+    region_name                 => $region,
     cert_generator              => local_cert_generator,
 
     # The CA certificate used to sign the amphora certs

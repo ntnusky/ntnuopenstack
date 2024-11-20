@@ -2,8 +2,7 @@
 #  - We basicly only allow our management-network to use keystone, as the rest
 #    of the traffic will enter trough the loadbalancers.
 class ntnuopenstack::keystone::firewall::server {
-  ::profile::baseconfig::firewall::service::infra { 'Keystone-API':
-    protocol => 'tcp',
-    port     => 5000,
+  ::profile::firewall::infra::region { 'Keystone-API':
+    port => 5000,
   }
 }

@@ -1,6 +1,12 @@
 # Configures auth for the glance service. 
 class ntnuopenstack::glance::auth {
-  # Retrieve addresses for the memcached servers
+  $services = lookup('ntnuopenstack::services', {
+    'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
+  })
+
+  $auth_url = lookup('ntnuopenstack::keystone::auth::url')
+  $www_authenticate_uri = lookup('ntnuopenstack::keystone::auth::uri')
+  $region = lookup('ntnuopenstack::region', String)
   $cache_servers = lookup('profile::memcache::servers', {
     'value_type'    => Array[String],
     'merge'         => 'unique',
@@ -9,20 +15,14 @@ class ntnuopenstack::glance::auth {
     "${server}:11211"
   }
 
-  # Determine where the keystone service is located.
-  $keystone_internal = lookup('ntnuopenstack::keystone::endpoint::internal', 
-      Stdlib::Httpurl)
-  $keystone_public = lookup('ntnuopenstack::keystone::endpoint::public', 
-      Stdlib::Httpurl)
-  $keystone_password = lookup('ntnuopenstack::glance::keystone::password', 
-      String)
-  $region = lookup('ntnuopenstack::region', String)
-
   class { '::glance::api::authtoken':
-    auth_url             => "${keystone_internal}:5000",
+    auth_url             => $auth_url, 
     memcached_servers    => $memcache,
-    password             => $keystone_password,
+    password             =>
+      $services[$region]['services']['glance']['keystone']['password'],
     region_name          => $region,
-    www_authenticate_uri => "${keystone_public}:5000",
+    username             =>
+      $services[$region]['services']['glance']['keystone']['username'],
+    www_authenticate_uri => $www_authenticate_uri, 
   }
 }

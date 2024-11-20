@@ -1,11 +1,12 @@
 # Configures nova's authtoken 
 class ntnuopenstack::nova::auth {
+  $services = lookup('ntnuopenstack::services', {
+    'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
+  })
+
   $auth_url = lookup('ntnuopenstack::keystone::auth::url')
   $www_authenticate_uri = lookup('ntnuopenstack::keystone::auth::uri')
-  $nova_password = lookup('ntnuopenstack::nova::keystone::password')
-  $region = lookup('ntnuopenstack::region')
-
-  # Retrieve addresses for the memcached servers
+  $region = lookup('ntnuopenstack::region', String)
   $memcache_servers = lookup('profile::memcache::servers', {
     'value_type'    => Array[Stdlib::IP::Address],
     'default_value' => [],
@@ -17,22 +18,30 @@ class ntnuopenstack::nova::auth {
   class { '::nova::keystone::authtoken':
     auth_url             => $auth_url,
     memcached_servers    => $memcache,
-    password             => $nova_password,
+    password             =>
+      $services[$region]['services']['nova']['keystone']['password'],
     region_name          => $region,
+    username             =>
+      $services[$region]['services']['nova']['keystone']['username'],
     www_authenticate_uri => $www_authenticate_uri, 
   }
 
   class { '::nova::keystone::service_user':
     auth_url                => $auth_url,
-    password                => $nova_password,
+    password                => 
+      $services[$region]['services']['nova']['keystone']['password'],
     region_name             => $region,
     send_service_user_token => true,
+    username                =>
+      $services[$region]['services']['nova']['keystone']['username'],
   }
 
   class { '::nova::keystone':
     auth_url    => $auth_url,
-    password    => $nova_password,
+    password    => 
+      $services[$region]['services']['nova']['keystone']['password'],
     region_name => $region,
-    username    => 'nova',
+    username    =>
+      $services[$region]['services']['nova']['keystone']['username'],
   }
 }

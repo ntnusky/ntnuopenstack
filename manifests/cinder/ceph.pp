@@ -1,34 +1,32 @@
 # Configures ceph to facilitate for cinder, and for cinder to use ceph for
 # storage.
 class ntnuopenstack::cinder::ceph {
-  $ceph_key = lookup('ntnuopenstack::cinder::ceph::key', String)
-
-  $backends = lookup('ntnuopenstack::cinder::rbd::backends', {
-    'value_type'    => Hash[String, String],
-    'default_value' => {
-      'rbd-images' => 'volumes',
-    },
+  $ceph_cinder_user = lookup('ntnuopenstack::cinder::ceph::user', String)
+  $ceph_nova_user = lookup('ntnuopenstack::nova::ceph::user', {
+    'default_value' => 'nova',
+    'value_type'    => String,
   })
+  $users = lookup('profile::ceph::keys', Hash)
 
-  $pools = $backends.values().unique
-  $poolaccess = $pools.map | $pool | {
-    "allow rwx pool=${pool}"
-  }
-  $poolaccessstr = $poolaccess.join(', ')
-  $images = 'allow rwx pool=images'
-
+  include ::cinder::deps
   require ::profile::ceph::client
 
   ceph_config {
-    'client.cinder/key': value => $ceph_key;
+    "client.${ceph_cinder_user}/key": value => $users["client.${ceph_cinder_user}"]['secret'];
+    "client.${ceph_nova_user}/key": value => $users["client.${ceph_nova_user}"]['secret'];
   }
 
-  ceph::key { 'client.cinder':
-    secret  => $ceph_key,
-    cap_mon => 'allow r, allow command "osd blocklist"',
-    cap_osd => "allow class-read object_prefix rbd_children, ${poolaccessstr}, ${images}",
-    inject  => true,
-    group   => 'cinder',
-    mode    => '0640',
+  ::profile::ceph::key { [
+    "client.${ceph_cinder_user}",
+    "client.${ceph_nova_user}",
+  ] :
+    group => 'cinder',
+    mode  => '0640',
+    tag   => 'cinder-keys',
   }
+
+  Ceph::Key["client.${ceph_cinder_user}"]
+    ~> Service<| tag == 'cinder-service' |>
+  Ceph::Key["client.${ceph_nova_user}"]
+    ~> Service<| tag == 'cinder-service' |>
 }

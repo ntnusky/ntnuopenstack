@@ -1,6 +1,8 @@
 # Installs and configures the octavia controller services
 class ntnuopenstack::octavia::controller {
-  $flavor_id = lookup('ntnuopenstack::octavia::flavor::id', String)
+  $flavor_id = lookup('ntnuopenstack::octavia::flavor::id', {
+    'value_type'    => String,
+  })
   $image_tag = lookup('ntnuopenstack::octavia::image::tag', String, undef,
                       'amphora')
   $secgroup_id = lookup('ntnuopenstack::octavia::secgroup::id', String)
@@ -20,20 +22,11 @@ class ntnuopenstack::octavia::controller {
       'value_type'    => Stdlib::IP::Address::V4,
       'default_value' => $mip,
   })
-  $installmunin = lookup('profile::munin::install', {
-    'default_value' => true,
-    'value_type'    => Boolean,
-  })
-
 
   include ::ntnuopenstack::octavia::base
   require ::ntnuopenstack::octavia::dbconnection
   include ::ntnuopenstack::octavia::firewall::controller
   require ::ntnuopenstack::repo
-
-  if($installmunin) {
-    include ::profile::monitoring::munin::plugin::openstack::octavia
-  }
 
   class { '::octavia::controller':
     amp_boot_network_list   => [$network_id],

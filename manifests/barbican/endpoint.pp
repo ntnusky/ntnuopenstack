@@ -1,22 +1,35 @@
 # Configure the endpoint and keystone user for barbican
-class ntnuopenstack::barbican::endpoint {
-  $endpoint_admin = lookup('ntnuopenstack::barbican::endpoint::admin')
-  $endpoint_internal = lookup('ntnuopenstack::barbican::endpoint::internal')
-  $endpoint_public = lookup('ntnuopenstack::barbican::endpoint::public')
+define ntnuopenstack::barbican::endpoint (
+  Stdlib::Httpurl $adminurl,
+  Stdlib::Httpurl $internalurl,
+  String          $password,
+  Stdlib::Httpurl $publicurl,
+  String          $region,
+  String          $username,
+) {
+  include ::barbican::deps
 
-  $keystone_password = lookup('ntnuopenstack::barbican::keystone::password')
-  $region = lookup('ntnuopenstack::region')
+  Keystone::Resource::Service_identity["barbican-${region}"] -> Anchor['barbican::service::end']
 
-  $admin    = "${endpoint_admin}:9311"
-  $internal = "${endpoint_internal}:9311"
-  $public   = "${endpoint_public}:9311"
-
-  class { 'barbican::keystone::auth':
-    admin_url    => $admin,
-    internal_url => $internal,
-    password     => $keystone_password,
-    public_url   => $public,
-    region       => $region,
+  keystone::resource::service_identity { "barbican-${region}":
+    configure_user      => true,
+    configure_user_role => true,
+    configure_endpoint  => true,
+    configure_service   => true,
+    service_type        => 'key-manager',
+    service_description => 'Key Management Service',
+    service_name        => 'barbican',
+    region              => $region,
+    auth_name           => $username,
+    password            => $password,
+    email               => 'barbican@localhost',
+    tenant              => 'services',
+    roles               => ['admin'],
+    system_scope        => 'all',
+    system_roles        => [],
+    public_url          => "${publicurl}:9311",
+    admin_url           => "${adminurl}:9311",
+    internal_url        => "${internalurl}:9311",
   }
 }
 

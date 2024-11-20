@@ -5,6 +5,7 @@ class ntnuopenstack::nova::compute (
   ## TODO: 
   # Use nova::compute::provider for GPU-traits in placement
   include ::ntnuopenstack::nova::auth
+  contain ::ntnuopenstack::nova::common::cinder
   contain ::ntnuopenstack::nova::common::neutron
   require ::ntnuopenstack::nova::compute::base
   include ::ntnuopenstack::nova::compute::logging
@@ -21,24 +22,5 @@ class ntnuopenstack::nova::compute (
   # not.
   class { '::ntnuopenstack::nova::compute::libvirt':
     localdisk => $localdisk,
-  }
-
-  # Determine if sensu should be installed, and in that case include a sensu
-  # subscription.
-  $install_sensu = lookup('profile::sensu::install', {
-    'default_value' => true,
-    'value_type'    => Boolean,
-  })
-  if ($install_sensu) {
-    sensu::subscription { 'os-compute': }
-  }
-
-  $installmunin = lookup('profile::munin::install', {
-    'default_value' => true,
-    'value_type'    => Boolean,
-  })
-
-  if($installmunin) {
-    include ::ntnuopenstack::nova::munin::compute
   }
 }

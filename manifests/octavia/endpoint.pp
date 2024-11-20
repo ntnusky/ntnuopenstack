@@ -1,21 +1,35 @@
 # Configures the endpoint and keystone user for swift
-class ntnuopenstack::octavia::endpoint {
-  $endpoint_admin = lookup('ntnuopenstack::octavia::endpoint::admin')
-  $endpoint_internal = lookup('ntnuopenstack::octavia::endpoint::internal')
-  $endpoint_public = lookup('ntnuopenstack::octavia::endpoint::public')
+define ntnuopenstack::octavia::endpoint (
+  Stdlib::Httpurl $adminurl,
+  Stdlib::Httpurl $internalurl,
+  String          $password,
+  Stdlib::Httpurl $publicurl,
+  String          $region,
+  String          $username,
+) {
+  include ::octavia::deps
 
-  $keystone_password = lookup('ntnuopenstack::octavia::keystone::password')
-  $region = lookup('ntnuopenstack::region')
+  Keystone::Resource::Service_identity["octavia-${region}"]
+  -> Anchor['octavia::service::end']
 
-  $admin = "${endpoint_admin}:9876"
-  $public = "${endpoint_public}:9876"
-  $internal = "${endpoint_internal}:9876"
-
-  class { 'octavia::keystone::auth':
-    admin_url    => $admin,
-    internal_url => $internal,
-    password     => $keystone_password,
-    public_url   => $public,
-    region       => $region,
+  keystone::resource::service_identity { "octavia-${region}":
+    configure_user      => true,
+    configure_user_role => true,
+    configure_endpoint  => true,
+    configure_service   => true,
+    service_type        => 'load-balancer',
+    service_description => 'OpenStack Load Balancing Service',
+    service_name        => 'octavia',
+    region              => $region,
+    auth_name           => $username,
+    password            => $password,
+    email               => 'octavia@localhost',
+    tenant              => 'services',
+    roles               => ['admin'],
+    system_scope        => 'all',
+    system_roles        => [],
+    public_url          => "${publicurl}:9876",
+    admin_url           => "${adminurl}:9876",
+    internal_url        => "${internalurl}:9876",
   }
 }

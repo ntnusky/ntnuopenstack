@@ -1,7 +1,7 @@
 # Configures the firewall to accept incoming traffic to the neutron API. 
 class ntnuopenstack::neutron::firewall::haproxy {
-  ::profile::baseconfig::firewall::service::global { 'Neutron-API':
-    protocol => 'tcp',
-    port     => 9696,
+  ::profile::firewall::custom { 'Neutron-API':
+    hiera_key => 'profile::networks::openstack::users', 
+    port      => 9696,
   }
 }

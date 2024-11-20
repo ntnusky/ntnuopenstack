@@ -21,6 +21,7 @@ class ntnuopenstack::nova::services {
   })
 
   require ::ntnuopenstack::nova::auth
+  include ::ntnuopenstack::nova::common::cinder
   include ::ntnuopenstack::nova::common::neutron
   require ::ntnuopenstack::nova::dbconnection
   include ::ntnuopenstack::nova::quota

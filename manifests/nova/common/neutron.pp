@@ -1,12 +1,10 @@
 # Configures nova to use neutron for networking.
 class ntnuopenstack::nova::common::neutron {
+  $services = lookup('ntnuopenstack::services', {
+    'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
+  })
   $region = lookup('ntnuopenstack::region', String)
-  $neutron_password = lookup('ntnuopenstack::neutron::keystone::password', String)
-
-  $keystone_internal = lookup('ntnuopenstack::keystone::endpoint::internal',
-                                Stdlib::Httpurl)
-  $neutron_internal = lookup('ntnuopenstack::neutron::endpoint::internal',
-                                Stdlib::Httpurl)
+  $auth_url = lookup('ntnuopenstack::keystone::auth::url')
 
   $floating_pool = lookup('ntnuopenstack::neutron::default::floatingpool', {
     'default_value' => 'ntnu-internal',
@@ -16,9 +14,12 @@ class ntnuopenstack::nova::common::neutron {
   require ::ntnuopenstack::repo
 
   class { '::nova::network::neutron':
-    auth_url              => "${keystone_internal}:5000/v3",
+    auth_url              => $auth_url, 
     default_floating_pool => $floating_pool,
-    password              => $neutron_password,
+    password              => 
+      $services[$region]['services']['neutron']['keystone']['password'],
     region_name           => $region,
+    username              =>
+      $services[$region]['services']['neutron']['keystone']['username'],
   }
 }

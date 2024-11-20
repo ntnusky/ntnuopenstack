@@ -2,8 +2,8 @@
 class ntnuopenstack::octavia::firewall::haproxy {
   $port = lookup('ntnuopenstack::octavia::api::port')
 
-  ::profile::baseconfig::firewall::service::global { 'octavia API':
-    protocol => 'tcp',
-    port     => $port,
+  ::profile::firewall::custom { 'octavia API':
+    hiera_key => 'profile::networks::openstack::users', 
+    port      => $port,
   }
 }

@@ -10,10 +10,6 @@ class ntnuopenstack::neutron::api {
     'value_type'    => Boolean,
     'default_value' => true,
   })
-  $installmunin = lookup('profile::munin::install', {
-    'default_value' => true,
-    'value_type'    => Boolean,
-  })
 
   require ::ntnuopenstack::neutron::auth
   require ::ntnuopenstack::neutron::base
@@ -23,10 +19,6 @@ class ntnuopenstack::neutron::api {
   include ::ntnuopenstack::neutron::logging::api
   include ::ntnuopenstack::neutron::ml2::config
   include ::ntnuopenstack::neutron::rpc
-
-  if($installmunin) {
-    include ::profile::monitoring::munin::plugin::openstack::neutronapi
-  }
 
   # Install the neutron api
   class { '::neutron::server':

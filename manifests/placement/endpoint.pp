@@ -1,22 +1,34 @@
 # Configures the placement API endpoint in keystone 
-class ntnuopenstack::placement::endpoint {
-  # Openstack settings
-  $region = lookup('ntnuopenstack::region', String)
-  $password = lookup('ntnuopenstack::placement::keystone::password', String)
+define ntnuopenstack::placement::endpoint (
+  Stdlib::Httpurl $adminurl,
+  Stdlib::Httpurl $internalurl,
+  String          $password,
+  Stdlib::Httpurl $publicurl,
+  String          $region,
+  String          $username,
+) {
+  include ::placement::deps
 
-  # Determine the endpoint addresses
-  $placement_admin    = lookup('ntnuopenstack::placement::endpoint::admin',
-                                Stdlib::Httpurl)
-  $placement_internal = lookup('ntnuopenstack::placement::endpoint::internal',
-                                Stdlib::Httpurl)
-  $placement_public   = lookup('ntnuopenstack::placement::endpoint::public',
-                                Stdlib::Httpurl)
+  Keystone::Resource::Service_identity["placement-${region}"] -> Anchor['placement::service::end']
 
-  class { '::placement::keystone::auth':
-    admin_url    => "${placement_admin}:8778/placement",
-    internal_url => "${placement_internal}:8778/placement",
-    password     => $password,
-    public_url   => "${placement_public}:8778/placement",
-    region       => $region,
+  keystone::resource::service_identity { "placement-${region}":
+    configure_user      => true,
+    configure_user_role => true,
+    configure_endpoint  => true,
+    configure_service   => true,
+    service_type        => 'placement',
+    service_description => 'OpenStack Placement Service',
+    service_name        => 'placement',
+    region              => $region,
+    auth_name           => $username,
+    password            => $password,
+    email               => 'placement@localhost',
+    tenant              => 'services',
+    roles               => ['admin', 'service'],
+    system_scope        => 'all',
+    system_roles        => [],
+    public_url          => "${publicurl}:8778/placement",
+    admin_url           => "${adminurl}:8778/placement",
+    internal_url        => "${internalurl}:8778/placement",
   }
 }

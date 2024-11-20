@@ -1,26 +1,58 @@
 # Configures the keystone endpoint for the cinder API
-class ntnuopenstack::cinder::endpoint {
-  # Openstack settings
-  $region = lookup('ntnuopenstack::region', String)
-  $keystone_password = lookup('ntnuopenstack::cinder::keystone::password',
-                                String)
+define ntnuopenstack::cinder::endpoint (
+  Stdlib::Httpurl $adminurl,
+  Stdlib::Httpurl $internalurl,
+  String          $password,
+  Stdlib::Httpurl $publicurl,
+  String          $region,
+  String          $username,
+) {
+  include ::cinder::deps
 
-  # Determine the endpoint addresses
-  $cinder_admin    = lookup('ntnuopenstack::cinder::endpoint::admin',
-                                Stdlib::Httpurl)
-  $cinder_internal = lookup('ntnuopenstack::cinder::endpoint::internal',
-                                Stdlib::Httpurl)
-  $cinder_public   = lookup('ntnuopenstack::cinder::endpoint::public',
-                                Stdlib::Httpurl)
+  Keystone::Resource::Service_identity["cinder-${region}"] -> Anchor['cinder::service::end']
+  Keystone::Resource::Service_identity["cinderv3-${region}"] -> Anchor['cinder::service::end']
 
-  require ::ntnuopenstack::repo
+  # Always configure the original user and user roles, as these
+  # can be used by the v3 service.
+  keystone::resource::service_identity { "cinder-${region}":
+    configure_user      => true,
+    configure_user_role => true,
+    configure_endpoint  => true,
+    configure_service   => true,
+    service_type        => 'block-storage',
+    service_description => 'OpenStack Block Storage Service',
+    service_name        => 'cinder',
+    region              => $region,
+    auth_name           => $username,
+    password            => $password,
+    email               => 'cinder@localhost',
+    tenant              => 'services',
+    roles               => ['admin', 'service'],
+    system_scope        => 'all',
+    system_roles        => [],
+    public_url          => "${publicurl}:8776/v3/%(tenant_id)s",
+    admin_url           => "${adminurl}:8776/v3/%(tenant_id)s",
+    internal_url        => "${internalurl}:8776/v3/%(tenant_id)s",
+  }
 
-  class  { '::cinder::keystone::auth':
-    admin_url_v3    => "${cinder_admin}:8776/v3/%(tenant_id)s",
-    internal_url_v3 => "${cinder_internal}:8776/v3/%(tenant_id)s",
-    password        => $keystone_password,
-    public_url_v3   => "${cinder_public}:8776/v3/%(tenant_id)s",
-    region          => $region,
-    roles           => ['admin', 'service'],
+  keystone::resource::service_identity { "cinderv3-${region}":
+    configure_user      => false,
+    configure_user_role => false,
+    configure_endpoint  => true,
+    configure_service   => true,
+    service_type        => 'volumev3',
+    service_description => 'Cinder Service v3',
+    service_name        => 'cinderv3',
+    region              => $region,
+    auth_name           => $username,
+    password            => $password,
+    email               => 'cinderv3@localhost',
+    tenant              => 'services',
+    roles               => ['admin', 'service'],
+    system_scope        => 'all',
+    system_roles        => [],
+    public_url          => "${publicurl}:8776/v3/%(tenant_id)s",
+    admin_url           => "${adminurl}:8776/v3/%(tenant_id)s",
+    internal_url        => "${internalurl}:8776/v3/%(tenant_id)s",
   }
 }

@@ -1,14 +1,15 @@
 # Configures the haproxy frontend for the internal and admin nova API
 class ntnuopenstack::nova::haproxy::management {
-  require ::profile::services::haproxy
-  require ::profile::services::haproxy::certs::manageapi
-
   include ::ntnuopenstack::nova::firewall::haproxy
+  include ::ntnuopenstack::nova::firewall::metadata
+  require ::profile::services::haproxy
 
   $certificate = lookup('ntnuopenstack::endpoint::admin::cert', {
     'default_value' => false,
   })
   if($certificate) {
+    include ::ntnuopenstack::cert::adminapi
+
     $certfile = lookup('ntnuopenstack::endpoint::admin::cert::path', {
       'value_type'    => String,
       'default_value' => '/etc/ssl/private/haproxy.managementapi.pem'

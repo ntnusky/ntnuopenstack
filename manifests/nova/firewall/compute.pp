@@ -1,15 +1,15 @@
 # Configures firewall rules specific for compute nodes
 class ntnuopenstack::nova::firewall::compute {
-  ::profile::baseconfig::firewall::service::infra { 'Libvirt-migration':
-    protocol => 'tcp',
+  ::profile::firewall::infra::region { 'LiveMigration-SSH':
+    port => 22,
+  }
+  ::profile::firewall::infra::region { 'LiveMigration-Libvirt':
     port     => 16509,
   }
-  ::profile::baseconfig::firewall::service::infra { 'QEMU-migration':
-    protocol => 'tcp',
+  ::profile::firewall::infra::region { 'LiveMigration-QEMU':
     port     => '49152-49215',
   }
-  ::profile::baseconfig::firewall::service::infra { 'QEMU-VNC':
-    protocol => 'tcp',
+  ::profile::firewall::infra::region { 'QEMU-VNC':
     port     => '5900-5999',
   }
 }
