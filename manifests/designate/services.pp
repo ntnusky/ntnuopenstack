@@ -1,9 +1,9 @@
-# Performs basic designate configuration.
-class ntnuopenstack::designate::base {
+# Configures the basic requirements for designate and the designate-services
+class ntnuopenstack::designate::services {
   require ::ntnuopenstack::designate::dbconnection
   include ::ntnuopenstack::designate::firewall::api
 
-  # RabbitMQ connection-information
+  # Common / base configuration
   $rabbitservers = lookup('profile::rabbitmq::servers', {
     'value_type'    => Variant[Array[String], Boolean],
     'default_value' => false,
@@ -25,6 +25,23 @@ class ntnuopenstack::designate::base {
     *                     => $ha_transport_conf,
   }
 
+  # designate-api
+  $api_port = lookup('ntnuopenstack::designate::api::port')
+
+  class { '::designate::api':
+    auth_strategy    => 'keystone',
+    enable_api_v2    => true,
+    enable_api_admin => true,
+    service_name     => 'httpd',
+  }
+
+  class { '::designate::wsgi::apache':
+    access_log_format => 'forwarded',
+    workers           => 2,
+    port              => Integer($api_port),
+  }
+
+  # designate-central
   class { 'designate::central':
     managed_resource_email     => 'hostmaster@ntnu.no',
     managed_resource_tenant_id => lookup('ntnuopenstack::admin_project_id', {
@@ -33,22 +50,25 @@ class ntnuopenstack::designate::base {
     }),
   }
 
+  # designate-client
   include designate::client
   ensure_packages('bind9-utils', {
     'ensure' => 'present'
   })
 
-
+  # designate-mdns
   include ::ntnuopenstack::designate::firewall::mdns
   class { 'designate::mdns':
     listen  =>  '0.0.0.0:5354',
     workers => 2,
   }
 
+  # designate-producer
   class { 'designate::producer':
     workers => 2,
   }
 
+  # designate-worker
   class { 'designate::worker':
     workers => 2,
   }
