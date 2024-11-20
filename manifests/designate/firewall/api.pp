@@ -2,8 +2,7 @@
 class ntnuopenstack::designate::firewall::api {
   $api_port = lookup('ntnuopenstack::designate::api::port')
 
-  ::profile::baseconfig::firewall::service::infra { 'designate API':
-    protocol => 'tcp',
+  ::profile::firewall::infra::all { 'designate API':
     port     => $api_port,
   }
 }
