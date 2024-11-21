@@ -5,11 +5,6 @@ class ntnuopenstack::keystone::endpoint {
     'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
   })
 
-  $designate = lookup('ntnuopenstack::designate::keystone::password', {
-    'default_value' => false,
-    'value_type'    => Variant[Boolean, String],
-  })
-
   include ::ntnuopenstack::keystone::bootstrap
 
   $keystone_admin = $services[$keystone_region]['url']['admin']
@@ -68,6 +63,14 @@ class ntnuopenstack::keystone::endpoint {
       ::ntnuopenstack::cinder::endpoint { $region:
         password => $data['services']['cinder']['keystone']['password'],
         username => $data['services']['cinder']['keystone']['username'],
+        *        => $common
+      }
+    }
+
+    if('designate' in $data['services']) {
+      ::ntnuopenstack::designate::endpoint { $region:
+        password => $data['services']['designate']['keystone']['password'],
+        username => $data['services']['designate']['keystone']['username'],
         *        => $common
       }
     }
@@ -135,10 +138,5 @@ class ntnuopenstack::keystone::endpoint {
         *        => $common
       }
     }
-  }
-
-  # If there is a password for designate in hiera, define an endpoint for designate.
-  if($designate) {
-    include ::ntnuopenstack::designate::endpoint
   }
 }
