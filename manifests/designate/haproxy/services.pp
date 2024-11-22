@@ -1,7 +1,6 @@
 # Configures the haproxy frontend for the public designate API
 class ntnuopenstack::designate::haproxy::services {
   require ::profile::services::haproxy
-  require ::profile::services::haproxy::certs::serviceapi
 
   include ::ntnuopenstack::designate::firewall::haproxy
 
