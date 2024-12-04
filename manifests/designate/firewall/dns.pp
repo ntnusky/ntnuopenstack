@@ -1,12 +1,12 @@
 # Configures firewall rules for publishing nameservers
 class ntnuopenstack::designate::firewall::dns {
   ::profile::firewall::global { 'designate publishing DNS server (TCP)':
-    protocol => 'tcp',
+    transport_protocol => 'tcp',
     port     => 53,
   }
 
   ::profile::firewall::global { 'designate publishing DNS server (UDP)':
-    protocol => 'udp',
+    transport_protocol => 'udp',
     port     => 53,
   }
 }
