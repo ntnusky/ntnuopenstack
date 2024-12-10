@@ -57,7 +57,7 @@ class ntnuopenstack::designate::services {
 
   # designate-central
   class { 'designate::central':
-    managed_resource_email     => 'hostmaster@ntnu.no',
+    managed_resource_email     => lookup('ntnuopenstack::designate::hostmaster_email', Stdlib::Email),
     managed_resource_tenant_id => lookup('ntnuopenstack::admin_project_id', {
       'value_type'    => String,
       'default_value' => '00000000-0000-0000-0000-000000000000',
