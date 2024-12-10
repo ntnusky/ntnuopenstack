@@ -14,6 +14,7 @@ class ntnuopenstack::neutron::api {
   require ::ntnuopenstack::neutron::auth
   require ::ntnuopenstack::neutron::base
   require ::ntnuopenstack::neutron::dbconnection
+  include ::ntnuopenstack::neutron::designate
   include ::ntnuopenstack::neutron::firewall::api
   include ::ntnuopenstack::neutron::haproxy::backend
   include ::ntnuopenstack::neutron::logging::api
