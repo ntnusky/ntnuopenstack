@@ -83,9 +83,10 @@ class ntnuopenstack::designate::services {
   }
 
   # designate-sink
-  class { 'designate::sink':
-    workers => 2,
-  }
+  # https://bugs.launchpad.net/kolla-ansible/+bug/1919387
+  # class { 'designate::sink':
+  #   workers => 2,
+  # }
 
   # designate-worker
   class { 'designate::worker':
