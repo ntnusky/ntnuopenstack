@@ -17,7 +17,7 @@ class ntnuopenstack::neutron::designate {
       $services[$region]['services']['neutron']['keystone']['password'],
     username                  => 
       $services[$region]['services']['neutron']['keystone']['username'],
-    project_name              => 'admin',
+    project_name              => 'services',
 
     allow_reverse_dns_lookup  => true,
     ptr_zone_email            => lookup('ntnuopenstack::designate::hostmaster_email', Stdlib::Email),
