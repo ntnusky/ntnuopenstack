@@ -84,9 +84,27 @@ class ntnuopenstack::designate::services {
   }
 
   # designate-sink
+  $nova_fixed_zone = lookup('ntnuopenstack::designate::nova_fixed::zone_id', String)
+  $neutron_floatingip_zone = lookup('ntnuopenstack::designate::neutron_floatingip::zone_id', String)
   class { 'designate::sink':
     workers                       => 2,
     enabled_notification_handlers => 'nova_fixed, neutron_floatingip',
+  }
+  designate_config {
+    'handler:nova_fixed/zone_id':             value => $nova_fixed_zone;
+    'handler:nova_fixed/control_exchange':    value => 'nova';
+    'handler:nova_fixed/notification_topics': value => 'notifications_designate';
+    'handler:nova_fixed/formatv4':            value => '%(octet0)s-%(octet1)s-%(octet2)s-%(octet3)s.%(zone)s';
+    'handler:nova_fixed/formatv4':            value => '%(hostname)s.%(project)s.%(zone)s';
+    'handler:nova_fixed/formatv4':            value => '%(hostname)s.%(zone)s';
+    'handler:nova_fixed/formatv6':            value => '%(hostname)s.%(zone)s';
+    'handler:nova_fixed/formatv6':            value => '%(hostname)s.%(project)s.%(zone)s';
+  }
+  designate_config {
+    'handler:neutron_floatingip/zone_id':             value => $neutron_floatingip_zone;
+    'handler:neutron_floatingip/control_exchange':    value => 'neutron';
+    'handler:neutron_floatingip/notification_topics': value => 'notifications_designate';
+    'handler:neutron_floatingip/formatv4':            value => '%(octet0)s-%(octet1)s-%(octet2)s-%(octet3)s.%(domain)s';
   }
 
   # designate-worker
