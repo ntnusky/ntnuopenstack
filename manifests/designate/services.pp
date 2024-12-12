@@ -84,10 +84,10 @@ class ntnuopenstack::designate::services {
   }
 
   # designate-sink
-  # https://bugs.launchpad.net/kolla-ansible/+bug/1919387
-  # class { 'designate::sink':
-  #   workers => 2,
-  # }
+  class { 'designate::sink':
+    workers                       => 2,
+    enabled_notification_handlers => 'nova_fixed, neutron_floatingip',
+  }
 
   # designate-worker
   class { 'designate::worker':
