@@ -26,18 +26,16 @@ class ntnuopenstack::designate::services {
   }
 
   # Coordination
-  $memcached_servers = lookup('profile::memcache::servers', {
-    'value_type'    => Array[String],
-    'merge'         => 'unique',
-  })
-  $memcache_urls = $memcached_servers.map | $server | {
-    "memcached://${server}:11211"
-  }
-  if($coordination_url) {
-    class { '::designate::coordination':
-      backend_url => join($memcache_urls, ','),
-    }
-  }
+  # $memcached_servers = lookup('profile::memcache::servers', {
+  #   'value_type'    => Array[String],
+  #   'merge'         => 'unique',
+  # })
+  # $memcache_urls = $memcached_servers.map | $server | {
+  #   "memcached://${server}:11211"
+  # }
+  # class { '::designate::coordination':
+  #   backend_url => join($memcache_urls, ','),
+  # }
 
   # designate-api
   $api_port = lookup('ntnuopenstack::designate::api::port')
