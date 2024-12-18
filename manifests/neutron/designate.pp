@@ -11,7 +11,7 @@ class ntnuopenstack::neutron::designate {
   $designate_port = lookup('ntnuopenstack::designate::api::port')
 
   class { '::neutron::designate':
-    url                       => "${api_url}:${designate_port}",
+    url                       => "${api_url}:${designate_port}/v2",
     auth_url                  => $auth_url,
     password                  => 
       $services[$region]['services']['neutron']['keystone']['password'],
