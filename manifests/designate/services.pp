@@ -26,17 +26,14 @@ class ntnuopenstack::designate::services {
   }
 
   # Coordination
-  $memcached_servers = lookup('profile::memcache::servers', {
-    'value_type'    => Array[String],
-    'merge'         => 'unique',
+  $zookeeper_servers = lookup('profile::zookeeper::servers', {
+    'value_type'    => Hash[String, Stdlib::IP::Address::Nosubnet],
   })
-  $memcache_urls = $memcached_servers.map | $server | {
-    "memcached://${server}:11211"
+  $zookeeper_urls = values($zookeeper_servers).map | $server | {
+    "zookeeper://${server}:2181"
   }
   class { '::designate::coordination':
-    # backend_url => join($memcache_urls, ','),
-    # TODO: The memcache-driver in tooz seems to fail with multiple servers.
-    backend_url =>  $memcache_urls[0]
+    backend_url => join($zookeeper_urls, ','),
   }
 
   # designate-api
