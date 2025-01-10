@@ -33,7 +33,7 @@ class ntnuopenstack::designate::services {
     "zookeeper://${server}:2181"
   }
   class { '::designate::coordination':
-    backend_url => join($zookeeper_urls, ','),
+    backend_url => "'${join($zookeeper_urls, ',')}'",
   }
   # Until we update to >= https://review.opendev.org/c/openstack/puppet-oslo/+/917759
   ensure_packages('python3-kazoo', {
