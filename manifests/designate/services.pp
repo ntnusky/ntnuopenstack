@@ -30,10 +30,10 @@ class ntnuopenstack::designate::services {
     'value_type'    => Hash[String, Stdlib::IP::Address::Nosubnet],
   })
   $zookeeper_urls = values($zookeeper_servers).map | $server | {
-    "zookeeper://${server}:2181"
+    "${server}:2181"
   }
   class { '::designate::coordination':
-    backend_url => "'${join($zookeeper_urls, ',')}'",
+    backend_url => "'zookeeper://${join($zookeeper_urls, ',')}'",
   }
   # Until we update to >= https://review.opendev.org/c/openstack/puppet-oslo/+/917759
   ensure_packages('python3-kazoo', {
