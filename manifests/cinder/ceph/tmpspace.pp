@@ -32,7 +32,10 @@ class ntnuopenstack::cinder::ceph::tmpspace {
   mount { '/var/lib/cinder/conversion':
     ensure  => 'mounted',
     device  => "/dev/rbd/${imagename}",
-    require => Exec['Format the tmpspace'],
+    require => [
+      Exec['Format the tmpspace'],
+      Service['rbdmap'],
+    ],
   }
 
   file { '/var/lib/cinder/conversion':
