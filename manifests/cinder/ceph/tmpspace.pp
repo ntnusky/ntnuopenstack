@@ -26,16 +26,16 @@ class ntnuopenstack::cinder::ceph::tmpspace {
   exec { 'Format the tmpspace':
     command => "/sbin/mkfs.ext4 /dev/rbd/${imagename}",
     unless  => "/sbin/blkid -t TYPE=ext4 /dev/rbd/${imagename}",
-    require => Profile::Ceph::Rbdmap['Cinder-tmpspace'],
+    require => [
+      Profile::Ceph::Rbdmap['Cinder-tmpspace'],
+      Service['rbdmap'],
+    ],
   }
 
   mount { '/var/lib/cinder/conversion':
     ensure  => 'mounted',
     device  => "/dev/rbd/${imagename}",
-    require => [
-      Exec['Format the tmpspace'],
-      Service['rbdmap'],
-    ],
+    require => Exec['Format the tmpspace'],
   }
 
   file { '/var/lib/cinder/conversion':
