@@ -10,6 +10,7 @@ class ntnuopenstack::cinder::ceph {
 
   include ::cinder::deps
   require ::profile::ceph::client
+  include ::ntnuopenstack::cinder::ceph::tmpspace
 
   ceph_config {
     "client.${ceph_cinder_user}/key": value => $users["client.${ceph_cinder_user}"]['secret'];
