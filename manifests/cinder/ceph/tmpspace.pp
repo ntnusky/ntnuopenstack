@@ -35,7 +35,7 @@ class ntnuopenstack::cinder::ceph::tmpspace {
   mount { '/var/lib/cinder/conversion':
     ensure  => 'mounted',
     fstype  => 'ext4',
-    options => 'nobootwait',
+    options => 'defaults,nobootwait',
     device  => "/dev/rbd/${imagename}",
     require => Exec['Format the tmpspace'],
   }
