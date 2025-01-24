@@ -1,7 +1,7 @@
 # Defines the databases used by openstack
 class ntnuopenstack::databases {
   $region = lookup('ntnuopenstack::region')
-  $services = lookup('ntnuopenstack::services', {
+  $servicedata = lookup('ntnuopenstack::services', {
     'value_type' => Hash[String, Hash],
   })
   $zabbixpw = lookup('ntnuopenstack::zabbix::database::password', {
@@ -15,7 +15,7 @@ class ntnuopenstack::databases {
   $services = ['barbican', 'cinder', 'glance', 'heat', 'keystone', 'magnum',
     'neutron', 'nova', 'octavia', 'placement', ]
   $services.each | $service | {
-    if($region in $services and $service in $services[$region]['services']) {
+    if($region in $servicedata and $service in $servicedata[$region]['services']) {
       include "::ntnuopenstack::${service}::database"
     }
   }
