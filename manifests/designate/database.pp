@@ -8,6 +8,6 @@ class ntnuopenstack::designate::database {
 
   class {'::designate::db::mysql':
     allowed_hosts => $allowed_hosts,
-    password      => $mysql_pass,
+    password      => $mysql_password,
   }
 }
