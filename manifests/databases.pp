@@ -8,8 +8,8 @@ class ntnuopenstack::databases {
   # Create databases for the openstack-services needed in the current region.
   # What services that are needed is determined by which services have gotten a
   # database password in hiera.
-  $services = ['barbican', 'cinder', 'glance', 'heat', 'keystone', 'magnum',
-    'neutron', 'nova', 'octavia', 'placement', ]
+  $services = ['barbican', 'cinder', 'designate', 'glance', 'heat', 'keystone', 
+    'magnum', 'neutron', 'nova', 'octavia', 'placement', ]
   $services.each | $service | {
     $password = lookup("ntnuopenstack::${service}::mysql::password", {
       'default_value' => undef,

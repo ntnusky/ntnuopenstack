@@ -8,8 +8,4 @@ class ntnuopenstack::designate::dbconnection {
   class { '::designate::db':
     database_connection => $database_connection,
   }
-
-  class {'::designate::db::mysql':
-    password => $mysql_pass,
-  }
 }
