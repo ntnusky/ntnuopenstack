@@ -25,6 +25,7 @@ class ntnuopenstack::designate::backend {
     group   => 'designate',
     mode    => '0644',
     content => template('ntnuopenstack/designate/rndc-conf.erb'),
+    require => Package['designate-common'],
   }
 
   file { '/etc/rndc.key':
@@ -33,5 +34,6 @@ class ntnuopenstack::designate::backend {
     group   => 'designate',
     mode    => '0640',
     content => template('ntnuopenstack/designate/rndc-key.erb'),
+    require => Package['designate-common'],
   }
 }
