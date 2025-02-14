@@ -12,4 +12,11 @@ class ntnuopenstack::designate::haproxy::backend {
     interface => $if,
     options   => 'check inter 2000 rise 2 fall 5',
   }
+
+  ::profile::services::haproxy::backend { 'DesignateAdmin':
+    backend   => 'bk_designate_admin',
+    port      => $port,
+    interface => $if,
+    options   => 'check inter 2000 rise 2 fall 5',
+  }
 }
