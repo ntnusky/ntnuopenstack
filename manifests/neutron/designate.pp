@@ -21,7 +21,7 @@ class ntnuopenstack::neutron::designate {
 
     allow_reverse_dns_lookup  => true,
     ptr_zone_email            => lookup('ntnuopenstack::designate::hostmaster_email', Stdlib::Email),
-    ipv6_ptr_zone_prefix_size => 116,
+    ipv6_ptr_zone_prefix_size => 64,
     ipv4_ptr_zone_prefix_size => 24,
   }
 }
