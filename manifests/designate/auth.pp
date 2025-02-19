@@ -13,22 +13,19 @@ class ntnuopenstack::designate::auth {
     "${server}:11211"
   }
 
-  $keystone_admin = lookup('ntnuopenstack::keystone::endpoint::admin',
-      Stdlib::Httpurl)
-  $keystone_internal = lookup('ntnuopenstack::keystone::endpoint::internal',
-      Stdlib::Httpurl)
-  $keystone_public = lookup('ntnuopenstack::keystone::endpoint::public',
-      Stdlib::Httpurl)
+  $auth_url = lookup('ntnuopenstack::keystone::auth::url')
+  $www_authenticate_uri = lookup('ntnuopenstack::keystone::auth::uri')
+
   $region = lookup('ntnuopenstack::region', String)
 
   class { '::designate::keystone::authtoken':
-    auth_url             => "${keystone_internal}:5000/",
+    auth_url             => $auth_url,
     memcached_servers    => $memcache,
     password             =>
       $services[$region]['services']['designate']['keystone']['password'],
     region_name          => $region,
     username             =>
       $services[$region]['services']['designate']['keystone']['username'],
-    www_authenticate_uri => "${keystone_public}:5000/",
+    www_authenticate_uri => $www_authenticate_uri, 
   }
 }
