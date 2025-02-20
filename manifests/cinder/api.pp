@@ -10,6 +10,7 @@ class ntnuopenstack::cinder::api {
     'default_value' => 'Normal',
   })
 
+  include ::ntnuopenstack::common::credfolder
   require ::ntnuopenstack::cinder::base
   contain ::ntnuopenstack::cinder::firewall::server
   require ::ntnuopenstack::repo
