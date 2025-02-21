@@ -35,4 +35,8 @@ class ntnuopenstack::cinder::api {
     ssl               => false,
     access_log_format => $logformat,
   }
+
+  cinder_config {
+    'DEFAULT/use_default_quota_clas': value => false;
+  }
 }
