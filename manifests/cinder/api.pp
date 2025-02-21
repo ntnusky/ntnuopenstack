@@ -37,6 +37,6 @@ class ntnuopenstack::cinder::api {
   }
 
   cinder_config {
-    'DEFAULT/use_default_quota_clas': value => false;
+    'DEFAULT/use_default_quota_class': value => false;
   }
 }
