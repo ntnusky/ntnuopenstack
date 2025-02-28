@@ -12,7 +12,7 @@ class ntnuopenstack::databases {
   # Create databases for the openstack-services needed in the current region.
   # What services that are needed is determined by which services have gotten
   # data in hiera.
-  $default_services = [ 'barbican', 'cinder', 'glance', 'heat', 'keystone', 
+  $default_services = [ 'barbican', 'cinder', 'glance', 'heat',
     'magnum', 'neutron', 'nova', 'octavia', 'placement', ]
   $services = lookup('ntnuopenstack::service::databases', {
     'default_value' => $default_services,
@@ -23,6 +23,14 @@ class ntnuopenstack::databases {
     if($region in $servicedata and $service in $servicedata[$region]['services']) {
       include "::ntnuopenstack::${service}::database"
     }
+  }
+
+  $keystone = lookup('ntnuopenstack::mysql::keystone::create', {
+    'default_value' => false,
+    'value_type'    => Boolean,
+  })
+  if($keystone) {
+    include ntnuopenstack::keystone::database
   }
 
   # If we are monitoring this platform with zabbix, create a user with
