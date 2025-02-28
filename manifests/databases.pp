@@ -14,7 +14,7 @@ class ntnuopenstack::databases {
   # data in hiera.
   $default_services = [ 'barbican', 'cinder', 'glance', 'heat', 'keystone', 
     'magnum', 'neutron', 'nova', 'octavia', 'placement', ]
-  $services = lookup('ntnuopenstack::service::databases' {
+  $services = lookup('ntnuopenstack::service::databases', {
     'default_value' => $default_services,
     'value_type'    => Array[String],
   })
