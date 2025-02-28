@@ -12,8 +12,13 @@ class ntnuopenstack::databases {
   # Create databases for the openstack-services needed in the current region.
   # What services that are needed is determined by which services have gotten
   # data in hiera.
-  $services = ['barbican', 'cinder', 'glance', 'heat', 'keystone', 'magnum',
-    'neutron', 'nova', 'octavia', 'placement', ]
+  $default_services = [ 'barbican', 'cinder', 'glance', 'heat', 'keystone', 
+    'magnum', 'neutron', 'nova', 'octavia', 'placement', ]
+  $services = lookup('ntnuopenstack::service::databases' {
+    'default_value' => $default_services,
+    'value_type'    => Array[String],
+  })
+
   $services.each | $service | {
     if($region in $servicedata and $service in $servicedata[$region]['services']) {
       include "::ntnuopenstack::${service}::database"
