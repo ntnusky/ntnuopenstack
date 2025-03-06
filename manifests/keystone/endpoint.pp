@@ -76,6 +76,14 @@ class ntnuopenstack::keystone::endpoint {
       }
     }
 
+    if('designate' in $data['services']) {
+      ::ntnuopenstack::designate::endpoint { $region:
+        password => $data['services']['designate']['keystone']['password'],
+        username => $data['services']['designate']['keystone']['username'],
+        *        => $common
+      }
+    }
+
     if('glance' in $data['services']) {
       ::ntnuopenstack::glance::endpoint { $region:
         password => $data['services']['glance']['keystone']['password'],

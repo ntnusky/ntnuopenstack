@@ -17,5 +17,8 @@ class ntnuopenstack::horizon::plugins {
         'tag'    => ['horizon-package']
       })
     }
+    if('designate' in $data['services']) {
+      include ::horizon::dashboards::designate
+    }
   }
 }
