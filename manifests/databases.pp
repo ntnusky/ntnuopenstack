@@ -20,7 +20,7 @@ class ntnuopenstack::databases {
   $mysqlrole = lookup('profile::mysql::serverrole', {
     'default_value' => 'combined',
     'value_type'    =>  Enum['combined', 'region', 'common']
-  }
+  })
 
   $services = $mysqlrole ? {
     'combined' => $services_region + $services_common,
