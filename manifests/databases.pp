@@ -22,11 +22,17 @@ class ntnuopenstack::databases {
     'value_type'    =>  Enum['combined', 'region', 'common']
   })
 
-  $services = $mysqlrole ? {
+  $services_default = $mysqlrole ? {
     'combined' => $services_region + $services_common,
     'region'   => $services_region,
     'common'   => $services_common,
   }
+
+  # Allow hiera to override the role-derived databases
+  $services = lookup('ntnuopenstack::service::databases', {
+    'default_value' => $services_default,
+    'value_type'    => Array[String],
+  })
 
   $services.each | $service | {
     if($region in $servicedata and $service in $servicedata[$region]['services']) {
