@@ -18,7 +18,10 @@ class ntnuopenstack::neutron::base {
     'default_value' => false,
   })
 
-  $dns_domain = lookup('ntnuopenstack::designate::neutron_floatingip::domain', String)
+  $dns_domain = lookup('ntnuopenstack::neutron::dns::domain', {
+    'default_value' => 'openstack.local',
+    'value_type'    => String,
+  })
 
   require ::ntnuopenstack::repo
   include ::ntnuopenstack::neutron::sudo
