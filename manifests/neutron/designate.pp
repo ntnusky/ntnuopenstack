@@ -7,7 +7,7 @@ class ntnuopenstack::neutron::designate {
   $auth_url = lookup('ntnuopenstack::keystone::auth::url')
   $region = lookup('ntnuopenstack::region', String)
 
-  $api_url = lookup('ntnuopenstack::designate::endpoint::public')
+  $api_url = $services[$region]['url']['internal'] 
   $designate_port = lookup('ntnuopenstack::designate::api::port')
 
   class { '::neutron::designate':
