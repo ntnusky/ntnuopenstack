@@ -16,7 +16,10 @@ class ntnuopenstack::neutron::ml2::config {
     "${key}:${mtu}"
   }
 
-  $extension_drivers = lookup('ntnuopenstack::neutron::ml2::extension_drivers', Array[String])
+  $extension_drivers = lookup('ntnuopenstack::neutron::ml2::extension_drivers', {
+    'value_type'    => Array[String],
+    'default_value' => ['port_security'],
+  })
 
   if($strategy == 'vlan') {
     class { '::neutron::plugins::ml2':
