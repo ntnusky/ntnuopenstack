@@ -52,7 +52,6 @@ class ntnuopenstack::designate::services {
 
   class { '::designate::wsgi::apache':
     access_log_format => 'forwarded',
-    workers           => 2,
     port              => Integer($api_port),
   }
 
@@ -76,16 +75,13 @@ class ntnuopenstack::designate::services {
   include ::ntnuopenstack::designate::firewall::mdns
   class { 'designate::mdns':
     listen  =>  '0.0.0.0:5354',
-    workers => 2,
   }
 
   # designate-producer
   class { 'designate::producer':
-    workers => 2,
   }
 
   # designate-worker
   class { 'designate::worker':
-    workers => 2,
   }
 }
