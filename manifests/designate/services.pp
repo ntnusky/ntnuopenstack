@@ -59,10 +59,7 @@ class ntnuopenstack::designate::services {
   class { 'designate::central':
     managed_resource_email     => lookup('ntnuopenstack::designate::hostmaster_email', Stdlib::Email),
     # Id of the "services" project that should own reverse zones
-    managed_resource_tenant_id => lookup('ntnuopenstack::designate::project_id', {
-      'value_type'    => String,
-      'default_value' => '00000000-0000-0000-0000-000000000000',
-    }),
+    managed_resource_tenant_id => lookup('ntnuopenstack::designate::project_id', String),
   }
 
   # designate-client
