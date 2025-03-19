@@ -6,6 +6,12 @@ class ntnuopenstack::designate::ns {
 
   $api_servers = lookup('ntnuopenstack::designate::api_servers', Array[Stdlib::IP::Address]);
   $transfer_addresses = lookup('ntnuopenstack::designate::transfer_addresses', Array[String]);
+  $infra_all = lookup('profile::networks::infra::all', {
+    'value_type'   => Array[String],
+    'default_value' => [],
+  });
+
+  $allow_transfer = join($api_servers + $transfer_addresses + $infra_all, '; ');
 
   $listen_on = 'any';
   $listen_on_v6 = 'any';
@@ -22,7 +28,7 @@ class ntnuopenstack::designate::ns {
       'allow-new-zones'   => 'yes',
       'allow-notify'      => "{ ${join($api_servers, '; ')}; }",
       'allow-update'      => "{ ${join($api_servers, '; ')}; }",
-      'allow-transfer'    => "{ ${join($api_servers + $transfer_addresses, '; ')}; }",
+      'allow-transfer'    => "{ ${allow_transfer}; }",
 
       # https://docs.openstack.org/designate/latest/admin/production-guidelines.html#bind9-mitigation
       'minimal-responses' => 'yes',
