@@ -102,6 +102,7 @@ class ntnuopenstack::horizon::base {
     },
     password_retrieve              => true,
     root_url                       => '/horizon',
+    secure_cookies                 => $haproxy,
     secret_key                     => $django_secret,
     secure_proxy_addr_header       => $secure_proxy_addr_header,
     server_aliases                 => [$::fqdn, $server_name] + $aliases,
