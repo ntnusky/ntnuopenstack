@@ -16,9 +16,14 @@ class ntnuopenstack::neutron::ml2::config {
     "${key}:${mtu}"
   }
 
+  $extension_drivers = lookup('ntnuopenstack::neutron::ml2::extension_drivers', {
+    'value_type'    => Array[String],
+    'default_value' => ['port_security'],
+  })
+
   if($strategy == 'vlan') {
     class { '::neutron::plugins::ml2':
-      extension_drivers     => ['port_security'],
+      extension_drivers     => $extension_drivers,
       mechanism_drivers     => ['openvswitch', 'l2population'],
       network_vlan_ranges   => ["physnet-vlan:${low}:${high}"],
       physical_network_mtus => $physnetmtu,
@@ -27,7 +32,7 @@ class ntnuopenstack::neutron::ml2::config {
     }
   } elsif($strategy == 'vxlan') {
     class { '::neutron::plugins::ml2':
-      extension_drivers     => ['port_security'],
+      extension_drivers     => $extension_drivers,
       mechanism_drivers     => ['openvswitch', 'l2population'],
       physical_network_mtus => $physnetmtu,
       tenant_network_types  => ['vxlan'],

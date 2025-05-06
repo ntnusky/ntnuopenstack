@@ -1,0 +1,12 @@
+include "/etc/rndc.key";
+options {
+        default-key "rndc-key";
+        default-server 127.0.0.1;
+        default-port 953;
+};
+
+<% @ns_servers.each do |server| -%>
+server <%= server %> {
+        key "rndc-key";
+};
+<% end -%>

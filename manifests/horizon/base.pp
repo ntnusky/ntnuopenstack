@@ -8,6 +8,10 @@ class ntnuopenstack::horizon::base {
 
   # Horizon settings
   $server_name = lookup('ntnuopenstack::horizon::server_name')
+  $aliases = lookup('ntnuopenstack::horizon::server_aliases', {
+    'default_value' => [],
+    'value_type'    => Array[String],
+  })
   $django_secret = lookup('ntnuopenstack::horizon::django_secret')
   $ldap_name = lookup('ntnuopenstack::keystone::ldap_backend::name')
   $description = lookup('ntnuopenstack::horizon::ldap::description', {
@@ -79,7 +83,7 @@ class ntnuopenstack::horizon::base {
   }
 
   class { '::horizon':
-    allowed_hosts                  => [$::fqdn, $server_name],
+    allowed_hosts                  => [$::fqdn, $server_name] + $aliases,
     default_theme                  => 'default',
     enable_secure_proxy_ssl_header => $haproxy,
     help_url                       => $help_url,
@@ -98,9 +102,10 @@ class ntnuopenstack::horizon::base {
     },
     password_retrieve              => true,
     root_url                       => '/horizon',
+    secure_cookies                 => $haproxy,
     secret_key                     => $django_secret,
     secure_proxy_addr_header       => $secure_proxy_addr_header,
-    server_aliases                 => [$::fqdn, $server_name],
+    server_aliases                 => [$::fqdn, $server_name] + $aliases,
     servername                     => $server_name,
     session_timeout                => $session_timeout,
     timezone                       => $timezone,

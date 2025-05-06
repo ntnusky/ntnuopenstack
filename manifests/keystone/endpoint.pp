@@ -1,19 +1,18 @@
 # Configures the required endpoints in keystone
 class ntnuopenstack::keystone::endpoint {
-  $keystone_region = lookup('ntnuopenstack::keystone::region', String)
+  $keystone_region = lookup('ntnuopenstack::keystone::region', {
+    'default_value' => undef,
+    'value_type'    => Optional[String],
+  })
   $services = lookup('ntnuopenstack::services', {
     'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
   })
 
   include ::ntnuopenstack::keystone::bootstrap
 
-  $keystone_admin = $services[$keystone_region]['url']['admin']
-  $keystone_internal = $services[$keystone_region]['url']['internal']
-  $keystone_public = $services[$keystone_region]['url']['public']
-
   # Check if any of the regions contains heat; and in that case create the heat
   # domain and roles.
-  $heats = $services.map | $region, $data | { 
+  $heats = $services.map | $region, $data | {
     $exists = 'heat' in $data['services']
     $exists
   }
@@ -36,6 +35,16 @@ class ntnuopenstack::keystone::endpoint {
       internalurl => $data['url']['internal'],
       publicurl   => $data['url']['public'],
       region      => $region,
+    }
+
+    if($keystone_region) {
+      $keystone_admin = $services[$keystone_region]['url']['admin']
+      $keystone_internal = $services[$keystone_region]['url']['internal']
+      $keystone_public = $services[$keystone_region]['url']['public']
+    } else {
+      $keystone_admin = $data['url']['admin']
+      $keystone_internal = $data['url']['internal']
+      $keystone_public = $data['url']['public']
     }
 
     keystone::resource::service_identity { "keystone-${region}":
@@ -63,6 +72,14 @@ class ntnuopenstack::keystone::endpoint {
       ::ntnuopenstack::cinder::endpoint { $region:
         password => $data['services']['cinder']['keystone']['password'],
         username => $data['services']['cinder']['keystone']['username'],
+        *        => $common
+      }
+    }
+
+    if('designate' in $data['services']) {
+      ::ntnuopenstack::designate::endpoint { $region:
+        password => $data['services']['designate']['keystone']['password'],
+        username => $data['services']['designate']['keystone']['username'],
         *        => $common
       }
     }

@@ -18,6 +18,11 @@ class ntnuopenstack::neutron::base {
     'default_value' => false,
   })
 
+  $dns_domain = lookup('ntnuopenstack::neutron::dns::domain', {
+    'default_value' => 'openstack.local',
+    'value_type'    => String,
+  })
+
   require ::ntnuopenstack::repo
   include ::ntnuopenstack::neutron::sudo
 
@@ -36,6 +41,7 @@ class ntnuopenstack::neutron::base {
     dhcp_agents_per_network => 2,
     global_physnet_mtu      => $mtu,
     service_plugins         => $service_plugins,
+    dns_domain              => $dns_domain,
     *                       => $ha_transport_conf,
   }
 

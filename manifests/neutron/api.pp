@@ -11,6 +11,12 @@ class ntnuopenstack::neutron::api {
     'default_value' => true,
   })
 
+  $services = lookup('ntnuopenstack::services', {
+    'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
+  })
+  $region = lookup('ntnuopenstack::region', String)
+
+  include ::neutron::quota
   require ::ntnuopenstack::neutron::auth
   require ::ntnuopenstack::neutron::base
   require ::ntnuopenstack::neutron::dbconnection
@@ -19,6 +25,10 @@ class ntnuopenstack::neutron::api {
   include ::ntnuopenstack::neutron::logging::api
   include ::ntnuopenstack::neutron::ml2::config
   include ::ntnuopenstack::neutron::rpc
+
+  if('designate' in $services[$region]['services']) {
+    include ::ntnuopenstack::neutron::designate
+  }
 
   # Install the neutron api
   class { '::neutron::server':

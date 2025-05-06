@@ -10,6 +10,8 @@ class ntnuopenstack::cinder::api {
     'default_value' => 'Normal',
   })
 
+  include ::cinder::quota
+  include ::ntnuopenstack::common::credfolder
   require ::ntnuopenstack::cinder::base
   contain ::ntnuopenstack::cinder::firewall::server
   require ::ntnuopenstack::repo
@@ -32,5 +34,9 @@ class ntnuopenstack::cinder::api {
   class { '::cinder::wsgi::apache':
     ssl               => false,
     access_log_format => $logformat,
+  }
+
+  cinder_config {
+    'DEFAULT/use_default_quota_class': value => false;
   }
 }

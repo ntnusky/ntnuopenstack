@@ -11,11 +11,27 @@ class ntnuopenstack::horizon::haproxy::backend {
     backendname => 'bk_horizon',
   }
 
+  $region_fallback = lookup('profile::region', {
+    'default_value' => undef,
+    'value_type'    => Optional[String],
+  })
+  $region = lookup('profile::haproxy::region', {
+    'default_value' => $region_fallback,
+    'value_type'    => Optional[String],
+  })
+
+  if($region) {
+    $tags = ["region-${region}"]
+  } else {
+    $tags = []
+  }
+
   @@haproxy::balancermember { "horizon-${::fqdn}":
     listening_service => 'bk_horizon',
     server_names      => $::hostname,
     ipaddresses       => $ip,
     ports             => '80',
     options           => 'check inter 2000 rise 2 fall 5',
+    tag               => $tags,
   }
 }
