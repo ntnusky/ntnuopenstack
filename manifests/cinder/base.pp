@@ -34,18 +34,19 @@ class ntnuopenstack::cinder::base {
     default_transport_url => $transport_url,
     *                     => $ha_transport_conf,
   }
-  
+
   class { '::cinder::glance':
     glance_api_servers => "${api_internal}:9292",
   }
 
   class { '::cinder::nova':
-    auth_url     => $auth_url,
-    interface    => 'internal',
-    password     =>
+    auth_type   => 'password',
+    auth_url    => $auth_url,
+    interface   => 'internal',
+    password    =>
       $services[$region_name]['services']['nova']['keystone']['password'],
-    region_name  => $region_name,
-    username                =>
+    region_name => $region_name,
+    username    =>
       $services[$region_name]['services']['nova']['keystone']['username'],
   }
 }

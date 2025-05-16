@@ -20,11 +20,20 @@ class ntnuopenstack::nova::compute::base {
     'value_type'    => String,
   })
 
+  $reimage_timeout_per_gb = lookup('ntnuopenstack::nova::compute::reimage_timeout_per_gb', {
+    'default_value' => 90,
+    'value_type'    => Integer,
+  })
+
   class { '::ntnuopenstack::nova::common::base':
     extra_options => {
       initial_cpu_allocation_ratio  => $cpu_allocation,
       initial_ram_allocation_ratio  => $ram_allocation,
       initial_disk_allocation_ratio => $disk_allocation,
     }
+  }
+
+  nova_config {
+    'DEFAULT/reimage_timeout_per_gb': value => $reimage_timeout_per_gb;
   }
 }
