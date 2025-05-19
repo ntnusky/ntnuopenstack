@@ -1,30 +1,11 @@
 # This class sets up the openstack repositories.
-class ntnuopenstack::repo (
-  Optional[String]  $release_override = undef,
-){
-  if($release_override) {
-    $release = $release_override
-  } else {
-    include ::openstack_extras::repo::debian::params
-    $release = $::openstack_extras::repo::debian::params::release
-  }
-
+# NOTE: There is no longer any logic for automatically opting-out of UCA
+# when we run the default OpenStack version for the current Ubuntu Release
+# set 'openstack_extras::repo::debian::ubuntu::manage_uca: false' in hiera if needed
+class ntnuopenstack::repo {
   if ($::osfamily == 'Debian' and $::operatingsystem == 'Ubuntu') {
-    $distro = $facts['os']['release']['major']
-    if ($distro == '22.04' and $release == 'yoga') {
-      notice('Yoga is default in Jammy. Do not use UCA')
-    } else {
-      class { '::openstack_extras::repo::debian::ubuntu':
-        package_require => true,
-        release         => $release,
-      }
-    }
-  } elsif ($::osfamily == 'RedHat') {
-    include ::profile::repo::powertools
-    class { '::openstack_extras::repo::redhat::redhat':
+    class { '::openstack_extras::repo::debian::ubuntu':
       package_require => true,
-      release         => $release,
-      stream          => true,
     }
   } else {
     fail("Operating system family ${::osfamily} is not supported.")
