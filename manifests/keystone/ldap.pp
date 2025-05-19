@@ -101,6 +101,7 @@ class ntnuopenstack::keystone::ldap {
     group_members_are_ids  => $group_members_are_ids,
     group_desc_attribute   => $group_desc_attribute,
     use_tls                => false,
+    tls_cacertdir          => '/etc/ssl/certs'
   }
 
   keystone_domain_config {
