@@ -38,10 +38,10 @@ class ntnuopenstack::cinder::volume {
 
   $backends.each | $bname, $pool | {
     cinder::backend::rbd { $bname :
-      enabled_deferred_deletion => true,
-      rbd_pool                  => $pool,
-      rbd_user                  => $ceph_user,
-      rbd_secret_uuid           => $ceph_uuid,
+      enable_deferred_deletion => true,
+      rbd_pool                 => $pool,
+      rbd_user                 => $ceph_user,
+      rbd_secret_uuid          => $ceph_uuid,
     }
   }
 
