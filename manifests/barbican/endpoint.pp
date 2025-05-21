@@ -24,7 +24,7 @@ define ntnuopenstack::barbican::endpoint (
     password            => $password,
     email               => 'barbican@localhost',
     tenant              => 'services',
-    roles               => ['admin'],
+    roles               => ['admin', 'service'],
     system_scope        => 'all',
     system_roles        => [],
     public_url          => "${publicurl}:9311",
