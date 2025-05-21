@@ -17,13 +17,14 @@ class ntnuopenstack::barbican::auth {
   }
 
   class { '::barbican::keystone::authtoken':
-    auth_url             => $auth_url,
-    memcached_servers    => $memcache, 
-    password             => 
+    auth_url                     => $auth_url,
+    memcached_servers            => $memcache,
+    password                     =>
       $services[$region]['services']['barbican']['keystone']['password'],
-    region_name          => $region,
-    username             => 
+    region_name                  => $region,
+    service_token_roles_required => true,
+    username                     =>
       $services[$region]['services']['barbican']['keystone']['username'],
-    www_authenticate_uri => $www_authenticate_uri,
+    www_authenticate_uri         => $www_authenticate_uri,
   }
 }
