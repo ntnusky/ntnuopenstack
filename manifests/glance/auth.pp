@@ -16,13 +16,14 @@ class ntnuopenstack::glance::auth {
   }
 
   class { '::glance::api::authtoken':
-    auth_url             => $auth_url, 
-    memcached_servers    => $memcache,
-    password             =>
+    auth_url                     => $auth_url,
+    memcached_servers            => $memcache,
+    password                     =>
       $services[$region]['services']['glance']['keystone']['password'],
-    region_name          => $region,
-    username             =>
+    region_name                  => $region,
+    service_token_roles_required => true,
+    username                     =>
       $services[$region]['services']['glance']['keystone']['username'],
-    www_authenticate_uri => $www_authenticate_uri, 
+    www_authenticate_uri         => $www_authenticate_uri,
   }
 }
