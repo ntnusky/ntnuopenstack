@@ -2,7 +2,6 @@
 class ntnuopenstack::nova::services {
   $enabled_filters = [
     'AggregateImagePropertiesIsolation',
-    'AvailabilityZoneFilter',
     'ComputeFilter',
     'ComputeCapabilitiesFilter',
     'ImagePropertiesFilter',
