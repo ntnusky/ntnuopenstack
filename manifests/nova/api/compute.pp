@@ -19,11 +19,9 @@ class ntnuopenstack::nova::api::compute {
   class { '::nova::api':
     enabled                      => false,
     enable_proxy_headers_parsing => true,
-    nova_metadata_wsgi_enabled   => true,
     service_name                 => 'httpd',
     sync_db                      => $sync_db,
     sync_db_api                  => $sync_db,
-    use_forwarded_for            => true,
   }
 
   class { '::nova::wsgi::apache_api':
