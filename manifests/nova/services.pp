@@ -36,7 +36,7 @@ class ntnuopenstack::nova::services {
   }
 
   class { '::nova::scheduler::filter':
-    scheduler_enabled_filters       => $enabled_filters_real,
+    enabled_filters       => $enabled_filters_real,
     build_failure_weight_multiplier => 0,
   }
 }
