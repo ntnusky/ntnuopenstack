@@ -19,6 +19,11 @@ class ntnuopenstack::nova::services {
     'value_type'    => Integer,
   })
 
+  $pci_in_placement = lookup('ntnuopenstack::nova::scheduler::enable_pci_in_placement', {
+    'default_value' => false,
+    'value_type'    => Boolean,
+  })
+
   require ::ntnuopenstack::nova::auth
   include ::ntnuopenstack::nova::common::cinder
   include ::ntnuopenstack::nova::common::neutron
@@ -36,7 +41,8 @@ class ntnuopenstack::nova::services {
   }
 
   class { '::nova::scheduler::filter':
-    enabled_filters       => $enabled_filters_real,
+    enabled_filters                 => $enabled_filters_real,
     build_failure_weight_multiplier => 0,
+    pci_in_placement                => $pci_in_placement,
   }
 }
