@@ -25,7 +25,7 @@ define ntnuopenstack::octavia::endpoint (
     password            => $password,
     email               => 'octavia@localhost',
     tenant              => 'services',
-    roles               => ['admin'],
+    roles               => ['admin', 'service'],
     system_scope        => 'all',
     system_roles        => [],
     public_url          => "${publicurl}:9876",
