@@ -38,7 +38,7 @@ class ntnuopenstack::heat::auth {
   }
 
   class { '::heat::clients::keystone':
-    auth_uri => $auth_url,
+    auth_uri => $www_authenticate_uri,
   }
 
 }
