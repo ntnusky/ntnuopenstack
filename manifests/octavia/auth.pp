@@ -38,4 +38,12 @@ class ntnuopenstack::octavia::auth {
     project_domain_name => 'default',
     auth_type           => 'password',
   }
+  class { '::octavia::neutron':
+    auth_url   => $auth_url,
+    password   => 
+      $services[$region]['services']['octavia']['keystone']['password'],
+    region_name => $region, 
+    username   => 
+      $services[$region]['services']['octavia']['keystone']['username'],
+  }
 }

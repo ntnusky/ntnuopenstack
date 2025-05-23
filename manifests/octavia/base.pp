@@ -32,9 +32,6 @@ class ntnuopenstack::octavia::base {
   class { '::octavia::glance':
     region_name => $region, 
   }
-  class { '::octavia::neutron':
-    region_name => $region, 
-  }
   class { '::octavia::nova':
     anti_affinity_policy => 'anti-affinity',
     enable_anti_affinity => true,
