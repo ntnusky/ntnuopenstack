@@ -37,4 +37,8 @@ class ntnuopenstack::heat::auth {
       $services[$region]['services']['heat']['keystone']['password'],
   }
 
+  class { '::heat::clients::keystone':
+    auth_uri => $auth_url,
+  }
+
 }
