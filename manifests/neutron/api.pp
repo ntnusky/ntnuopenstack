@@ -16,6 +16,7 @@ class ntnuopenstack::neutron::api {
   })
   $region = lookup('ntnuopenstack::region', String)
 
+  include ::apache::mod::status
   include ::neutron::quota
   require ::ntnuopenstack::neutron::auth
   require ::ntnuopenstack::neutron::base

@@ -6,6 +6,7 @@ class ntnuopenstack::nova::api::compute {
                                 # true to automaticly populate the databases.
   })
 
+  include ::apache::mod::status
   require ::ntnuopenstack::nova::auth
   include ::ntnuopenstack::nova::common::cinder
   include ::ntnuopenstack::nova::common::neutron

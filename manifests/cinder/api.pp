@@ -10,6 +10,7 @@ class ntnuopenstack::cinder::api {
     'default_value' => 'Normal',
   })
 
+  include ::apache::mod::status
   include ::cinder::quota
   include ::ntnuopenstack::common::credfolder
   require ::ntnuopenstack::cinder::base

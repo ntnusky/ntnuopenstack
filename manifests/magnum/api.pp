@@ -2,6 +2,7 @@
 class ntnuopenstack::magnum::api {
   $sync_db = lookup('ntnuopenstack::magnum::db::sync', Boolean)
 
+  include ::apache::mod::status
   require ::ntnuopenstack::magnum::auth
   include ::ntnuopenstack::magnum::base
   include ::ntnuopenstack::magnum::clients
