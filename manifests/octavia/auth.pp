@@ -17,14 +17,15 @@ class ntnuopenstack::octavia::auth {
   }
 
   class { '::octavia::keystone::authtoken':
-    auth_url             => $auth_url,
-    memcached_servers    => $memcache, 
-    password             => 
+    auth_url                     => $auth_url,
+    memcached_servers            => $memcache, 
+    password                     => 
       $services[$region]['services']['octavia']['keystone']['password'],
-    region_name          => $region,
-    username             => 
+    region_name                  => $region,
+    service_token_roles_required => true,
+    username                     => 
       $services[$region]['services']['octavia']['keystone']['username'],
-    www_authenticate_uri => $www_authenticate_uri,
+    www_authenticate_uri         => $www_authenticate_uri,
   }
 
   class { '::octavia::service_auth':
@@ -37,5 +38,14 @@ class ntnuopenstack::octavia::auth {
     user_domain_name    => 'default',
     project_domain_name => 'default',
     auth_type           => 'password',
+  }
+
+  class { '::octavia::neutron':
+    auth_url   => $auth_url,
+    password   => 
+      $services[$region]['services']['octavia']['keystone']['password'],
+    region_name => $region, 
+    username   => 
+      $services[$region]['services']['octavia']['keystone']['username'],
   }
 }

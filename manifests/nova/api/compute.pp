@@ -6,6 +6,7 @@ class ntnuopenstack::nova::api::compute {
                                 # true to automaticly populate the databases.
   })
 
+  include ::apache::mod::status
   require ::ntnuopenstack::nova::auth
   include ::ntnuopenstack::nova::common::cinder
   include ::ntnuopenstack::nova::common::neutron
@@ -19,11 +20,9 @@ class ntnuopenstack::nova::api::compute {
   class { '::nova::api':
     enabled                      => false,
     enable_proxy_headers_parsing => true,
-    nova_metadata_wsgi_enabled   => true,
     service_name                 => 'httpd',
     sync_db                      => $sync_db,
     sync_db_api                  => $sync_db,
-    use_forwarded_for            => true,
   }
 
   class { '::nova::wsgi::apache_api':

@@ -16,6 +16,7 @@ class ntnuopenstack::neutron::api {
   })
   $region = lookup('ntnuopenstack::region', String)
 
+  include ::apache::mod::status
   include ::neutron::quota
   require ::ntnuopenstack::neutron::auth
   require ::ntnuopenstack::neutron::base
@@ -36,7 +37,6 @@ class ntnuopenstack::neutron::api {
     allow_automatic_dhcp_failover    => true,
     api_service_name                 => 'httpd',
     enable_proxy_headers_parsing     => $register_loadbalancer,
-    rpc_service_name                 => 'neutron-rpc-server',
     service_name                     => false,
     service_providers                => $service_providers,
     sync_db                          => $sync_db,

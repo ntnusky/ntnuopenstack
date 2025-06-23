@@ -16,14 +16,15 @@ class ntnuopenstack::magnum::auth {
   }
 
   class { '::magnum::keystone::authtoken':
-    auth_url             => $auth_url,
-    memcached_servers    => $memcache,
-    password             =>
+    auth_url                     => $auth_url,
+    memcached_servers            => $memcache,
+    password                     =>
       $services[$region_name]['services']['magnum']['keystone']['password'],
-    region_name          => $region_name,
-    username             =>
+    region_name                  => $region_name,
+    service_token_roles_required => true,
+    username                     =>
       $services[$region_name]['services']['magnum']['keystone']['username'],
-    www_authenticate_uri => "${www_authenticate_uri}v3",
+    www_authenticate_uri         => "${www_authenticate_uri}v3",
   }
 
   class { '::magnum::keystone::keystone_auth':

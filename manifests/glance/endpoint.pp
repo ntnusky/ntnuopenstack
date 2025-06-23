@@ -24,7 +24,7 @@ define ntnuopenstack::glance::endpoint (
     password            => $password,
     email               => 'glance@localhost',
     tenant              => 'services',
-    roles               => ['admin'],
+    roles               => ['admin', 'service'],
     system_scope        => 'all',
     system_roles        => [],
     public_url          => "${publicurl}:9292",

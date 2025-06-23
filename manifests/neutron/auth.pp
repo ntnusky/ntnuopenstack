@@ -18,18 +18,19 @@ class ntnuopenstack::neutron::auth {
   include ::neutron::server::notifications
 
   class { '::neutron::keystone::authtoken':
-    auth_url             => $auth_url, 
-    memcached_servers    => $memcache,
-    password             =>
+    auth_url                     => $auth_url,
+    memcached_servers            => $memcache,
+    password                     =>
       $services[$region]['services']['neutron']['keystone']['password'],
-    region_name          => $region,
-    username             =>
+    region_name                  => $region,
+    service_token_roles_required => true,
+    username                     =>
       $services[$region]['services']['neutron']['keystone']['username'],
-    www_authenticate_uri => $www_authenticate_uri, 
+    www_authenticate_uri         => $www_authenticate_uri,
   }
 
   class { '::neutron::server::notifications::nova':
-    auth_url     => $auth_url, 
+    auth_url     => $auth_url,
     password     =>
       $services[$region]['services']['nova']['keystone']['password'],
     region_name  => $region,

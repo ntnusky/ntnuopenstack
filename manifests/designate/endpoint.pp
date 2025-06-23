@@ -25,7 +25,7 @@ define ntnuopenstack::designate::endpoint (
     password            => $password,
     email               => 'designate@localhost',
     tenant              => 'services',
-    roles               => ['admin'],
+    roles               => ['admin', 'service'],
     system_scope        => 'all',
     system_roles        => [],
     public_url          => "${publicurl}:9001",

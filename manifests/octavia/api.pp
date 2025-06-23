@@ -8,6 +8,7 @@ class ntnuopenstack::octavia::api {
     'value_type'    => Boolean,
   })
 
+  include ::apache::mod::status
   require ::ntnuopenstack::octavia::auth
   include ::ntnuopenstack::octavia::base
   require ::ntnuopenstack::octavia::dbconnection

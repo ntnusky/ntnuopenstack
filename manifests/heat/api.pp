@@ -5,6 +5,7 @@ class ntnuopenstack::heat::api {
     'default_value' => true,
   })
 
+  include ::apache::mod::status
   require ::ntnuopenstack::heat::base
   require ::ntnuopenstack::heat::firewall::api
   include ::ntnuopenstack::heat::logging::api

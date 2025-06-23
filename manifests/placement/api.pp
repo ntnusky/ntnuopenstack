@@ -6,6 +6,7 @@ class ntnuopenstack::placement::api {
     'default_value' => true,
   })
 
+  include ::apache::mod::status
   require ::ntnuopenstack::repo
   include ::ntnuopenstack::placement::auth
   include ::ntnuopenstack::placement::dbconnection

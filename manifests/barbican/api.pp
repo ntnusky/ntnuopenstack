@@ -20,6 +20,7 @@ class ntnuopenstack::barbican::api {
     $ha_transport_conf = {}
   }
 
+  include ::apache::mod::status
   require ::ntnuopenstack::barbican::auth
   require ::ntnuopenstack::barbican::dbconnection
   include ::ntnuopenstack::barbican::firewall::api

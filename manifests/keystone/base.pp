@@ -33,6 +33,7 @@ class ntnuopenstack::keystone::base {
     'default_value' => 512,
   })
 
+  include ::apache::mod::status
   include ::keystone::healthcheck
   include ::ntnuopenstack::keystone::bootstrap
   include ::ntnuopenstack::keystone::cache

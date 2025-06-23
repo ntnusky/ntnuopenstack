@@ -22,6 +22,7 @@ class ntnuopenstack::glance::api {
     'value_type'    => Boolean,
   })
 
+  include ::apache::mod::status
   require ::ntnuopenstack::glance::auth
   contain ::ntnuopenstack::glance::ceph
   include ::ntnuopenstack::glance::dbconnection

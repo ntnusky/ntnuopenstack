@@ -18,6 +18,7 @@ define ntnuopenstack::magnum::endpoint (
     password     => $password,
     public_url   => "${publicurl}:9511/v1",
     region       => $region,
+    roles        => ['admin', 'service']
   }
 }
 

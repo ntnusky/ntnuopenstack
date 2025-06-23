@@ -2,7 +2,6 @@
 class ntnuopenstack::nova::services {
   $enabled_filters = [
     'AggregateImagePropertiesIsolation',
-    'AvailabilityZoneFilter',
     'ComputeFilter',
     'ComputeCapabilitiesFilter',
     'ImagePropertiesFilter',
@@ -18,6 +17,11 @@ class ntnuopenstack::nova::services {
   $discover_interval = lookup('ntnuopenstack::nova::discover_hosts_interval', {
     'default_value' => 3600,
     'value_type'    => Integer,
+  })
+
+  $pci_in_placement = lookup('ntnuopenstack::nova::scheduler::enable_pci_in_placement', {
+    'default_value' => false,
+    'value_type'    => Boolean,
   })
 
   require ::ntnuopenstack::nova::auth
@@ -37,7 +41,15 @@ class ntnuopenstack::nova::services {
   }
 
   class { '::nova::scheduler::filter':
-    scheduler_enabled_filters       => $enabled_filters_real,
+    enabled_filters                 => $enabled_filters_real,
     build_failure_weight_multiplier => 0,
+  }
+
+  # TODO: In 2025.1 this will be a parameter in ::nova::scheduler::filter
+  if($pci_in_placement) {
+    nova_config {
+      'filter_scheduler/pci_in_placement':
+        value => $pci_in_placement;
+    }
   }
 }

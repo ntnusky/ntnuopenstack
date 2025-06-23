@@ -1,5 +1,6 @@
 # Configures the basic requirements for designate and the designate-services
 class ntnuopenstack::designate::services {
+  include ::apache::mod::status
   require ::ntnuopenstack::designate::dbconnection
   include ::ntnuopenstack::designate::firewall::api
 
