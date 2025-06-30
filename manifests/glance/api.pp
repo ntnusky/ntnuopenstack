@@ -60,7 +60,8 @@ class ntnuopenstack::glance::api {
   }
 
   class { '::glance::wsgi::apache':
-    access_log_format => $logformat,
-    ssl               => false,
+    access_log_format     => $logformat,
+    ssl                   => false,
+    vhost_custom_fragment => 'LimitRequestBody 0',
   }
 }
