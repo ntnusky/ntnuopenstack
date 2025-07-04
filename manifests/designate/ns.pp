@@ -1,6 +1,5 @@
 # Designate publishing nameserver (NS) running bind9
 class ntnuopenstack::designate::ns {
-  require ::ntnuopenstack::repo
   include ::ntnuopenstack::designate::firewall::dns
   include ::ntnuopenstack::designate::firewall::rndc
 
