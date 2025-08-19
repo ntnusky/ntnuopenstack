@@ -17,6 +17,11 @@ class ntnuopenstack::nova::compute::vgpu {
   # Ensure SR-IOV virtual functions are enabled on boot
   # This has no effect on GPUs that don't support SR-IOV
   $sriov_cmd = '/usr/lib/nvidia/sriov-manage'
+
+  cron { 'Enable SR-IOV for Nvidia GPUs on reboot':
+    ensure => 'absent',
+  }
+
   systemd::manage_unit { 'nvidia-sriov-manage@.service':
     enable        => true,
     active        => true,
