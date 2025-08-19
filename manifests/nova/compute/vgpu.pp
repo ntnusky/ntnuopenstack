@@ -16,17 +16,35 @@ class ntnuopenstack::nova::compute::vgpu {
 
   # Ensure SR-IOV virtual functions are enabled on boot
   # This has no effect on GPUs that don't support SR-IOV
-  $sriov_cmd = '/usr/lib/nvidia/sriov-manage -e ALL'
-  cron { 'Enable SR-IOV for Nvidia GPUs on reboot':
-    command     => $sriov_cmd,
-    environment => 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin',
-    user        => 'root',
-    special     => 'reboot',
-    notify      => Exec['sriov-manage-firstrun'],
+  $sriov_cmd = '/usr/lib/nvidia/sriov-manage'
+  systemd::manage_unit { 'nvidia-sriov-manage@.service':
+    enable        => true,
+    active        => true,
+    unit_entry    => {
+      'After'       => ['nvidia-vgpu-mgr.service', 'nvidia-vgpud.service'],
+      'Description' => 'Enable Nvidia GPU virtual functions'
+    },
+    service_entry => {
+      'Type'              => 'oneshot',
+      'User'              => 'root',
+      'Group'             => 'root',
+      'ExecStart'         => "${sriov_cmd} -e %i",
+      'TimeOutSec'        => '120',
+      'Slice'             => 'system.slice',
+      'CPUAccounting'     => 'True',
+      'BlockIOAccounting' => 'True',
+      'MemoryAccounting'  => 'True',
+      'TasksAccounting'   => 'True',
+      'RemainAfterExit'   => 'True',
+      'ExecStartPre'      => '/usr/bin/sleep 30',
+    },
+    install_entry => {
+      'WantedBy'  => 'multi-user.target',
+    },
   }
 
   exec { 'sriov-manage-firstrun':
-    command     => $sriov_cmd,
+    command     => "${sriov_cmd} -e ALL",
     user        => 'root',
     refreshonly => true,
   }
