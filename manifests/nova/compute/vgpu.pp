@@ -23,28 +23,35 @@ class ntnuopenstack::nova::compute::vgpu {
   }
 
   systemd::manage_unit { 'nvidia-sriov-manage@.service':
-    enable        => true,
-    active        => true,
+    enable        => false,
+    active        => false,
+    path          => '/lib/systemd/system',
     unit_entry    => {
       'After'       => ['nvidia-vgpu-mgr.service', 'nvidia-vgpud.service'],
       'Description' => 'Enable Nvidia GPU virtual functions'
     },
     service_entry => {
-      'Type'              => 'oneshot',
-      'User'              => 'root',
-      'Group'             => 'root',
-      'ExecStart'         => "${sriov_cmd} -e %i",
-      'TimeoutSec'        => '120',
-      'Slice'             => 'system.slice',
-      'CPUAccounting'     => true,
-      'MemoryAccounting'  => true,
-      'TasksAccounting'   => true,
-      'RemainAfterExit'   => true,
-      'ExecStartPre'      => '/usr/bin/sleep 30',
+      'Type'             => 'oneshot',
+      'User'             => 'root',
+      'Group'            => 'root',
+      'ExecStart'        => "${sriov_cmd} -e %i",
+      'TimeoutSec'       => '120',
+      'Slice'            => 'system.slice',
+      'CPUAccounting'    => true,
+      'MemoryAccounting' => true,
+      'TasksAccounting'  => true,
+      'RemainAfterExit'  => true,
+      'ExecStartPre'     => '/usr/bin/sleep 30',
     },
     install_entry => {
       'WantedBy'  => 'multi-user.target',
     },
+  }
+
+  service { 'nvidia-sriov-manage@ALL.service':
+    ensure  => true,
+    enable  => true,
+    require => Systemd::Manage_unit['nvidia-sriov-manage@.service'],
   }
 
   exec { 'sriov-manage-firstrun':
