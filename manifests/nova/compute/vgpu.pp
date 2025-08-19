@@ -37,7 +37,6 @@ class ntnuopenstack::nova::compute::vgpu {
       'TimeoutSec'        => '120',
       'Slice'             => 'system.slice',
       'CPUAccounting'     => true,
-      'BlockIOAccounting' => true,
       'MemoryAccounting'  => true,
       'TasksAccounting'   => true,
       'RemainAfterExit'   => true,
