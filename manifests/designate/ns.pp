@@ -1,6 +1,5 @@
 # Designate publishing nameserver (NS) running bind9
 class ntnuopenstack::designate::ns {
-  require ::ntnuopenstack::repo
   include ::ntnuopenstack::designate::firewall::dns
   include ::ntnuopenstack::designate::firewall::rndc
 
@@ -13,17 +12,13 @@ class ntnuopenstack::designate::ns {
 
   $allow_transfer = join($api_servers + $transfer_addresses + $infra_all, '; ');
 
-  $listen_on = 'any';
-  $listen_on_v6 = 'any';
-
   class {'dns':
     recursion          => 'no',
     allow_recursion    => [],
-    listen_on_v6       => false, # Overwritten by additional_options
+    listen_on          => 'any',
+    listen_on_v6       => 'any',
     localzonepath      => 'unmanaged',
     additional_options => {
-      'listen-on'         => "port 53 { ${listen_on}; }",
-      'listen-on-v6'      => "port 53 { ${listen_on_v6}; }",
       'auth-nxdomain'     => 'no',
       'allow-new-zones'   => 'yes',
       'allow-notify'      => "{ ${join($api_servers, '; ')}; }",
