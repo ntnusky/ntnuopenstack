@@ -76,6 +76,7 @@ class ntnuopenstack::horizon::base {
       'cache_backend'         =>
           'django.core.cache.backends.memcached.PyMemcacheCache',
       'cache_server_ip'       => $memcache_servers,
+      'cache_options'         =>  { 'ignore_exc' => true },
       'django_session_engine' => 'django.contrib.sessions.backends.cache',
     }
   } else {
