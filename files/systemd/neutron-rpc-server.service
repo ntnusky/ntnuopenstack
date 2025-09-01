@@ -11,7 +11,7 @@ Type=simple
 WorkingDirectory=~
 RuntimeDirectory=neutron lock/neutron
 CacheDirectory=neutron
-ExecStart=/etc/init.d/neutron-rpc-server systemd-start
+ExecStart=/usr/bin/neutron-rpc-server --config-file=/etc/neutron/neutron.conf --config-file=/etc/neutron/plugin.ini --log-file=/var/log/neutron/neutron-rpc-server.log
 Restart=on-failure
 LimitNOFILE=65535
 TimeoutStopSec=15
