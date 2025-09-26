@@ -83,6 +83,8 @@ class ntnuopenstack::horizon::base {
     $memcache = {}
   }
 
+  include ::apache::mod::status
+
   class { '::horizon':
     allowed_hosts                  => [$::fqdn, $server_name] + $aliases,
     default_theme                  => 'default',
