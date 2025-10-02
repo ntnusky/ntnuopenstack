@@ -12,8 +12,8 @@ class ntnuopenstack::magnum::base {
 
   if ($rabbitservers) {
     $ha_transport_conf = {
-      rabbit_ha_queues    => true,
-      amqp_durable_queues => true,
+      rabbit_quorum_queue           => true,
+      rabbit_transient_quorum_queue => true,
     }
   } else {
     $ha_transport_conf = {}
@@ -43,5 +43,11 @@ class ntnuopenstack::magnum::base {
 
   class { '::magnum::cinder':
     default_docker_volume_type => $default_volume_type,
+  }
+
+  # TODO: Monitor when this becomes a parameter in ::magnum
+  magnum_config {
+    'oslo_messaging_rabbit/rabbit_stream_fanout': value => true;
+    'oslo_messaging_rabbit/use_queue_manager': value => true;
   }
 }

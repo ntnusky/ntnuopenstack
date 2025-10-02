@@ -28,8 +28,8 @@ class ntnuopenstack::neutron::base {
 
   if ($rabbitservers) {
     $ha_transport_conf = {
-      rabbit_ha_queues    => true,
-      amqp_durable_queues => true,
+      rabbit_quorum_queue           => true,
+      rabbit_transient_quorum_queue => true,
     }
   } else {
     $ha_transport_conf = {}
@@ -45,7 +45,10 @@ class ntnuopenstack::neutron::base {
     *                       => $ha_transport_conf,
   }
 
-  neutron_config { 'DEFAULT/max_routes':
-    value => $max_routes,
+  # TODO: Monitor when this becomes a parameter in ::neutron
+  neutron_config {
+    'DEFAULT/max_routes': value => $max_routes;
+    'oslo_messaging_rabbit/rabbit_stream_fanout': value => true;
+    'oslo_messaging_rabbit/use_queue_manager': value => true;
   }
 }

@@ -14,8 +14,8 @@ class ntnuopenstack::nova::common::base (
 
   if ($rabbitservers) {
     $ha_transport_conf = {
-      rabbit_ha_queues    => true,
-      amqp_durable_queues => true,
+      rabbit_quorum_queue           => true,
+      rabbit_transient_quorum_queue => true,
     }
   } else {
     $ha_transport_conf = {}
@@ -26,5 +26,11 @@ class ntnuopenstack::nova::common::base (
   class { '::nova':
     default_transport_url => $transport_url,
     *                     => $ha_transport_conf + $extra_options,
+  }
+
+  # TODO: Monitor when this becomes a parameter in ::nova
+  nova_config {
+    'oslo_messaging_rabbit/rabbit_stream_fanout': value => true;
+    'oslo_messaging_rabbit/use_queue_manager': value => true;
   }
 }

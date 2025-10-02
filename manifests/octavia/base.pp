@@ -8,8 +8,8 @@ class ntnuopenstack::octavia::base {
 
   if ($rabbitservers) {
     $ha_transport_conf = {
-      rabbit_ha_queues    => true,
-      amqp_durable_queues => true,
+      rabbit_quorum_queue           => true,
+      rabbit_transient_quorum_queue => true,
     }
   } else {
     $ha_transport_conf = {}
@@ -26,15 +26,21 @@ class ntnuopenstack::octavia::base {
     *                     => $ha_transport_conf,
   }
 
+  # TODO: Monitor when this becomes a parameter in ::octavia
+  octavia_config {
+    'oslo_messaging_rabbit/rabbit_stream_fanout': value => true;
+    'oslo_messaging_rabbit/use_queue_manager': value => true;
+  }
+
   class { '::octavia::cinder':
-    region_name => $region, 
+    region_name => $region,
   }
   class { '::octavia::glance':
-    region_name => $region, 
+    region_name => $region,
   }
   class { '::octavia::nova':
     anti_affinity_policy => 'anti-affinity',
     enable_anti_affinity => true,
-    region_name          => $region, 
+    region_name          => $region,
   }
 }

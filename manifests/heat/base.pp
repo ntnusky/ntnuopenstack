@@ -19,8 +19,8 @@ class ntnuopenstack::heat::base {
 
   if ($rabbitservers) {
     $ha_transport_conf = {
-      rabbit_ha_queues    => true,
-      amqp_durable_queues => true,
+      rabbit_quorum_queue           => true,
+      rabbit_transient_quorum_queue => true,
     }
   } else {
     $ha_transport_conf = {}
@@ -37,5 +37,11 @@ class ntnuopenstack::heat::base {
 
   class { '::ntnuopenstack::heat::domain':
     create_domain => false,
+  }
+
+  # TODO: Monitor when this becomes a parameter in ::heat
+  heat_config {
+    'oslo_messaging_rabbit/rabbit_stream_fanout': value => true;
+    'oslo_messaging_rabbit/use_queue_manager': value => true;
   }
 }

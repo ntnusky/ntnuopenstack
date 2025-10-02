@@ -12,8 +12,8 @@ class ntnuopenstack::designate::services {
 
   if ($rabbitservers) {
     $ha_transport_conf = {
-      rabbit_ha_queues    => true,
-      amqp_durable_queues => true,
+      rabbit_quorum_queue           => true,
+      rabbit_transient_quorum_queue => true,
     }
   } else {
     $ha_transport_conf = {}
@@ -24,6 +24,12 @@ class ntnuopenstack::designate::services {
   class { '::designate':
     default_transport_url => $transport_url,
     *                     => $ha_transport_conf,
+  }
+
+  # TODO: Monitor when this becomes a parameter in ::designate
+  designate_config {
+    'oslo_messaging_rabbit/rabbit_stream_fanout': value => true;
+    'oslo_messaging_rabbit/use_queue_manager': value => true;
   }
 
   # Coordination
