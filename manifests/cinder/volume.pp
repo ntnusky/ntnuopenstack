@@ -49,9 +49,6 @@ class ntnuopenstack::cinder::volume {
   $types.each | $typename, $data | {
     $backend = { volume_backend_name => $data['backend'] }
     $props = $backend + pick($data['properties'], {})
-    #$props = pick($data['properties'], {}).map | $key, $value | {
-    #  "${key}=${value}"
-    #}
 
     cinder_type { $typename :
       ensure     => pick($data['ensure'], present),
