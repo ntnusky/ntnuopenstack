@@ -25,7 +25,6 @@ class ntnuopenstack::neutron::api {
   include ::ntnuopenstack::neutron::haproxy::backend
   include ::ntnuopenstack::neutron::logging::api
   include ::ntnuopenstack::neutron::ml2::config
-  #include ::ntnuopenstack::neutron::rpc
 
   if('designate' in $services[$region]['services']) {
     include ::ntnuopenstack::neutron::designate
