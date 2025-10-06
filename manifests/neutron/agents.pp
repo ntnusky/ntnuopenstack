@@ -10,8 +10,13 @@ class ntnuopenstack::neutron::agents {
   $neutron_vrrp_pass = lookup('ntnuopenstack::neutron::vrrp_pass', String)
   $metadata_secret = lookup('ntnuopenstack::nova::sharedmetadataproxysecret',
                             String)
+
   require ::ntnuopenstack::neutron::base
   require ::ntnuopenstack::repo
+
+  vs_bridge { 'br-meta':
+    ensure => 'present',
+  }
 
   class { '::neutron::agents::metadata':
     shared_secret => $metadata_secret,
@@ -25,6 +30,6 @@ class ntnuopenstack::neutron::agents {
 
   class { '::neutron::agents::l3':
     ha_vrrp_auth_password => $neutron_vrrp_pass,
-    extensions            => 'port_forwarding', 
+    extensions            => 'port_forwarding',
   }
 }
