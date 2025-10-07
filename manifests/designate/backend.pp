@@ -12,7 +12,6 @@ class ntnuopenstack::designate::backend {
     mdns_hosts       => $api_servers,
     bind9_hosts      => $ns_servers,
     nameservers      => $ns_servers,
-    configure_bind   => false,
   }
 
   $rndc_algorithm = 'hmac-md5';
