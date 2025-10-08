@@ -66,9 +66,17 @@ class ntnuopenstack::horizon::base {
     }
     $secure_proxy_addr_header = 'HTTP_X_FORWARDED_FOR'
   } else {
-    $extra_params = undef
+    $extra_params = {}
     $secure_proxy_addr_header = undef
   }
+
+  $extra_aliases = { aliases => [
+    { alias => '/static',
+      path  => '/var/lib/openstack-dashboard/static'
+    },
+  ]}
+
+  $extra_params_real = $extra_params + $extra_aliases
 
   # Determine which cacheservers to use
   if($memcache_servers) {
