@@ -120,7 +120,7 @@ class ntnuopenstack::horizon::base {
     servername                     => $server_name,
     session_timeout                => $session_timeout,
     timezone                       => $timezone,
-    vhost_extra_params             => $extra_params,
+    vhost_extra_params             => $extra_params_real,
     *                              => $memcache,
   }
 }
