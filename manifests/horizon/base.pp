@@ -70,9 +70,14 @@ class ntnuopenstack::horizon::base {
     $secure_proxy_addr_header = undef
   }
 
+  $root_url = '/horizon'
+  $static_path = '/var/lib/openstack-dashboard/static'
   $extra_aliases = { aliases => [
+    { alias => "${root_url}/static",
+      path  => $static_path,
+    },
     { alias => '/static',
-      path  => '/var/lib/openstack-dashboard/static'
+      path  => $static_path,
     },
   ]}
 
@@ -112,7 +117,7 @@ class ntnuopenstack::horizon::base {
       create_volume => false,
     },
     password_retrieve              => true,
-    root_url                       => '/horizon',
+    root_url                       => $root_url,
     secure_cookies                 => $haproxy,
     secret_key                     => $django_secret,
     secure_proxy_addr_header       => $secure_proxy_addr_header,
