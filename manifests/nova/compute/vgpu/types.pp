@@ -17,10 +17,11 @@ class ntnuopenstack::nova::compute::vgpu::types {
       'Description' => 'Create vgpu types on the defined VFs in nova-compute'
     },
     service_entry => {
-      'Type'      => 'oneshot',
-      'User'      => 'root',
-      'Group'     => 'root',
-      'ExecStart' => $execstart,
+      'Type'            => 'oneshot',
+      'User'            => 'root',
+      'Group'           => 'root',
+      'ExecStart'       => $execstart,
+      'RemainAfterExit' => true,
     },
     install_entry => {
       'WantedBy' => 'multi-user.target',
