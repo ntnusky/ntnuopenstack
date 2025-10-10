@@ -4,7 +4,7 @@ class ntnuopenstack::nova::compute::vgpu::types {
   $execstart = $types.map |$e| {
     $type = $e['type']
     $address = stdlib::shell_escape($e['address'])
-    "echo ${type} > /sys/bus/pci/devices/${address}/nvidia/current_vgpu_type"
+    "/usr/bin/bash -c '/usr/bin/echo ${type} > /sys/bus/pci/devices/${address}/nvidia/current_vgpu_type'"
   }
 
   systemd::manage_unit { 'set-vgpu-types.service':
