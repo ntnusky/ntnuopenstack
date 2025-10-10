@@ -1,0 +1,29 @@
+# Define a systemd service that set the desired VGPU types on correct VFs
+class ntnuopenstack::nova::compute::vgpu::types {
+  $types = lookup('ntnuopenstack::nova::vgpu::types', Array[Hash])
+  $execstart = $types.map |$e| {
+    $type = $e['type']
+    $address = stdlib::shell_escape($e['address'])
+    "echo ${type} > /sys/bus/devices/pci/${address}/nvidia/current_vgpu_type"
+  }
+
+  systemd::manage_unit { 'set-vgpu-types.service':
+    enable        => true,
+    active        => true,
+    path          => '/lib/systemd/system',
+    unit_entry    => {
+      'After'       => 'nvidia-sriov-manage@.service',
+      'Before'      => 'nova-compute.service',
+      'Description' => 'Create vgpu types on the defined VFs in nova-compute'
+    },
+    service_entry => {
+      'Type'      => 'oneshot',
+      'User'      => 'root',
+      'Group'     => 'root',
+      'ExecStart' => $execstart,
+    },
+    install_entry => {
+      'WantedBy' => 'multi-user.target',
+    }
+  }
+}
