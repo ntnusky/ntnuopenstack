@@ -28,6 +28,7 @@ class ntnuopenstack::nova::compute::vgpu {
       active        => false,
       path          => '/lib/systemd/system',
       unit_entry    => {
+        'Before'      => 'nova-compute.service',
         'After'       => ['nvidia-vgpu-mgr.service', 'nvidia-vgpud.service'],
         'Description' => 'Enable Nvidia GPU virtual functions'
       },
