@@ -12,7 +12,7 @@ class ntnuopenstack::nova::compute::vgpu::types {
     active        => true,
     path          => '/lib/systemd/system',
     unit_entry    => {
-      'After'       => 'nvidia-sriov-manage@.service',
+      'After'       => 'nvidia-sriov-manage@ALL.service',
       'Before'      => 'nova-compute.service',
       'Description' => 'Create vgpu types on the defined VFs in nova-compute'
     },
