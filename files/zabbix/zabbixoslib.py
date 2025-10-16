@@ -62,6 +62,72 @@ def cinder_metrics(host, username, password):
       
   return data
 
+def designate_metrics(host, username, password):
+  data = {
+    'longestpending': {
+      'records': 0,
+      'zones': 0,
+    },
+    'recordsettypes': {},
+    'recordstatuses': {
+      'PENDING': 0,
+      'ACTIVE': 0,
+    },
+    'services': {},
+    'stats': {
+      'recordsets': 0,
+      'records': 0,
+      'zones': 0,
+    },
+    'zonestatuses': {
+      'PENDING': 0,
+      'ACTIVE': 0,
+    },
+  }
+
+  try:
+    db = MySQLdb.connect(host=host, user=username, 
+      password=password, database='designate', charset='utf8')
+  except MySQLdb._exceptions.OperationalError:
+    return data
+  c = db.cursor(MySQLdb.cursors.DictCursor)
+
+  for m in ['recordsets', 'records', 'zones']:
+    c.execute("SELECT COUNT(*) as %s from %s;" % (m, m))
+    data['stats'].update(c.fetchone())
+
+  c.execute('SELECT id, service_name, hostname, heartbeated_at, status FROM service_statuses')
+  for s in c.fetchall():
+    data['services'][s['id']] = {
+      'id': s['id'],
+      'service_name': s['service_name'],
+      'hostname': s['hostname'],
+      'status': s['status'],
+      'heartbeat': int(s['heartbeated_at'].timestamp()),
+    }
+
+  c.execute('SELECT type, count(*) as count FROM recordsets GROUP BY type')
+  for s in c.fetchall():
+    data['recordsettypes'][s['type']] = s['count']
+
+  c.execute('SELECT status, count(*) as count FROM records GROUP BY status')
+  for s in c.fetchall():
+    data['recordstatuses'][s['status']] = s['count']
+
+  c.execute('SELECT status, count(*) as count FROM zones GROUP BY status')
+  for s in c.fetchall():
+    data['zonestatuses'][s['status']] = s['count']
+
+  for m in ['records', 'zones']:
+    c.execute("SELECT updated_at FROM %s WHERE status = 'PENDING' ORDER BY updated_at LIMIT 1" % m)
+    oldest = c.fetchone()
+    try:
+      data['longestpending'][m] = (datetime.datetime.utcnow() - oldest['updated_at']).seconds
+    except:
+      data['longestpending'][m] = 0
+
+  return data
+
 def glance_metrics(host, username, password):
   data = {}
   db = MySQLdb.connect(host=host, user=username, 

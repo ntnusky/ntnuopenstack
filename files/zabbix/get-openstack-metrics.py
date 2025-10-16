@@ -3,7 +3,7 @@ import sys
 import json
 from zabbixoslib import keystone_metrics, glance_metrics, nova_metrics, \
   cinder_metrics, heat_metrics, octavia_metrics, magnum_metrics, \
-  neutron_metrics, service_status, createOSSummary
+  neutron_metrics, service_status, createOSSummary, designate_metrics
 
 if len(sys.argv) < 4:
   print("Usage: %s <mysql-host> <username> <password> [<MISC-PROJECT-ID>]" % sys.argv[0])
@@ -16,6 +16,7 @@ else:
 
 data = {}
 data['cinder'] = cinder_metrics(sys.argv[1], sys.argv[2], sys.argv[3])
+data['designate'] = designate_metrics(sys.argv[1], sys.argv[2], sys.argv[3])
 data['glance'] = glance_metrics(sys.argv[1], sys.argv[2], sys.argv[3])
 data['heat'] = heat_metrics(sys.argv[1], sys.argv[2], sys.argv[3])
 data['keystone'] = keystone_metrics(sys.argv[1], sys.argv[2], sys.argv[3])
