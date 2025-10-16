@@ -10,6 +10,7 @@ class ntnuopenstack::zabbix::database {
 
   $databases = [
     'cinder',
+    'designate',
     'glance',
     'heat',
     'keystone',
