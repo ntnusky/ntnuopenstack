@@ -70,8 +70,14 @@ def designate_metrics(host, username, password):
     },
     'recordsettypes': {},
     'recordstatuses': {
-      'PENDING': 0,
-      'ACTIVE': 0,
+      'ACTIVE': {
+        'name': 'ACTIVE',
+        'value': 0,
+      },
+      'PENDING': {
+        'name': 'PENDING',
+        'value': 0,
+      }
     },
     'services': {},
     'stats': {
@@ -80,8 +86,14 @@ def designate_metrics(host, username, password):
       'zones': 0,
     },
     'zonestatuses': {
-      'PENDING': 0,
-      'ACTIVE': 0,
+      'ACTIVE': {
+        'name': 'ACTIVE',
+        'value': 0,
+      },
+      'PENDING': {
+        'name': 'PENDING',
+        'value': 0,
+      }
     },
   }
 
@@ -112,11 +124,17 @@ def designate_metrics(host, username, password):
 
   c.execute('SELECT status, count(*) as count FROM records GROUP BY status')
   for s in c.fetchall():
-    data['recordstatuses'][s['status']] = s['count']
+    data['recordstatuses'][s['status']] = {
+      'name': s['status'],
+      'value': s['count'],
+    }
 
   c.execute('SELECT status, count(*) as count FROM zones GROUP BY status')
   for s in c.fetchall():
-    data['zonestatuses'][s['status']] = s['count']
+    data['zonestatuses'][s['status']] = {
+      'name': s['status'],
+      'value': s['count'],
+    }
 
   for m in ['records', 'zones']:
     c.execute("SELECT updated_at FROM %s WHERE status = 'PENDING' ORDER BY updated_at LIMIT 1" % m)
