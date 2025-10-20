@@ -62,6 +62,82 @@ def cinder_metrics(host, username, password):
       
   return data
 
+def designate_metrics(host, username, password):
+  data = {
+    'longestpending': {
+      'records': 0,
+      'zones': 0,
+    },
+    'recordsettypes': {},
+    'recordstatuses': {
+      'ACTIVE': {
+        'name': 'ACTIVE',
+        'value': 0,
+      },
+      'PENDING': {
+        'name': 'PENDING',
+        'value': 0,
+      }
+    },
+    'stats': {
+      'recordsets': 0,
+      'records': 0,
+      'zones': 0,
+    },
+    'zonestatuses': {
+      'ACTIVE': {
+        'name': 'ACTIVE',
+        'value': 0,
+      },
+      'PENDING': {
+        'name': 'PENDING',
+        'value': 0,
+      }
+    },
+  }
+
+  try:
+    db = MySQLdb.connect(host=host, user=username, 
+      password=password, database='designate', charset='utf8')
+  except MySQLdb._exceptions.OperationalError:
+    return data
+  c = db.cursor(MySQLdb.cursors.DictCursor)
+
+  for m in ['recordsets', 'records', 'zones']:
+    c.execute("SELECT COUNT(*) as %s from %s;" % (m, m))
+    data['stats'].update(c.fetchone())
+
+  c.execute('SELECT type, count(*) as count FROM recordsets GROUP BY type')
+  for s in c.fetchall():
+    data['recordsettypes'][s['type']] = {
+      'type': s['type'],
+      'value': s['count'],
+    }
+
+  c.execute('SELECT status, count(*) as count FROM records GROUP BY status')
+  for s in c.fetchall():
+    data['recordstatuses'][s['status']] = {
+      'name': s['status'],
+      'value': s['count'],
+    }
+
+  c.execute('SELECT status, count(*) as count FROM zones GROUP BY status')
+  for s in c.fetchall():
+    data['zonestatuses'][s['status']] = {
+      'name': s['status'],
+      'value': s['count'],
+    }
+
+  for m in ['records', 'zones']:
+    c.execute("SELECT updated_at FROM %s WHERE status = 'PENDING' ORDER BY updated_at LIMIT 1" % m)
+    oldest = c.fetchone()
+    try:
+      data['longestpending'][m] = (datetime.datetime.utcnow() - oldest['updated_at']).seconds
+    except:
+      data['longestpending'][m] = 0
+
+  return data
+
 def glance_metrics(host, username, password):
   data = {}
   db = MySQLdb.connect(host=host, user=username, 
@@ -697,6 +773,28 @@ def service_status(host, username, password):
       'disabled_reason': '', 
       'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
     }
+
+  # Collect designate services
+  try:
+    db = MySQLdb.connect(host=host, user=username, 
+      password=password, database='designate', charset='utf8')
+  except MySQLdb._exceptions.OperationalError:
+    pass
+  else:
+    c = db.cursor(MySQLdb.cursors.DictCursor)
+    c.execute('SELECT id, service_name, hostname, heartbeated_at, status FROM service_statuses')
+    for s in c.fetchall():
+      utctime = s['heartbeated_at'].replace(tzinfo=tz_from)
+      data[s['id']] = {
+        'uuid': s['id'],
+        'project': 'designate',
+        'host': s['hostname'],
+        'service': s['service_name'],
+        'service_id': '', 
+        'disabled': 0,
+        'disabled_reason': '',
+        'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
+      }
 
   return data
 
