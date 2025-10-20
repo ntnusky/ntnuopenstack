@@ -120,7 +120,10 @@ def designate_metrics(host, username, password):
 
   c.execute('SELECT type, count(*) as count FROM recordsets GROUP BY type')
   for s in c.fetchall():
-    data['recordsettypes'][s['type']] = s['count']
+    data['recordsettypes'][s['type']] = {
+      'type': s['type'],
+      'value': s['count'],
+    }
 
   c.execute('SELECT status, count(*) as count FROM records GROUP BY status')
   for s in c.fetchall():
