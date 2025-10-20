@@ -79,7 +79,6 @@ def designate_metrics(host, username, password):
         'value': 0,
       }
     },
-    'services': {},
     'stats': {
       'recordsets': 0,
       'records': 0,
@@ -107,16 +106,6 @@ def designate_metrics(host, username, password):
   for m in ['recordsets', 'records', 'zones']:
     c.execute("SELECT COUNT(*) as %s from %s;" % (m, m))
     data['stats'].update(c.fetchone())
-
-  c.execute('SELECT id, service_name, hostname, heartbeated_at, status FROM service_statuses')
-  for s in c.fetchall():
-    data['services'][s['id']] = {
-      'id': s['id'],
-      'service_name': s['service_name'],
-      'hostname': s['hostname'],
-      'status': s['status'],
-      'heartbeat': int(s['heartbeated_at'].timestamp()),
-    }
 
   c.execute('SELECT type, count(*) as count FROM recordsets GROUP BY type')
   for s in c.fetchall():
@@ -782,6 +771,24 @@ def service_status(host, username, password):
       'service_id': s['engine_id'],
       'disabled': 0, 
       'disabled_reason': '', 
+      'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
+    }
+
+  # Collect designate services
+  db = MySQLdb.connect(host=host, user=username, 
+    password=password, database='designate', charset='utf8')
+  c = db.cursor(MySQLdb.cursors.DictCursor)
+  c.execute('SELECT id, service_name, hostname, heartbeated_at, status FROM service_statuses')
+  for s in c.fetchall():
+    utctime = s['heartbeated_at'].replace(tzinfo=tz_from)
+    data[s['id']] = {
+      'uuid': s['id'],
+      'project': 'designate',
+      'host': s['hostname'],
+      'service': s['service_name'],
+      'service_id': '', 
+      'disabled': 0,
+      'disabled_reason': '',
       'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
     }
 
