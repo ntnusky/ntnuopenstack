@@ -129,10 +129,24 @@ def designate_metrics(host, username, password):
     }
 
   for m in ['records', 'zones']:
-    c.execute("SELECT updated_at FROM %s WHERE status = 'PENDING' ORDER BY updated_at LIMIT 1" % m)
+    c.execute("SELECT updated_at, created_at FROM %s WHERE status = 'PENDING' ORDER BY updated_at LIMIT 1" % m)
     oldest = c.fetchone()
+
+    # If no records/zones are in pending we return a waittime of 0s.
+    if not oldest:
+      data['longestpending'][m] = 0
+      continue
+
+    # If the record is changed, use the updated-at timestamp.
+    if oldest['updated_at']:
+      changed = oldest['updated_at']
+
+    # If the record is new, the updated_at timestamp is NULL; in which case we use the created_at timestamp.
+    else:
+      changed = oldest['created_at']
+
     try:
-      data['longestpending'][m] = (datetime.datetime.utcnow() - oldest['updated_at']).seconds
+      data['longestpending'][m] = (datetime.datetime.utcnow() - changed).seconds
     except:
       data['longestpending'][m] = 0
 
