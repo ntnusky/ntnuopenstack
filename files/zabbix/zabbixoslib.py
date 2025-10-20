@@ -775,22 +775,26 @@ def service_status(host, username, password):
     }
 
   # Collect designate services
-  db = MySQLdb.connect(host=host, user=username, 
-    password=password, database='designate', charset='utf8')
-  c = db.cursor(MySQLdb.cursors.DictCursor)
-  c.execute('SELECT id, service_name, hostname, heartbeated_at, status FROM service_statuses')
-  for s in c.fetchall():
-    utctime = s['heartbeated_at'].replace(tzinfo=tz_from)
-    data[s['id']] = {
-      'uuid': s['id'],
-      'project': 'designate',
-      'host': s['hostname'],
-      'service': s['service_name'],
-      'service_id': '', 
-      'disabled': 0,
-      'disabled_reason': '',
-      'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
-    }
+  try:
+    db = MySQLdb.connect(host=host, user=username, 
+      password=password, database='designate', charset='utf8')
+  except MySQLdb._exceptions.OperationalError:
+    pass
+  else:
+    c = db.cursor(MySQLdb.cursors.DictCursor)
+    c.execute('SELECT id, service_name, hostname, heartbeated_at, status FROM service_statuses')
+    for s in c.fetchall():
+      utctime = s['heartbeated_at'].replace(tzinfo=tz_from)
+      data[s['id']] = {
+        'uuid': s['id'],
+        'project': 'designate',
+        'host': s['hostname'],
+        'service': s['service_name'],
+        'service_id': '', 
+        'disabled': 0,
+        'disabled_reason': '',
+        'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
+      }
 
   return data
 
