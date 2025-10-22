@@ -10,7 +10,7 @@ class ntnuopenstack::neutron::bgp::multi {
 
   $agents = lookup('ntnuopenstack::neutron::bgp::agents', {
     'default_value' => {},
-    'value_type'    => Hash[String, String],
+    'value_type'    => Hash[String, Hash],
   })
 
   $agents.each | $agentname, $data | {
