@@ -1,5 +1,5 @@
 # Configures a neutron BGP agent
-class ntnuopenstack::neutron::bgp::agent (
+define ntnuopenstack::neutron::bgp::agent (
   $interface,
 ) {
   $bgpconf = "/etc/neutron/bgp_dragent_${name}.ini"
