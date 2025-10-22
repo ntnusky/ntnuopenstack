@@ -16,7 +16,6 @@ class ntnuopenstack::neutron::bgp::multi {
   $agents.each | $agentname, $data | {
     ::ntnuopenstack::neutron::bgp::agent { $agentname:
       interface => $data['interface'],
-      require   => Package['neutron-bgp-dragent'],
     }
   }
 

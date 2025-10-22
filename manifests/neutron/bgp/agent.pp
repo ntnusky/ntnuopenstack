@@ -18,6 +18,7 @@ class ntnuopenstack::neutron::bgp::agent (
     section => 'bgp',
     setting => 'bgp_router_id',
     value   => $router_id,
+    require => Package['neutron-bgp-dragent'],
     tag     => [
       'neutron-dragent-bgp-config',
       "neutron-dragent-bgp-config-${name}",
@@ -30,6 +31,7 @@ class ntnuopenstack::neutron::bgp::agent (
     section => 'bgp',
     setting => 'bgp_speaker_driver',
     value   => $speaker_driver,
+    require => Package['neutron-bgp-dragent'],
     tag     => [
       'neutron-dragent-bgp-config',
       "neutron-dragent-bgp-config-${name}",
