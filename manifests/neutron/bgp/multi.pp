@@ -1,8 +1,8 @@
 # Installs and configures multiple bgp routing agents 
 class ntnuopenstack::neutron::bgp::multi {
-  require ::ntnuopenstack::neutron::base
+  include ::ntnuopenstack::neutron::base
   include ::ntnuopenstack::neutron::logging::dragent
-  require ::ntnuopenstack::repo
+  include ::ntnuopenstack::repo
   include ::ntnuopenstack::zabbix::neutron::bgp
 
   include ::neutron::deps
