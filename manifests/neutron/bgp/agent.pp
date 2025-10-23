@@ -12,6 +12,19 @@ define ntnuopenstack::neutron::bgp::agent (
     'value_type'    => String,
   })
 
+  ini_setting { "BGP-Agent ${name} hostname":
+    ensure  => present,
+    path    => $bgpconf,
+    section => 'DEFAULT',
+    setting => 'host',
+    value   => "${::hostname}-${name}",
+    require => Package['neutron-bgp-dragent'],
+    tag     => [
+      'neutron-dragent-bgp-config',
+      "neutron-dragent-bgp-config-${name}",
+    ],
+  }
+
   ini_setting { "BGP-Agent ${name} router-id":
     ensure  => present,
     path    => $bgpconf,

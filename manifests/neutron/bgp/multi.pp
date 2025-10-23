@@ -19,6 +19,34 @@ class ntnuopenstack::neutron::bgp::multi {
     }
   }
 
+  systemd::manage_unit { 'neutron-bgp-multiagent@.service':
+    enable        => false,
+    active        => false,
+    path          => '/lib/systemd/system',
+    unit_entry    => {
+      'After'       => [
+        'network-online.target', 
+        'local-fs.target', 
+        'remote-fs.target',
+      ],
+      'Description' => 'Neutron BGP DR-Agent'
+    },
+    service_entry => {
+      'Type'             => 'simple',
+      'User'             => 'neutron',
+      'Group'            => 'neutron',
+      'ExecStart'        => "/usr/bin/python3 /usr/bin/neutron-bgp-dragent --config-file=/etc/neutron/neutron.conf --config-file=/etc/neutron/bgp_dragent_%i.ini --log-file=/var/log/neutron/neutron-bgp-dragent-%i.log",
+      'TimeoutSec'       => '15',
+      'CPUAccounting'    => true,
+      'MemoryAccounting' => true,
+      'TasksAccounting'  => true,
+      'ExecStartPre'     => "[ -e /etc/neutron/bgp_dragent_%i.ini ]",
+    },
+    install_entry => {
+      'WantedBy'  => 'multi-user.target',
+    },
+  }
+
   package { 'neutron-bgp-dragent':
     ensure => present,
     name   => $::neutron::params::bgp_dragent_package,
