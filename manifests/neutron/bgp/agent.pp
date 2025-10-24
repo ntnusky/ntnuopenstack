@@ -22,9 +22,13 @@ define ntnuopenstack::neutron::bgp::agent (
     'value_type'    => Boolean,
   })
 
+  Ini_setting <| tag == "neutron-dragent-bgp-config-${name}" |>
+  ~>Service["neutron-bgp-multiagent@${name}.service"]
+
   service { "neutron-bgp-multiagent@${name}.service":
     ensure => $ensure,
     enable => $enable,
+    tag    => 'neutron-bgp-mutiagent-service',
   }
 
   ini_setting { "BGP-Agent ${name} hostname":
