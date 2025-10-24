@@ -29,6 +29,12 @@ class ntnuopenstack::neutron::bgp::multi {
         'local-fs.target', 
         'remote-fs.target',
       ],
+      'Wants'       => [
+        'network-online.target', 
+        'local-fs.target', 
+        'remote-fs.target',
+        'neutron-bgp.target',
+      ],
       'Description' => 'Neutron BGP DR-Agent'
     },
     service_entry => {
@@ -41,6 +47,18 @@ class ntnuopenstack::neutron::bgp::multi {
       'MemoryAccounting' => true,
       'TasksAccounting'  => true,
       'ExecStartPre'     => "[ -e /etc/neutron/bgp_dragent_%i.ini ]",
+    },
+    install_entry => {
+      'WantedBy'  => 'multi-user.target neutron-bgp.target',
+    },
+  }
+
+  systemd::manage_unit { 'neutron-bgp.target':
+    enable        => true,
+    active        => true,
+    path          => '/lib/systemd/system',
+    unit_entry    => {
+      'Description' => 'Service to start/stop all local neutron BGP agents'
     },
     install_entry => {
       'WantedBy'  => 'multi-user.target',
