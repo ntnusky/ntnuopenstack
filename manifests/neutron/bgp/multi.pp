@@ -35,6 +35,12 @@ class ntnuopenstack::neutron::bgp::multi {
         'remote-fs.target',
         'neutron-bgp.target',
       ],
+      'PartOf'      => [
+        'neutron-bgp.target',
+      ],
+      'Before'      => [
+        'neutron-bgp.target',
+      ],
       'Description' => 'Neutron BGP DR-Agent'
     },
     service_entry => {
@@ -55,7 +61,6 @@ class ntnuopenstack::neutron::bgp::multi {
     },
     install_entry => {
       'WantedBy'  => [
-        'multi-user.target',
         'neutron-bgp.target',
       ]
     },
