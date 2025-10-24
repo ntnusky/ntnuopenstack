@@ -8,7 +8,7 @@ define ntnuopenstack::neutron::bgp::agent (
   $router_id = $::sl2['server']['interfaces'][$interface]['ipv4']
 
   $speaker_driver = lookup('ntnuopenstack::neutron::bgp::speaker::driver', {
-    'default_value' => 
+    'default_value' =>
       'neutron_dynamic_routing.services.bgp.agent.driver.os_ken.driver.OsKenBgpDriver',
     'value_type'    => String,
   })

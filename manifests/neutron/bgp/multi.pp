@@ -25,13 +25,13 @@ class ntnuopenstack::neutron::bgp::multi {
     path          => '/lib/systemd/system',
     unit_entry    => {
       'After'       => [
-        'network-online.target', 
-        'local-fs.target', 
+        'network-online.target',
+        'local-fs.target',
         'remote-fs.target',
       ],
       'Wants'       => [
-        'network-online.target', 
-        'local-fs.target', 
+        'network-online.target',
+        'local-fs.target',
         'remote-fs.target',
         'neutron-bgp.target',
       ],
@@ -41,15 +41,23 @@ class ntnuopenstack::neutron::bgp::multi {
       'Type'             => 'simple',
       'User'             => 'neutron',
       'Group'            => 'neutron',
-      'ExecStart'        => "/usr/bin/python3 /usr/bin/neutron-bgp-dragent --config-file=/etc/neutron/neutron.conf --config-file=/etc/neutron/bgp_dragent_%i.ini --log-file=/var/log/neutron/neutron-bgp-dragent-%i.log",
+      'ExecStart'        => join([
+        '/usr/bin/python3 /usr/bin/neutron-bgp-dragent',
+        '--config-file=/etc/neutron/neutron.conf',
+        '--config-file=/etc/neutron/bgp_dragent_%i.ini',
+        '--log-file=/var/log/neutron/neutron-bgp-dragent-%i.log',
+      ], ' '),
       'TimeoutSec'       => '15',
       'CPUAccounting'    => true,
       'MemoryAccounting' => true,
       'TasksAccounting'  => true,
-      'ExecStartPre'     => "[ -e /etc/neutron/bgp_dragent_%i.ini ]",
+      'ExecStartPre'     => '[ -e /etc/neutron/bgp_dragent_%i.ini ]',
     },
     install_entry => {
-      'WantedBy'  => 'multi-user.target neutron-bgp.target',
+      'WantedBy'  => [
+        'multi-user.target',
+        'neutron-bgp.target',
+      ]
     },
   }
 
