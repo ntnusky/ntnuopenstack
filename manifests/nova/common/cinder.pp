@@ -11,9 +11,9 @@ class ntnuopenstack::nova::common::cinder {
   class { '::nova::cinder':
     auth_url       => $auth_url,
     password       =>
-      $services[$region]['services']['neutron']['keystone']['password'],
+      $services[$region]['services']['cinder']['keystone']['password'],
     os_region_name => $region,
     username       =>
-      $services[$region]['services']['neutron']['keystone']['username'],
+      $services[$region]['services']['cinder']['keystone']['username'],
   }
 }
