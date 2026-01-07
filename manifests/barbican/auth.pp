@@ -23,6 +23,7 @@ class ntnuopenstack::barbican::auth {
       $services[$region]['services']['barbican']['keystone']['password'],
     region_name                  => $region,
     service_token_roles_required => true,
+    service_type                 => 'key-manager',
     username                     =>
       $services[$region]['services']['barbican']['keystone']['username'],
     www_authenticate_uri         => $www_authenticate_uri,

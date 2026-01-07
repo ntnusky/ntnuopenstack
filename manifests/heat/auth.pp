@@ -24,6 +24,7 @@ class ntnuopenstack::heat::auth {
       $services[$region]['services']['heat']['keystone']['password'],
     region_name                  => $region,
     service_token_roles_required => true,
+    service_type                 => 'orchestration',
     username                     =>
       $services[$region]['services']['heat']['keystone']['username'],
     www_authenticate_uri         => $www_authenticate_uri,
