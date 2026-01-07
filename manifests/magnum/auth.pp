@@ -22,6 +22,7 @@ class ntnuopenstack::magnum::auth {
       $services[$region_name]['services']['magnum']['keystone']['password'],
     region_name                  => $region_name,
     service_token_roles_required => true,
+    service_type                 => 'container-infra',
     username                     =>
       $services[$region_name]['services']['magnum']['keystone']['username'],
     www_authenticate_uri         => "${www_authenticate_uri}v3",
