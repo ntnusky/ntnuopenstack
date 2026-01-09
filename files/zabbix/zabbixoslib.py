@@ -69,33 +69,16 @@ def designate_metrics(host, username, password):
       'zones': 0,
     },
     'recordsettypes': {},
-    'recordstatuses': {
-      'ACTIVE': {
-        'name': 'ACTIVE',
-        'value': 0,
-      },
-      'PENDING': {
-        'name': 'PENDING',
-        'value': 0,
-      }
-    },
+    'recordstatuses': {},
     'stats': {
       'recordsets': 0,
       'records': 0,
       'zones': 0,
     },
-    'zonestatuses': {
-      'ACTIVE': {
-        'name': 'ACTIVE',
-        'value': 0,
-      },
-      'PENDING': {
-        'name': 'PENDING',
-        'value': 0,
-      }
-    },
+    'zonestatuses': {},
   }
 
+  # If the designate database dont exist, simply return.
   try:
     db = MySQLdb.connect(host=host, user=username, 
       password=password, database='designate', charset='utf8')
@@ -104,7 +87,12 @@ def designate_metrics(host, username, password):
   c = db.cursor(MySQLdb.cursors.DictCursor)
 
   for m in ['recordsets', 'records', 'zones']:
-    c.execute("SELECT COUNT(*) as %s from %s;" % (m, m))
+    # If the database exists albeit not in use, the first SELECT will fail. In that case, simply return.
+    try:
+      c.execute("SELECT COUNT(*) as %s from %s;" % (m, m))
+    except MySQLdb._exceptions.ProgrammingError:
+      return data
+
     data['stats'].update(c.fetchone())
 
   c.execute('SELECT type, count(*) as count FROM recordsets GROUP BY type')
@@ -604,16 +592,17 @@ def nova_metrics(host, username, password, misc = None):
     projectID = misc
   else:
     # Get the MISC project ID
-    kdb = MySQLdb.connect(host=host, user=username, 
-      password=password, database='keystone', charset='utf8')
-    kc = kdb.cursor(MySQLdb.cursors.DictCursor)
-    kc.execute("SELECT id FROM project WHERE name = 'MISC'")
     try:
+      kdb = MySQLdb.connect(host=host, user=username, 
+        password=password, database='keystone', charset='utf8')
+      kc = kdb.cursor(MySQLdb.cursors.DictCursor)
+      kc.execute("SELECT id FROM project WHERE name = 'MISC'")
       projectID = kc.fetchone()['id']
     except:
       projectID = None
-    kc.close()
-    kdb.close()
+    else:
+      kc.close()
+      kdb.close()
 
   # Get UUID of VMs where the deletion-notification is set
   c.execute("SELECT resource_id FROM tags WHERE tag = 'notified_delete'")
@@ -792,11 +781,13 @@ def service_status(host, username, password):
   try:
     db = MySQLdb.connect(host=host, user=username, 
       password=password, database='designate', charset='utf8')
+    c = db.cursor(MySQLdb.cursors.DictCursor)
+    c.execute('SELECT id, service_name, hostname, heartbeated_at, status FROM service_statuses')
+  except MySQLdb._exceptions.ProgrammingError:
+    pass
   except MySQLdb._exceptions.OperationalError:
     pass
   else:
-    c = db.cursor(MySQLdb.cursors.DictCursor)
-    c.execute('SELECT id, service_name, hostname, heartbeated_at, status FROM service_statuses')
     for s in c.fetchall():
       utctime = s['heartbeated_at'].replace(tzinfo=tz_from)
       data[s['id']] = {

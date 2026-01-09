@@ -6,3 +6,4 @@
 
 # Allow administrators to see the nova-compute status
 %administrator ALL=(root) NOPASSWD: /bin/systemctl status nova-compute
+%administrator ALL=(root) NOPASSWD: /usr/bin/virsh list --all 
