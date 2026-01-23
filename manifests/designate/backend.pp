@@ -8,11 +8,10 @@ class ntnuopenstack::designate::backend {
 
     rndc_config_file => '/etc/rndc.conf',
     rndc_key_file    => '/etc/rndc.key',
-
+    rndc_port        => 953,
     mdns_hosts       => $api_servers,
     bind9_hosts      => $ns_servers,
     nameservers      => $ns_servers,
-    configure_bind   => false,
   }
 
   $rndc_algorithm = 'hmac-md5';

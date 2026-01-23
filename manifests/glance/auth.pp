@@ -22,6 +22,7 @@ class ntnuopenstack::glance::auth {
       $services[$region]['services']['glance']['keystone']['password'],
     region_name                  => $region,
     service_token_roles_required => true,
+    service_type                 => 'image',
     username                     =>
       $services[$region]['services']['glance']['keystone']['username'],
     www_authenticate_uri         => $www_authenticate_uri,

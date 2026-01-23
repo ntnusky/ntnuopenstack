@@ -22,6 +22,11 @@ class ntnuopenstack::glance::api {
     'value_type'    => Boolean,
   })
 
+  $require_image_format_match = lookup('ntnuopenstack::glance::require_image_format_match', {
+    'default_value' => false,
+    'value_type'    => Boolean,
+  })
+
   include ::apache::mod::status
   require ::ntnuopenstack::glance::auth
   contain ::ntnuopenstack::glance::ceph
@@ -51,6 +56,7 @@ class ntnuopenstack::glance::api {
     disk_formats                 => keys($disk_formats),
     enabled_backends             => ['ceph-default:rbd'],
     enable_proxy_headers_parsing => $confhaproxy,
+    require_image_format_match   => $require_image_format_match,
     service_name                 => 'httpd',
     show_image_direct_url        => true,
     show_multiple_locations      => true,
@@ -60,7 +66,8 @@ class ntnuopenstack::glance::api {
   }
 
   class { '::glance::wsgi::apache':
-    access_log_format => $logformat,
-    ssl               => false,
+    access_log_format     => $logformat,
+    ssl                   => false,
+    vhost_custom_fragment => 'LimitRequestBody 0',
   }
 }

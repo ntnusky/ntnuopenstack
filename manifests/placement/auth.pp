@@ -23,6 +23,7 @@ class ntnuopenstack::placement::auth {
     region_name                  => $region_name,
     service_token_roles          => [ 'admin', 'service' ],
     service_token_roles_required => true,
+    service_type                 => 'placement',
     username                     =>
       $services[$region_name]['services']['placement']['keystone']['username'],
     www_authenticate_uri         => $www_authenticate_uri 

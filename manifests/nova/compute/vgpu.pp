@@ -1,10 +1,9 @@
 # Configure nova-compute to expose a vGPU
 class ntnuopenstack::nova::compute::vgpu {
-  # The variable mdev_type is just a mechanism to ensure that this key is
-  # actually defined, and otherwise fail the puppet run. So, it is nice to have
-  # here even though this class is not using it...
-  $mdev_type = lookup('nova::compute::mdev::mdev_types', Hash)
-
+  $sriov = lookup('ntnuopenstack::nova::vgpu::sriov', {
+    'default_value' => true,
+    'value_type'    => Boolean,
+  })
   $zabbix_servers = lookup('profile::zabbix::agent::servers', {
     'default_value' => [],
     'value_type'    => Array[Stdlib::IP::Address::Nosubnet],
@@ -14,49 +13,54 @@ class ntnuopenstack::nova::compute::vgpu {
     include ::ntnuopenstack::nova::zabbix::vgpu
   }
 
-  # Ensure SR-IOV virtual functions are enabled on boot
-  # This has no effect on GPUs that don't support SR-IOV
-  $sriov_cmd = '/usr/lib/nvidia/sriov-manage'
+  if($sriov) {
+    include ::ntnuopenstack::nova::compute::vgpu::types
+    # Ensure SR-IOV virtual functions are enabled on boot
+    # This has no effect on GPUs that don't support SR-IOV
+    $sriov_cmd = '/usr/lib/nvidia/sriov-manage'
 
-  cron { 'Enable SR-IOV for Nvidia GPUs on reboot':
-    ensure => 'absent',
-  }
+    systemd::manage_unit { 'nvidia-sriov-manage@.service':
+      enable        => false,
+      active        => false,
+      path          => '/lib/systemd/system',
+      unit_entry    => {
+        'Before'      => 'nova-compute.service',
+        'After'       => ['nvidia-vgpu-mgr.service', 'nvidia-vgpud.service'],
+        'Description' => 'Enable Nvidia GPU virtual functions'
+      },
+      service_entry => {
+        'Type'             => 'oneshot',
+        'User'             => 'root',
+        'Group'            => 'root',
+        'ExecStart'        => "${sriov_cmd} -e %i",
+        'TimeoutSec'       => '120',
+        'Slice'            => 'system.slice',
+        'CPUAccounting'    => true,
+        'MemoryAccounting' => true,
+        'TasksAccounting'  => true,
+        'RemainAfterExit'  => true,
+        'ExecStartPre'     => '/usr/bin/sleep 30',
+      },
+      install_entry => {
+        'WantedBy'  => 'multi-user.target',
+      },
+    }
 
-  systemd::manage_unit { 'nvidia-sriov-manage@.service':
-    enable        => false,
-    active        => false,
-    path          => '/lib/systemd/system',
-    unit_entry    => {
-      'After'       => ['nvidia-vgpu-mgr.service', 'nvidia-vgpud.service'],
-      'Description' => 'Enable Nvidia GPU virtual functions'
-    },
-    service_entry => {
-      'Type'             => 'oneshot',
-      'User'             => 'root',
-      'Group'            => 'root',
-      'ExecStart'        => "${sriov_cmd} -e %i",
-      'TimeoutSec'       => '120',
-      'Slice'            => 'system.slice',
-      'CPUAccounting'    => true,
-      'MemoryAccounting' => true,
-      'TasksAccounting'  => true,
-      'RemainAfterExit'  => true,
-      'ExecStartPre'     => '/usr/bin/sleep 30',
-    },
-    install_entry => {
-      'WantedBy'  => 'multi-user.target',
-    },
-  }
+    service { 'nvidia-sriov-manage@ALL.service':
+      ensure  => true,
+      enable  => true,
+      require => Systemd::Manage_unit['nvidia-sriov-manage@.service'],
+    }
 
-  service { 'nvidia-sriov-manage@ALL.service':
-    ensure  => true,
-    enable  => true,
-    require => Systemd::Manage_unit['nvidia-sriov-manage@.service'],
-  }
-
-  exec { 'sriov-manage-firstrun':
-    command     => "${sriov_cmd} -e ALL",
-    user        => 'root',
-    refreshonly => true,
+    exec { 'sriov-manage-firstrun':
+      command     => "${sriov_cmd} -e ALL",
+      user        => 'root',
+      refreshonly => true,
+    }
+  } else {
+    # The variable mdev_type is just a mechanism to ensure that this key is
+    # actually defined, and otherwise fail the puppet run. So, it is nice to have
+    # here even though this class is not using it...
+    $mdev_type = lookup('nova::compute::mdev::mdev_types', Hash)
   }
 }

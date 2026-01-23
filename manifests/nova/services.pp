@@ -43,13 +43,6 @@ class ntnuopenstack::nova::services {
   class { '::nova::scheduler::filter':
     enabled_filters                 => $enabled_filters_real,
     build_failure_weight_multiplier => 0,
-  }
-
-  # TODO: In 2025.1 this will be a parameter in ::nova::scheduler::filter
-  if($pci_in_placement) {
-    nova_config {
-      'filter_scheduler/pci_in_placement':
-        value => $pci_in_placement;
-    }
+    pci_in_placement                => $pci_in_placement,
   }
 }
