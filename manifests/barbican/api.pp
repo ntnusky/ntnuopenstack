@@ -14,7 +14,9 @@ class ntnuopenstack::barbican::api {
   if ($rabbitservers) {
     $ha_transport_conf = {
       rabbit_quorum_queue           => true,
+      rabbit_stream_fanout          => true,
       rabbit_transient_quorum_queue => true,
+      use_queue_manager             => true,
     }
   } else {
     $ha_transport_conf = {}
@@ -51,19 +53,4 @@ class ntnuopenstack::barbican::api {
   #  'oslo_messaging_rabbit/rabbit_stream_fanout': value => true;
   #  'oslo_messaging_rabbit/use_queue_manager': value => true;
   #}
-
-  ini_setting { 'rabbit_workarounds1':
-    ensure  => present,
-    path    => '/etc/barbican/barbican.conf',
-    section => 'oslo_messaging_rabbit',
-    setting => 'rabbit_stream_fanout',
-    value   => 'true',
-  }
-  ini_setting { 'rabbit_workarounds2':
-    ensure  => present,
-    path    => '/etc/barbican/barbican.conf',
-    section => 'oslo_messaging_rabbit',
-    setting => 'use_queue_manager',
-    value   => 'true',
-  }
 }
