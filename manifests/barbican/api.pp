@@ -52,8 +52,18 @@ class ntnuopenstack::barbican::api {
   #  'oslo_messaging_rabbit/use_queue_manager': value => true;
   #}
 
-  Oslo::Messaging::Rabbit {
-    rabbit_stream_fanout => true,
-    use_queue_manager    => true,
+  ini_setting { 'rabbit_workarounds1':
+    ensure  => present,
+    path    => '/etc/barbican/barbican.conf',
+    section => 'oslo_messaging_rabbit',
+    setting => 'rabbit_stream_fanout',
+    value   => 'true',
+  }
+  ini_setting { 'rabbit_workarounds2':
+    ensure  => present,
+    path    => '/etc/barbican/barbican.conf',
+    section => 'oslo_messaging_rabbit',
+    setting => 'use_queue_manager',
+    value   => 'true',
   }
 }
