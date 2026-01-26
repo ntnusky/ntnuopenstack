@@ -45,8 +45,10 @@ class ntnuopenstack::barbican::api {
   }
 
   # TODO: Monitor when this becomes a parameter in ::barbican::api
-  barbican_config {
-    'oslo_messaging_rabbit/rabbit_stream_fanout': value => true;
-    'oslo_messaging_rabbit/use_queue_manager': value => true;
-  }
+  #       In 2025.1, these cannot be overriden, since they are defined
+  #       in oslo::messaging::rabbit
+  #barbican_config {
+  #  'oslo_messaging_rabbit/rabbit_stream_fanout': value => true;
+  #  'oslo_messaging_rabbit/use_queue_manager': value => true;
+  #}
 }
