@@ -16,7 +16,7 @@ class ntnuopenstack::barbican::api {
       rabbit_quorum_queue           => true,
       rabbit_stream_fanout          => true,
       rabbit_transient_quorum_queue => true,
-      use_queue_manager             => true,
+      rabbit_use_queue_manager      => true,
     }
   } else {
     $ha_transport_conf = {}
