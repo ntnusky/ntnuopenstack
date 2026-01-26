@@ -51,4 +51,9 @@ class ntnuopenstack::barbican::api {
   #  'oslo_messaging_rabbit/rabbit_stream_fanout': value => true;
   #  'oslo_messaging_rabbit/use_queue_manager': value => true;
   #}
+
+  Oslo::Messaging::Rabbit {
+    rabbit_stream_fanout => true,
+    use_queue_manager    => true,
+  }
 }
