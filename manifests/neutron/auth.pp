@@ -24,17 +24,18 @@ class ntnuopenstack::neutron::auth {
       $services[$region]['services']['neutron']['keystone']['password'],
     region_name                  => $region,
     service_token_roles_required => true,
+    service_type                 => 'network',
     username                     =>
       $services[$region]['services']['neutron']['keystone']['username'],
     www_authenticate_uri         => $www_authenticate_uri,
   }
 
   class { '::neutron::server::notifications::nova':
-    auth_url     => $auth_url,
-    password     =>
+    auth_url    => $auth_url,
+    password    =>
       $services[$region]['services']['nova']['keystone']['password'],
-    region_name  => $region,
-    username     =>
+    region_name => $region,
+    username    =>
       $services[$region]['services']['nova']['keystone']['username'],
   }
 }

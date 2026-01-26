@@ -25,11 +25,14 @@ class ntnuopenstack::nova::compute::base {
     'value_type'    => Integer,
   })
 
+  $management_ip = $::sl2['server']['primary_interface']['ipv4']
+
   class { '::ntnuopenstack::nova::common::base':
     extra_options => {
       initial_cpu_allocation_ratio  => $cpu_allocation,
       initial_ram_allocation_ratio  => $ram_allocation,
       initial_disk_allocation_ratio => $disk_allocation,
+      my_ip                         => $management_ip,
     }
   }
 

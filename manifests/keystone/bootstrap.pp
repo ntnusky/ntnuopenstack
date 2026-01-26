@@ -17,12 +17,13 @@ class ntnuopenstack::keystone::bootstrap {
   })
 
   class { '::keystone::bootstrap':
-    admin_url    => "${admin}:5000",
-    bootstrap    => $bootstrap,
-    email        => $email,
-    internal_url => "${internal}:5000",
-    password     => $password,
-    public_url   => "${public}:5000",
-    region       => $region,
+    admin_url        => "${admin}:5000",
+    bootstrap        => $bootstrap,
+    email            => $email,
+    internal_url     => "${internal}:5000",
+    manage_resources => $bootstrap,
+    password         => $password,
+    public_url       => "${public}:5000",
+    region           => $region,
   }
 }

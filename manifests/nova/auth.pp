@@ -22,6 +22,7 @@ class ntnuopenstack::nova::auth {
       $services[$region]['services']['nova']['keystone']['password'],
     region_name                  => $region,
     service_token_roles_required => true,
+    service_type                 => 'compute',
     username                     =>
       $services[$region]['services']['nova']['keystone']['username'],
     www_authenticate_uri         => $www_authenticate_uri,

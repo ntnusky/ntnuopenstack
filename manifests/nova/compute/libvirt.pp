@@ -32,6 +32,11 @@ class ntnuopenstack::nova::compute::libvirt (
     'value_type'    => Boolean
   })
 
+  $num_pcie_ports = lookup('ntnuopenstack::nova::num_pcie_ports', {
+    'default_value' => 28,
+    'value_type'    => Integer[0,28],
+  })
+
   $slversion = lookup('profile::shiftleader::major::version', {
     'default_value' => 1,
     'value_type'    => Integer,
@@ -98,6 +103,7 @@ class ntnuopenstack::nova::compute::libvirt (
     hw_machine_type       => $machine_type,
     vncserver_listen      => $management_ip,
     images_type           => $images_type,
+    num_pcie_ports        => $num_pcie_ports,
     *                     => $cpuconfig,
   }
 

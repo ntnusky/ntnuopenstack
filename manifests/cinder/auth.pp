@@ -22,6 +22,7 @@ class ntnuopenstack::cinder::auth {
       $services[$region_name]['services']['cinder']['keystone']['password'],
     region_name                  => $region_name,
     service_token_roles_required => true,
+    service_type                 => 'volumev3',
     username                     =>
       $services[$region_name]['services']['cinder']['keystone']['username'],
     www_authenticate_uri         => $www_authenticate_uri,

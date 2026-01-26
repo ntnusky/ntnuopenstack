@@ -39,6 +39,7 @@ class ntnuopenstack::cinder::volume {
   $backends.each | $bname, $pool | {
     cinder::backend::rbd { $bname :
       enable_deferred_deletion => true,
+      manage_package           => false,
       rbd_pool                 => $pool,
       rbd_user                 => $ceph_user,
       rbd_secret_uuid          => $ceph_uuid,
@@ -46,16 +47,13 @@ class ntnuopenstack::cinder::volume {
   }
 
   $types.each | $typename, $data | {
-    $backend = $data['backend']
-
-    $props = pick($data['properties'], {}).map | $key, $value | {
-      "${key}=${value}"
-    }
+    $backend = { volume_backend_name => $data['backend'] }
+    $props = $backend + pick($data['properties'], {})
 
     cinder_type { $typename :
       ensure     => pick($data['ensure'], present),
       is_public  => pick($data['public'], true),
-      properties => concat([ "volume_backend_name=${backend}" ], $props),
+      properties => $props,
     }
   }
 }

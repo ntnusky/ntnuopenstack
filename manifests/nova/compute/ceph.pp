@@ -21,11 +21,10 @@ class ntnuopenstack::nova::compute::ceph (
 
   # Configure nova to use ceph.
   class { '::nova::compute::rbd':
-    libvirt_rbd_user        => $ceph_user, 
+    libvirt_rbd_user        => $ceph_user,
     libvirt_images_rbd_pool => $ceph_pool,
     libvirt_rbd_secret_uuid => $nova_uuid,
     libvirt_rbd_secret_key  => $users["client.${ceph_user}"]['secret'],
-    rbd_keyring             => $ceph_user,
     manage_ceph_client      => false,
     ephemeral_storage       => $ephemeral_storage,
   }

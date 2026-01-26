@@ -6,12 +6,15 @@ class ntnuopenstack::clients {
     'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
   })
 
-  include ::keystone::client
   include ::cinder::client
   include ::nova::client
   include ::neutron::client
   include ::glance::client
   include ::heat::client
+
+  ensure_packages('python3-openstackclient', {
+    'ensure' => 'present',
+  })
 
   $services.each | $region, $data | {
     if('barbican' in $data['services']) {

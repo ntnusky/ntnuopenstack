@@ -26,14 +26,17 @@ class ntnuopenstack::barbican::api {
   include ::ntnuopenstack::barbican::firewall::api
   include ::ntnuopenstack::barbican::haproxy::backend
 
+  class { '::barbican':
+    default_transport_url => $transport_url,
+    *                     => $ha_transport_conf,
+  }
+
   class { '::barbican::api':
     enabled                      => false,
     enable_proxy_headers_parsing => $confhaproxy,
-    default_transport_url        => $transport_url,
     host_href                    => '',
     service_name                 => 'httpd',
     sync_db                      => $sync_db,
-    *                            => $ha_transport_conf,
   }
 
   class { '::barbican::wsgi::apache':

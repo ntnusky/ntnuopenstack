@@ -14,4 +14,10 @@ class ntnuopenstack::heat::engine {
     heat_metadata_server_url      => "${heat_public}:8000",
     heat_waitcondition_server_url => "${heat_public}:8000/v1/waitcondition",
   }
+
+  cron { 'Remove dead heat-engines':
+    command => '/usr/bin/heat-manage service clean',
+    minute  => '*/5',
+    user    => 'root',
+  }
 }

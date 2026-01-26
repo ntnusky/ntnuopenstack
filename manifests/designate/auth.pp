@@ -24,6 +24,7 @@ class ntnuopenstack::designate::auth {
     password             =>
       $services[$region]['services']['designate']['keystone']['password'],
     region_name          => $region,
+    service_type         => 'dns',
     username             =>
       $services[$region]['services']['designate']['keystone']['username'],
     www_authenticate_uri => $www_authenticate_uri, 

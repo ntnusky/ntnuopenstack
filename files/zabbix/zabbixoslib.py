@@ -62,6 +62,84 @@ def cinder_metrics(host, username, password):
       
   return data
 
+def designate_metrics(host, username, password):
+  data = {
+    'longestpending': {
+      'records': 0,
+      'zones': 0,
+    },
+    'recordsettypes': {},
+    'recordstatuses': {},
+    'stats': {
+      'recordsets': 0,
+      'records': 0,
+      'zones': 0,
+    },
+    'zonestatuses': {},
+  }
+
+  # If the designate database dont exist, simply return.
+  try:
+    db = MySQLdb.connect(host=host, user=username, 
+      password=password, database='designate', charset='utf8')
+  except MySQLdb._exceptions.OperationalError:
+    return data
+  c = db.cursor(MySQLdb.cursors.DictCursor)
+
+  for m in ['recordsets', 'records', 'zones']:
+    # If the database exists albeit not in use, the first SELECT will fail. In that case, simply return.
+    try:
+      c.execute("SELECT COUNT(*) as %s from %s;" % (m, m))
+    except MySQLdb._exceptions.ProgrammingError:
+      return data
+
+    data['stats'].update(c.fetchone())
+
+  c.execute('SELECT type, count(*) as count FROM recordsets GROUP BY type')
+  for s in c.fetchall():
+    data['recordsettypes'][s['type']] = {
+      'type': s['type'],
+      'value': s['count'],
+    }
+
+  c.execute('SELECT status, count(*) as count FROM records GROUP BY status')
+  for s in c.fetchall():
+    data['recordstatuses'][s['status']] = {
+      'name': s['status'],
+      'value': s['count'],
+    }
+
+  c.execute('SELECT status, count(*) as count FROM zones GROUP BY status')
+  for s in c.fetchall():
+    data['zonestatuses'][s['status']] = {
+      'name': s['status'],
+      'value': s['count'],
+    }
+
+  for m in ['records', 'zones']:
+    c.execute("SELECT updated_at, created_at FROM %s WHERE status = 'PENDING' ORDER BY updated_at LIMIT 1" % m)
+    oldest = c.fetchone()
+
+    # If no records/zones are in pending we return a waittime of 0s.
+    if not oldest:
+      data['longestpending'][m] = 0
+      continue
+
+    # If the record is changed, use the updated-at timestamp.
+    if oldest['updated_at']:
+      changed = oldest['updated_at']
+
+    # If the record is new, the updated_at timestamp is NULL; in which case we use the created_at timestamp.
+    else:
+      changed = oldest['created_at']
+
+    try:
+      data['longestpending'][m] = (datetime.datetime.utcnow() - changed).seconds
+    except:
+      data['longestpending'][m] = 0
+
+  return data
+
 def glance_metrics(host, username, password):
   data = {}
   db = MySQLdb.connect(host=host, user=username, 
@@ -514,16 +592,17 @@ def nova_metrics(host, username, password, misc = None):
     projectID = misc
   else:
     # Get the MISC project ID
-    kdb = MySQLdb.connect(host=host, user=username, 
-      password=password, database='keystone', charset='utf8')
-    kc = kdb.cursor(MySQLdb.cursors.DictCursor)
-    kc.execute("SELECT id FROM project WHERE name = 'MISC'")
     try:
+      kdb = MySQLdb.connect(host=host, user=username, 
+        password=password, database='keystone', charset='utf8')
+      kc = kdb.cursor(MySQLdb.cursors.DictCursor)
+      kc.execute("SELECT id FROM project WHERE name = 'MISC'")
       projectID = kc.fetchone()['id']
     except:
       projectID = None
-    kc.close()
-    kdb.close()
+    else:
+      kc.close()
+      kdb.close()
 
   # Get UUID of VMs where the deletion-notification is set
   c.execute("SELECT resource_id FROM tags WHERE tag = 'notified_delete'")
@@ -697,6 +776,30 @@ def service_status(host, username, password):
       'disabled_reason': '', 
       'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
     }
+
+  # Collect designate services
+  try:
+    db = MySQLdb.connect(host=host, user=username, 
+      password=password, database='designate', charset='utf8')
+    c = db.cursor(MySQLdb.cursors.DictCursor)
+    c.execute('SELECT id, service_name, hostname, heartbeated_at, status FROM service_statuses')
+  except MySQLdb._exceptions.ProgrammingError:
+    pass
+  except MySQLdb._exceptions.OperationalError:
+    pass
+  else:
+    for s in c.fetchall():
+      utctime = s['heartbeated_at'].replace(tzinfo=tz_from)
+      data[s['id']] = {
+        'uuid': s['id'],
+        'project': 'designate',
+        'host': s['hostname'],
+        'service': s['service_name'],
+        'service_id': '', 
+        'disabled': 0,
+        'disabled_reason': '',
+        'last_seen_up': utctime.astimezone(tz_to).strftime('%s'), 
+      }
 
   return data
 
