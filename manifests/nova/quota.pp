@@ -23,12 +23,13 @@ class ntnuopenstack::nova::quota {
     })
 
     class { '::nova::limit':
-      auth_url    => "${internal_endpoint}:5000",
-      endpoint_id => $endpoint_id,
-      password    =>
+      auth_url     => "${internal_endpoint}:5000",
+      endpoint_id  => $endpoint_id,
+      password     =>
         $services[$region]['services']['nova']['keystone']['password'],
-      region_name => $region,
-      username    =>
+      region_name  => $region,
+      system_scope => 'all',
+      username     =>
         $services[$region]['services']['nova']['keystone']['username'],
     }
     $driver_opts = {

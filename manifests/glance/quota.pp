@@ -18,11 +18,14 @@ class ntnuopenstack::glance::quota {
     })
 
     class { '::glance::limit':
-      auth_url    => "${keystone_internal}:5000",
-      endpoint_id => $endpoint_id,
-      password    =>
+      auth_url     => "${keystone_internal}:5000",
+      endpoint_id  => $endpoint_id,
+      password     =>
         $services[$region]['services']['glance']['keystone']['password'],
-      region_name => $region,
+      region_name  => $region,
+      system_scope => 'all',
+      username     =>
+        $services[$region]['services']['glance']['keystone']['username'],
     }
   }
 }

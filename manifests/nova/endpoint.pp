@@ -26,7 +26,7 @@ define ntnuopenstack::nova::endpoint (
     tenant              => 'services',
     roles               => ['admin', 'service'],
     system_scope        => 'all',
-    system_roles        => [],
+    system_roles        => ['reader'],
     public_url          => "${publicurl}:8774/v2.1",
     admin_url           => "${adminurl}:8774/v2.1",
     internal_url        => "${internalurl}:8774/v2.1",

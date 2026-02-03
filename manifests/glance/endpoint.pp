@@ -26,7 +26,7 @@ define ntnuopenstack::glance::endpoint (
     tenant              => 'services',
     roles               => ['admin', 'service'],
     system_scope        => 'all',
-    system_roles        => [],
+    system_roles        => ['reader'],
     public_url          => "${publicurl}:9292",
     admin_url           => "${adminurl}:9292",
     internal_url        => "${internalurl}:9292",
