@@ -5,6 +5,7 @@ class ntnuopenstack::nova::common::base (
   include ::ntnuopenstack::nova::common::glance
   include ::ntnuopenstack::nova::common::placement
   include ::ntnuopenstack::nova::common::sudo
+  include ::nova::pci
 
   # RabbitMQ connection-information
   $rabbitservers = lookup('profile::rabbitmq::servers', {
