@@ -6,6 +6,11 @@ class ntnuopenstack::nova::api::compute {
                                 # true to automaticly populate the databases.
   })
 
+  $pci_in_placement = lookup('ntnuopenstack::nova::scheduler::enable_pci_in_placement', {
+    'default_value' => false,
+    'value_type'    => Boolean,
+  })
+
   include ::apache::mod::status
   require ::ntnuopenstack::nova::auth
   include ::ntnuopenstack::nova::common::cinder
@@ -29,4 +34,9 @@ class ntnuopenstack::nova::api::compute {
     ssl               => false,
     access_log_format => 'forwarded',
   }
+
+  class { '::nova::scheduler::filter':
+    pci_in_placement                => $pci_in_placement,
+  }
+
 }
