@@ -36,7 +36,7 @@ class ntnuopenstack::nova::api::compute {
   }
 
   class { '::nova::scheduler::filter':
-    pci_in_placement                => $pci_in_placement,
+    pci_in_placement => $pci_in_placement,
   }
 
 }
