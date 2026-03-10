@@ -10,6 +10,6 @@ class ntnuopenstack::nova::firewall::compute {
     port     => '49152-49215',
   }
   ::profile::firewall::infra::region { 'QEMU-VNC':
-    port     => '5900-5999',
+    port     => '5900-6500',
   }
 }
