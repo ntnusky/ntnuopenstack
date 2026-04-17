@@ -6,7 +6,7 @@ class ntnuopenstack::horizon::haproxy::backend {
   })
   $ip = $::facts['networking']['interfaces'][$if]['ip']
 
-  profile::services::haproxy::tools::register { "Horizon-${::hostname}":
+  profile::services::haproxy::tools::register { "Horizon-${::facts['networking']['hostname']}":
     servername  => $::facts['networking']['hostname'],
     backendname => 'bk_horizon',
   }
@@ -26,7 +26,7 @@ class ntnuopenstack::horizon::haproxy::backend {
     $tags = []
   }
 
-  @@haproxy::balancermember { "horizon-${::fqdn}":
+  @@haproxy::balancermember { "horizon-${::facts['networking']['fqdn']}":
     listening_service => 'bk_horizon',
     server_names      => $::facts['networking']['hostname'],
     ipaddresses       => $ip,

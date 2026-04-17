@@ -9,7 +9,7 @@ class ntnuopenstack::nova::compute::id {
 
   if(! ($::facts['networking']['fqdn'] in $ids)) {
     fail(join([
-      "The hostname ${::fqdn} is missing in the",
+      "The hostname ${::facts['networking']['fqdn']} is missing in the",
       "'ntnuopenstack::nova::compute::ids' key in hiera",
     ], ' '))
   }
