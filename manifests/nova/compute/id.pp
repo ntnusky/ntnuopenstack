@@ -7,7 +7,7 @@ class ntnuopenstack::nova::compute::id {
     'value_type' => Hash[String, String],
   })
 
-  if(! ($::fqdn in $ids)) {
+  if(! ($::facts['networking']['fqdn'] in $ids)) {
     fail(join([
       "The hostname ${::fqdn} is missing in the",
       "'ntnuopenstack::nova::compute::ids' key in hiera",
@@ -16,7 +16,7 @@ class ntnuopenstack::nova::compute::id {
 
   file { '/var/lib/nova/compute_id':
     ensure  => 'file',
-    content => $ids[$::fqdn],
+    content => $ids[$::facts['networking']['fqdn']],
     group   => 'nova',
     owner   => 'nova',
     mode    => '0640',

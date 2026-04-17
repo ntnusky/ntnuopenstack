@@ -48,7 +48,7 @@ class ntnuopenstack::nova::compute::service {
   }
 
   # TODO: Why do we need this?
-  $pymysql_pkg = $::osfamily ? {
+  $pymysql_pkg = $::facts['os']['family'] ? {
     'RedHat' => 'python2-PyMySQL',
     'Debian' => 'python3-pymysql',
     default  => '',

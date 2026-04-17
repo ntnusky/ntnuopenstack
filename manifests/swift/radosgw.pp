@@ -14,7 +14,7 @@ class ntnuopenstack::swift::radosgw {
   if('dnsname' in $services[$region]['services']['swift']) {
     $swiftname = $services[$region]['services']['swift']['dnsname']
   } else {
-    $swiftname = $::fqdn
+    $swiftname = $::facts['networking']['fqdn']
   }
 
   $hostname = $trusted['hostname']
