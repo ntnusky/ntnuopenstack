@@ -36,7 +36,7 @@ define ntnuopenstack::neutron::bgp::agent (
     path    => $bgpconf,
     section => 'DEFAULT',
     setting => 'host',
-    value   => "${::hostname}-${name}",
+    value   => "${::facts['networking']['hostname']}-${name}",
     require => Package['neutron-bgp-dragent'],
     tag     => [
       'neutron-dragent-bgp-config',
