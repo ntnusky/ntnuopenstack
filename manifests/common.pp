@@ -3,7 +3,7 @@ class ntnuopenstack::common {
 
   require ::ntnuopenstack::repo
 
-  case $::osfamily {
+  case $::facts['os']['family'] {
     'RedHat': {
       package { 'openstack-selinux':
         ensure  => 'present',
