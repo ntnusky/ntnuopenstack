@@ -85,8 +85,9 @@ class ntnuopenstack::horizon::base {
 
   include ::apache::mod::status
 
+  $names = [$::facts['networking']['fqdn'], $server_name] + $aliases
   class { '::horizon':
-    allowed_hosts                  => [$::fqdn, $server_name] + $aliases,
+    allowed_hosts                  => $names, 
     default_theme                  => 'default',
     enable_secure_proxy_ssl_header => $haproxy,
     help_url                       => $help_url,
@@ -108,7 +109,7 @@ class ntnuopenstack::horizon::base {
     secure_cookies                 => $haproxy,
     secret_key                     => $django_secret,
     secure_proxy_addr_header       => $secure_proxy_addr_header,
-    server_aliases                 => [$::fqdn, $server_name] + $aliases,
+    server_aliases                 => $names, 
     servername                     => $server_name,
     session_timeout                => $session_timeout,
     timezone                       => $timezone,
