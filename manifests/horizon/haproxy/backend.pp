@@ -6,8 +6,8 @@ class ntnuopenstack::horizon::haproxy::backend {
   })
   $ip = $::facts['networking']['interfaces'][$if]['ip']
 
-  profile::services::haproxy::tools::register { "Horizon-${::hostname}":
-    servername  => $::hostname,
+  profile::services::haproxy::tools::register { "Horizon-${::facts['networking']['hostname']}":
+    servername  => $::facts['networking']['hostname'],
     backendname => 'bk_horizon',
   }
 
@@ -26,9 +26,9 @@ class ntnuopenstack::horizon::haproxy::backend {
     $tags = []
   }
 
-  @@haproxy::balancermember { "horizon-${::fqdn}":
+  @@haproxy::balancermember { "horizon-${::facts['networking']['fqdn']}":
     listening_service => 'bk_horizon',
-    server_names      => $::hostname,
+    server_names      => $::facts['networking']['hostname'],
     ipaddresses       => $ip,
     ports             => '80',
     options           => 'check inter 2000 rise 2 fall 5',

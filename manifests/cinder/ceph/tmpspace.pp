@@ -10,7 +10,7 @@ class ntnuopenstack::cinder::ceph::tmpspace {
   require ::profile::ceph::client
 
   $megabytes = 1024 * $tmpsize
-  $imagename = "rbd/cinder-tmp-${::hostname}"
+  $imagename = "rbd/cinder-tmp-${::facts['networking']['hostname']}"
   exec { 'Create RBD tmpspace':
     command => "/usr/bin/rbd create --size ${megabytes} ${imagename}",
     unless  => "/usr/bin/rbd info ${imagename}",

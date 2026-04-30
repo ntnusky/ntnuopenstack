@@ -62,7 +62,7 @@ class ntnuopenstack::glance::api {
     show_multiple_locations      => true,
     sync_db                      => $db_sync,
     use_keystone_limits          => $use_keystone_limits,
-    worker_self_reference_url    => "http://${::fqdn}:9292",
+    worker_self_reference_url    => "http://${::facts['networking']['fqdn']}:9292",
   }
 
   class { '::glance::wsgi::apache':
