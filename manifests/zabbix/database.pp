@@ -14,10 +14,9 @@ class ntnuopenstack::zabbix::database {
     'glance',
     'heat',
     'keystone',
-    'magnum', 
     'neutron',
-    'nova', 
-    'nova_api', 
+    'nova',
+    'nova_api',
     'octavia',
   ]
 

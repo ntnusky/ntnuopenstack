@@ -16,15 +16,17 @@ class ntnuopenstack::clients {
     'ensure' => 'present',
   })
 
+  # TODO: Remove when magnum is completly uninstalled
+  ensure_packages('python3-magnumclient', {
+    'ensure' => 'absent',
+  })
+
   $services.each | $region, $data | {
     if('barbican' in $data['services']) {
       include ::barbican::client
     }
     if('octavia' in $data['services']) {
       include ::octavia::client
-    }
-    if('magnum' in $data['services']) {
-      include ::magnum::client
     }
   }
 }

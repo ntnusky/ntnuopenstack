@@ -100,14 +100,6 @@ class ntnuopenstack::keystone::endpoint {
       }
     }
 
-    if('magnum' in $data['services']) {
-      ::ntnuopenstack::magnum::endpoint { $region:
-        password => $data['services']['magnum']['keystone']['password'],
-        username => $data['services']['magnum']['keystone']['username'],
-        *        => $common
-      }
-    }
-
     if('neutron' in $data['services']) {
       ::ntnuopenstack::neutron::endpoint { $region:
         password => $data['services']['neutron']['keystone']['password'],

@@ -11,14 +11,14 @@ class ntnuopenstack::horizon::plugins {
     if('octavia' in $data['services']) {
       include ::horizon::dashboards::octavia
     }
-    if('magnum' in $data['services']) {
-      ensure_packages('python3-magnum-ui', {
-        'ensure' => 'present',
-        'tag'    => ['horizon-package']
-      })
-    }
     if('designate' in $data['services']) {
       include ::horizon::dashboards::designate
     }
   }
+
+  # TODO: Remove this when Magnum is completly removed
+  ensure_packages('python3-magnum-ui', {
+    'ensure' => 'absent',
+    'tag'    => ['horizon-package']
+  })
 }
