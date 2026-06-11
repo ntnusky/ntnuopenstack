@@ -5,7 +5,7 @@ class ntnuopenstack::horizon::plugins {
   })
 
   $services.each | $region, $data | {
-    if('heat' in $data['services']) {
+    if('heat' in $data['services'] and ($data['services']['heat']['dashboard'] != false) ) {
       include ::horizon::dashboards::heat
     }
     if('octavia' in $data['services']) {
