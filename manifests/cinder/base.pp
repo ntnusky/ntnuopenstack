@@ -35,10 +35,6 @@ class ntnuopenstack::cinder::base {
     *                     => $ha_transport_conf,
   }
 
-  cinder_config {
-    'DEFAULT/disk_geometry': value => '512e';
-  }
-
   class { '::cinder::glance':
     auth_type          => 'password',
     auth_url           => $auth_url,

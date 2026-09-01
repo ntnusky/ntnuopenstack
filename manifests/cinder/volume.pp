@@ -39,6 +39,9 @@ class ntnuopenstack::cinder::volume {
   $backends.each | $bname, $pool | {
     cinder::backend::rbd { $bname :
       enable_deferred_deletion => true,
+      extra_options            => {
+        "${bname}/disk_geometry" =>  { 'value' => '512e' }
+      },
       manage_package           => false,
       rbd_pool                 => $pool,
       rbd_user                 => $ceph_user,
