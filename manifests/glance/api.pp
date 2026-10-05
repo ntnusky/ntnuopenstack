@@ -27,7 +27,6 @@ class ntnuopenstack::glance::api {
     'value_type'    => Boolean,
   })
 
-  include ::apache::mod::status
   require ::ntnuopenstack::glance::auth
   contain ::ntnuopenstack::glance::ceph
   include ::ntnuopenstack::glance::dbconnection
@@ -65,9 +64,5 @@ class ntnuopenstack::glance::api {
     worker_self_reference_url    => "http://${::facts['networking']['fqdn']}:9292",
   }
 
-  class { '::glance::wsgi::apache':
-    access_log_format     => $logformat,
-    ssl                   => false,
-    vhost_custom_fragment => 'LimitRequestBody 0',
-  }
+  class { '::glance::wsgi::uwsgi': }
 }
