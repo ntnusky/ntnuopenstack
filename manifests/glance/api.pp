@@ -56,7 +56,6 @@ class ntnuopenstack::glance::api {
     enabled_backends             => ['ceph-default:rbd'],
     enable_proxy_headers_parsing => $confhaproxy,
     require_image_format_match   => $require_image_format_match,
-    service_name                 => 'httpd',
     show_image_direct_url        => true,
     show_multiple_locations      => true,
     sync_db                      => $db_sync,
