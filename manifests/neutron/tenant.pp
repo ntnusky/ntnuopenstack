@@ -52,7 +52,7 @@ class ntnuopenstack::neutron::tenant {
       }
       $tenant_bridge = 'br-provider'
       $provider = 'provider'
-    } else ($strategy == 'combo') {
+    } elsif ($strategy == 'combo') {
       fail('Both VLAN and VXLAN tenant networks requires explicit ovs config')
     }
     $tenant_mapping = "${provider}:${tenant_bridge}"
