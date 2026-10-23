@@ -17,6 +17,8 @@ class ntnuopenstack::neutron::tenant {
     if ($strategy == 'vlan') {
       $tenant_mapping = "physnet-vlan:${tenant_bridge}"
     } elsif ($strategy in ['vxlan', 'combo']) {
+      include ::ntnuopenstack::neutron::firewall::vxlan
+
       $vlan = lookup('ntnuopenstack::tenant::vlan', Integer)
 
       if($strategy == 'vxlan') {
