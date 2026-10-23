@@ -53,6 +53,7 @@ class ntnuopenstack::neutron::ml2::config {
     })
 
     $vni_ranges = "${low}:${high}"
+    $vxlan_type_driver = ['vxlan']
   } else {
     $vni_ranges = '10:100' # The default in puppet-neutron
     $vxlan_type_driver = []
