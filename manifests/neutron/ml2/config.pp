@@ -65,7 +65,7 @@ class ntnuopenstack::neutron::ml2::config {
     network_vlan_ranges   => $vlan_ranges,
     physical_network_mtus => $physnetmtu,
     project_network_types => $tenant_nettypes,
-    type_drivers          => [ 'flat' ] + $vlan_type_driver + $vxlan_type_driver,
+    type_drivers          => $vlan_type_driver + $vxlan_type_driver + ['flat'],
     vni_ranges            => $vni_ranges,
   }
 }
