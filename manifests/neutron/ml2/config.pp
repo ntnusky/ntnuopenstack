@@ -7,7 +7,7 @@ class ntnuopenstack::neutron::ml2::config {
   })
   $tenant_nettypes = lookup('ntnuopenstack::neutron::tenant::network::types', {
     'default_value' => [ $strategy ],
-    'value_type'    => List[Enum['vlan', 'vxlan']],
+    'value_type'    => Array[Enum['vlan', 'vxlan']],
   })
 
   $connections = lookup('ntnuopenstack::neutron::external::connections', {
