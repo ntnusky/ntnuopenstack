@@ -28,6 +28,7 @@ class ntnuopenstack::neutron::tenant {
         ]
       }
 
+      ::profile::infrastructure::ovs::bridge { 'br-provider' : }
       ::profile::infrastructure::ovs::patch::vlan { "br-provider to ${tenant_bridge}":
         source_bridge      => $tenant_bridge,
         source_vlan        => $vlan,
