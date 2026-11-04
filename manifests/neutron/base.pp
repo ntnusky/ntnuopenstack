@@ -45,6 +45,10 @@ class ntnuopenstack::neutron::base {
     *                       => $ha_transport_conf,
   }
 
+  neutron_config { 'DEFAULT/bgp_drscheduler_driver' :
+    value => 'neutron_dynamic_routing.services.bgp.scheduler.bgp_dragent_scheduler.StaticScheduler',
+  }
+
   neutron_config { 'DEFAULT/max_routes':
     value => $max_routes,
   }
