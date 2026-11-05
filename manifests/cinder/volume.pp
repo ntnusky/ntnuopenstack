@@ -16,7 +16,7 @@ class ntnuopenstack::cinder::volume {
 
   $disk_geometry = lookup('ntnuopenstack::cinder::rbd::disk_geometry', {
     'default_value' => undef,
-    'value_type'    => Enum['512', '512e', '4k', undef],
+    'value_type'    => Optional[Enum['512', '512e', '4k']],
   })
 
   $types = lookup('ntnuopenstack::cinder::types', {
