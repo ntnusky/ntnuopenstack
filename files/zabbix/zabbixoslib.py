@@ -646,7 +646,12 @@ def nova_metrics(host, username, password, misc = None):
 def octavia_metrics(host, username, password):
   data = {
     'loadbalancer_status_summary': {
-      'provisioning_status': {},
+      'provisioning_status': {
+        'ERROR': {
+          'name': 'ERROR',
+          'value': 0
+        },
+      },
       'operating_status': {},
       'topology': {},
     },

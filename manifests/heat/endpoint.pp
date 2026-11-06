@@ -36,21 +36,14 @@ define ntnuopenstack::heat::endpoint (
   }
 
   keystone::resource::service_identity { "heat-cfn-${region}":
-    configure_user      => true,
-    configure_user_role => true,
+    configure_user      => false,
+    configure_user_role => false,
     configure_endpoint  => true,
     configure_service   => true,
     service_type        => 'cloudformation',
     service_description => 'OpenStack Cloudformation Service',
     service_name        => 'heat-cfn',
     region              => $region,
-    auth_name           => "${username}-cfn",
-    password            => $password,
-    email               => 'heat-cfn@localhost',
-    tenant              => 'services',
-    roles               => ['admin', 'service'],
-    system_scope        => 'all',
-    system_roles        => [],
     public_url          => "${publicurl}:8000/v1",
     admin_url           => "${adminurl}:8000/v1",
     internal_url        => "${internalurl}:8000/v1",

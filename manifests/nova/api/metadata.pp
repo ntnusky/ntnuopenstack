@@ -17,6 +17,7 @@ class ntnuopenstack::nova::api::metadata {
   }
 
   class { '::nova::metadata':
+    dhcp_domain                          => '',
     neutron_metadata_proxy_shared_secret => $neutron_secret,
   }
 

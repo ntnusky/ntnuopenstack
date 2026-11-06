@@ -27,7 +27,7 @@ class ntnuopenstack::neutron::ml2::config {
       mechanism_drivers     => ['openvswitch', 'l2population'],
       network_vlan_ranges   => ["physnet-vlan:${low}:${high}"],
       physical_network_mtus => $physnetmtu,
-      tenant_network_types  => ['vlan'],
+      project_network_types => ['vlan'],
       type_drivers          => ['vlan', 'flat'],
     }
   } elsif($strategy == 'vxlan') {
@@ -35,7 +35,7 @@ class ntnuopenstack::neutron::ml2::config {
       extension_drivers     => $extension_drivers,
       mechanism_drivers     => ['openvswitch', 'l2population'],
       physical_network_mtus => $physnetmtu,
-      tenant_network_types  => ['vxlan'],
+      project_network_types => ['vxlan'],
       type_drivers          => ['vxlan', 'flat'],
       vni_ranges            => "${low}:${high}"
     }
