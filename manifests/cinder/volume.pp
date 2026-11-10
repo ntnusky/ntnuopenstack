@@ -8,19 +8,24 @@ class ntnuopenstack::cinder::volume {
   })
 
   $backends = lookup('ntnuopenstack::cinder::rbd::backends', {
-    'value_type'    => Hash[String, String],
     'default_value' => {
       'rbd-images' => 'volumes',
     },
+    'value_type'    => Hash[String, String],
+  })
+
+  $disk_geometry = lookup('ntnuopenstack::cinder::rbd::disk_geometry', {
+    'default_value' => undef,
+    'value_type'    => Optional[Enum['512', '512e', '4k']],
   })
 
   $types = lookup('ntnuopenstack::cinder::types', {
-    'value_type'    => Hash[String, Hash[String, Variant[String, Hash]]],
     'default_value' => {
       'Normal'      => {
         'backend' => 'rbd-images',
       },
     },
+    'value_type'    => Hash[String, Hash[String, Variant[String, Hash]]],
   })
 
   require ::ntnuopenstack::repo
@@ -36,16 +41,22 @@ class ntnuopenstack::cinder::volume {
     'DEFAULT/enabled_backends': value => join($backends.keys(), ',');
   }
 
+
   $backends.each | $bname, $pool | {
+    if ( $disk_geometry ) {
+      $geometry = {
+        'extra_options' => { "${bname}/disk_geometry" => { 'value' => $disk_geometry } }
+      }
+    } else {
+      $geometry = {}
+    }
     cinder::backend::rbd { $bname :
       enable_deferred_deletion => true,
-      extra_options            => {
-        "${bname}/disk_geometry" =>  { 'value' => '512e' }
-      },
       manage_package           => false,
       rbd_pool                 => $pool,
       rbd_user                 => $ceph_user,
       rbd_secret_uuid          => $ceph_uuid,
+      *                        => $geometry,
     }
   }
 
