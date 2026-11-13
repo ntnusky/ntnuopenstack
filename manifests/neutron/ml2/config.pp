@@ -1,7 +1,11 @@
 # Configures neutron for the ML2 plugin.
 class ntnuopenstack::neutron::ml2::config {
+  # These two keys are deprecated, and should be replaced by the
+  # VLAN/VXLAN-specific variants. To be removed at a later point in time.
   $low = lookup('ntnuopenstack::neutron::tenant::isolation::id::low', Integer)
   $high = lookup('ntnuopenstack::neutron::tenant::isolation::id::high', Integer)
+
+
   $strategy = lookup('ntnuopenstack::neutron::tenant::isolation::type', {
     'value_type' => Enum['vlan', 'vxlan', 'combo'],
   })
