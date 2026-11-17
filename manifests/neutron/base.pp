@@ -47,6 +47,7 @@ class ntnuopenstack::neutron::base {
 
   # TODO: Monitor when this becomes a parameter in ::neutron
   neutron_config {
+    'DEFAULT/bgp_drscheduler_driver': value => 'neutron_dynamic_routing.services.bgp.scheduler.bgp_dragent_scheduler.StaticScheduler';
     'DEFAULT/max_routes': value => $max_routes;
     'oslo_messaging_rabbit/rabbit_stream_fanout': value => true;
     'oslo_messaging_rabbit/use_queue_manager': value => true;

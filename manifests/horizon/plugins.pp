@@ -4,21 +4,25 @@ class ntnuopenstack::horizon::plugins {
     'value_type' => Hash[String, Hash[String, Variant[Hash, String]]],
   })
 
+  # NOTE: To fully disable a dashboard, dashboard: false must be set inn ALL regions
+  # in the services construct in hiera
+  # This logic will default to true if the dashboard key doesn't exists for a given service
+  # (because looking up a non-existent key is undef and that's not equal to false)
   $services.each | $region, $data | {
-    if('heat' in $data['services']) {
+    if('heat' in $data['services'] and ($data['services']['heat']['dashboard'] != false) ) {
       include ::horizon::dashboards::heat
     }
-    if('octavia' in $data['services']) {
+    if('octavia' in $data['services'] and ($data['services']['octavia']['dashboard'] != false) )  {
       include ::horizon::dashboards::octavia
     }
-    if('magnum' in $data['services']) {
-      ensure_packages('python3-magnum-ui', {
-        'ensure' => 'present',
-        'tag'    => ['horizon-package']
-      })
-    }
-    if('designate' in $data['services']) {
+    if('designate' in $data['services'] and ($data['services']['designate']['dashboard'] != false) ) {
       include ::horizon::dashboards::designate
     }
   }
+
+  # TODO: Remove this when Magnum is completly removed
+  ensure_packages('python3-magnum-ui', {
+    'ensure' => 'absent',
+    'tag'    => ['horizon-package']
+  })
 }

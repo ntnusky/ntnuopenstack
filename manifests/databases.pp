@@ -14,7 +14,7 @@ class ntnuopenstack::databases {
   # hiera, and if the service belongs in this clusters role, being region-
   # specific, common services, or all combined in single region clouds.
   $services_region = ['barbican', 'cinder', 'glance', 'heat',
-    'magnum', 'neutron', 'nova', 'octavia', 'placement', ]
+    'neutron', 'nova', 'octavia', 'placement', ]
   $services_common = ['designate', 'keystone']
 
   $mysqlrole = lookup('profile::mysql::serverrole', {

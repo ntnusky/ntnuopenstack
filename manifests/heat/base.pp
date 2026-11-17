@@ -27,8 +27,6 @@ class ntnuopenstack::heat::base {
   }
 
   class { '::heat':
-    enable_stack_adopt           => true,
-    enable_stack_abandon         => true,
     default_transport_url        => $transport_url,
     region_name                  => $region,
     enable_proxy_headers_parsing => true,

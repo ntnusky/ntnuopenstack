@@ -27,8 +27,7 @@ class ntnuopenstack::neutron::ovs (
     "${key}:br-${key}"
   }
 
-  $bridge_mappings = [ $tenant_mapping ]
-  $mappings = concat($bridge_mappings, $external_mappings)
+  $mappings = [] + $tenant_mapping + $external_mappings
 
   class { '::neutron::agents::ml2::ovs':
     bridge_mappings => $mappings,

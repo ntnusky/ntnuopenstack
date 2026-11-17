@@ -36,7 +36,14 @@ class ntnuopenstack::cinder::base {
   }
 
   class { '::cinder::glance':
+    auth_type          => 'password',
+    auth_url           => $auth_url,
     glance_api_servers => "${api_internal}:9292",
+    password           =>
+      $services[$region_name]['services']['glance']['keystone']['password'],
+    region_name        => $region_name,
+    username           =>
+      $services[$region_name]['services']['glance']['keystone']['username'],
   }
 
   class { '::cinder::nova':

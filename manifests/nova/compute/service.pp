@@ -10,17 +10,7 @@ class ntnuopenstack::nova::compute::service {
     'default_value' => false,
   })
 
-  $slversion = lookup('profile::shiftleader::major::version', {
-    'default_value' => 1,
-    'value_type'    => Integer,
-  })
-
-  if($slversion == 1) {
-    $management_if = lookup('profile::interfaces::management')
-    $management_ip = getvar("::ipaddress_${management_if}")
-  } else {
-    $management_ip = $::sl2['server']['primary_interface']['ipv4']
-  }
+  $management_ip = $::sl2['server']['primary_interface']['ipv4']
 
   require ::ntnuopenstack::nova::compute::base
   require ::ntnuopenstack::repo
@@ -48,7 +38,7 @@ class ntnuopenstack::nova::compute::service {
   }
 
   # TODO: Why do we need this?
-  $pymysql_pkg = $::osfamily ? {
+  $pymysql_pkg = $::facts['os']['family'] ? {
     'RedHat' => 'python2-PyMySQL',
     'Debian' => 'python3-pymysql',
     default  => '',

@@ -37,7 +37,7 @@ class ntnuopenstack::horizon::haproxy::frontend {
 
     # If there is defined an override-list for a certain haproxy-backend, use
     # that list as the list of regions to collect servers from.
-    if("bk_${name}" in $overrides) {
+    if('bk_horizon' in $overrides) {
       $regions = [] + $overrides['bk_horizon']
 
     # Otherwise use the haproxy-servers region

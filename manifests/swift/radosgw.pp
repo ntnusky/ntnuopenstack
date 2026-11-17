@@ -14,7 +14,7 @@ class ntnuopenstack::swift::radosgw {
   if('dnsname' in $services[$region]['services']['swift']) {
     $swiftname = $services[$region]['services']['swift']['dnsname']
   } else {
-    $swiftname = $::fqdn
+    $swiftname = $::facts['networking']['fqdn']
   }
 
   $hostname = $trusted['hostname']
@@ -40,5 +40,19 @@ class ntnuopenstack::swift::radosgw {
 
   ceph_config {
     "client.radosgw.${hostname}/rgw_enable_usage_log": value => true; 
+  }
+
+  ::logrotate::rule { 'ceph-common':
+    path          => '/var/log/ceph/*.log',
+    compress      => true,
+    maxsize       => '4G',
+    missingok     => true,
+    postrotate    => 'killall -q -1 ceph-mon ceph-mgr ceph-mds ceph-osd ceph-fuse radosgw rbd-mirror cephfs-mirror || pkill -1 -x "ceph-mon|ceph-mgr|ceph-mds|ceph-osd|ceph-fuse|radosgw|rbd-mirror|cephfs-mirror" || true',
+    rotate        => 14,
+    rotate_every  => 'day',
+    sharedscripts => true,
+    su            => true,
+    su_user       => 'root',
+    su_group      => 'ceph',
   }
 }

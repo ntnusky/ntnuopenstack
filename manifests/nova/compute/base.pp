@@ -25,6 +25,11 @@ class ntnuopenstack::nova::compute::base {
     'value_type'    => Integer,
   })
 
+  $pci_in_placement = lookup('ntnuopenstack::nova::scheduler::enable_pci_in_placement', {
+    'default_value' => false,
+    'value_type'    => Boolean,
+  })
+
   $management_ip = $::sl2['server']['primary_interface']['ipv4']
 
   class { '::ntnuopenstack::nova::common::base':
@@ -34,6 +39,10 @@ class ntnuopenstack::nova::compute::base {
       initial_disk_allocation_ratio => $disk_allocation,
       my_ip                         => $management_ip,
     }
+  }
+
+  class { '::nova::scheduler::filter':
+    pci_in_placement => $pci_in_placement,
   }
 
   nova_config {

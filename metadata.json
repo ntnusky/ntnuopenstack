@@ -1,41 +1,46 @@
 {
   "name": "ntnusky-ntnuopenstack",
-  "version": "4.3.2",
+  "version": "vE.0.1",
   "author": "NTNU IIK",
   "summary": "Installs, configures, and manages openstack.",
   "license": "",
   "source": "https://github.com/ntnusky/ntnuopenstack",
   "project_page": "https://github.com/ntnusky/ntnuopenstack",
   "dependencies": [
-    { "name":"openstack/ceph","version_requirement":">= 2.4.0 < 3.0.0" },
-    { "name":"openstack/cinder","version_requirement":">= 12.4.0 < 13.0.0" },
-    { "name":"openstack/glance","version_requirement":">= 12.5.0 < 13.0.0" },
-    { "name":"openstack/heat","version_requirement":">= 12.4.0 < 13.0.0" },
-    { "name":"openstack/horizon","version_requirement":">= 13.1.0 < 14.0.0" },
-    { "name":"openstack/keystone","version_requirement":">= 12.4.0 < 13.0.0" },
-    { "name":"openstack/neutron","version_requirement":">= 12.4.0 < 13.0.0" },
-    { "name":"openstack/nova","version_requirement":">= 12.4.0 < 13.0.0" },
-    { "name":"openstack/openstack_extras","version_requirement":">= 12.4.0 < 13.0.0" },
-    { "name":"openstack/openstacklib","version_requirement":">= 12.4.0 < 13.0.0" },
-    { "name":"openstack/oslo","version_requirement":">= 12.4.0 < 13.0.0" },
-    { "name":"openstack/vswitch","version_requirement":">= 8.4.0 < 9.0.0" },
-    { "name":"puppetlabs/stdlib","version_requirement":">= 4.25.0 < 6.0.0" },
-    { "name":"puppetlabs/inifile","version_requirement":">= 1.5.0 < 2.0.0" },
-    { "name":"ntnusky/profile","version_requirement":">= 1.11.7 < 2.0.0 " }
+    { "name":"openstack/barbican","version_requirement":">= 26.0.0 < 27.0.0" },
+    { "name":"openstack/ceph","version_requirement":">= 7.0.0 < 8.0.0" },
+    { "name":"openstack/cinder","version_requirement":">= 26.0.0 < 27.0.0" },
+    { "name":"openstack/designate","version_requirement":">= 26.0.0 < 27.0.0" },
+    { "name":"openstack/glance","version_requirement":">= 26.0.0 < 27.0.0" },
+    { "name":"openstack/heat","version_requirement":">= 26..00 < 27.0.0" },
+    { "name":"openstack/horizon","version_requirement":">= 26.0.0 < 27.0.0" },
+    { "name":"openstack/keystone","version_requirement":">= 26.0.0 < 27.0.0" },
+    { "name":"openstack/magnum","version_requirement":">= 26.0.0 < 27.0.0" },
+    { "name":"openstack/neutron","version_requirement":">= 26.0.0 < 27.0.0" },
+    { "name":"openstack/nova","version_requirement":">= 26.0.0 < 27.0.0" },
+    { "name":"openstack/octavia","version_requirement":">= 26.0.0 < 27.0.0" },
+    { "name":"openstack/openstack_extras","version_requirement":">= 26.0.0 < 27.0.0" },
+    { "name":"openstack/openstacklib","version_requirement":">= 26.0.0 < 27.0.0" },
+    { "name":"openstack/oslo","version_requirement":">= 26.0.0 < 27.0.0" },
+    { "name":"openstack/placement","version_requirement":">= 26.0.0 < 27.0.0" },
+    { "name":"openstack/vswitch","version_requirement":">= 22.0.0 < 23.0.0" },
+    { "name":"puppetlabs/stdlib","version_requirement":">= 9.7.0 < 10.0.0" },
+    { "name":"puppetlabs/inifile","version_requirement":">= 6.2.0 < 7.0.0" },
+    { "name":"ntnusky/profile","version_requirement":">= 1.30.9 < 2.0.0 " }
   ],
-  "data_provider": "hiera",
   "operatingsystem_support": [
     {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
-        "16.04"
+        "22.04",
+        "24.04"
       ]
     }
   ],
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 3.8.0 < 6.0.0"
+      "version_requirement": ">= 7.0.0 < 9.0.0"
     }
   ],
   "description": "Configures puppet openstack"

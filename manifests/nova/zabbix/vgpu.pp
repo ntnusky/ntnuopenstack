@@ -18,7 +18,7 @@ class ntnuopenstack::nova::zabbix::vgpu {
   }
 
   zabbix::userparameters { 'vgpu':
-    content => 'UserParameter=vgpu.data,/usr/local/sbin/get-vgpu-data.py',
+    content => 'UserParameter=vgpu.data,sudo /usr/local/sbin/get-vgpu-data.py',
   }
 
   zabbix::userparameters { 'nvidia_gpus':
