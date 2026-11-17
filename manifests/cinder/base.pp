@@ -18,8 +18,11 @@ class ntnuopenstack::cinder::base {
 
   if ($rabbitservers) {
     $ha_transport_conf = {
+      rabbit_qos_prefetch_count     => 1,
       rabbit_quorum_queue           => true,
+      rabbit_stream_fanout          => true,
       rabbit_transient_quorum_queue => true,
+      use_queue_manager             => true,
     }
   } else {
     $ha_transport_conf = {}
@@ -55,11 +58,5 @@ class ntnuopenstack::cinder::base {
     region_name => $region_name,
     username    =>
       $services[$region_name]['services']['nova']['keystone']['username'],
-  }
-
-  # TODO: Monitor when this becomes a parameter in ::cinder
-  cinder_config {
-    'oslo_messaging_rabbit/rabbit_stream_fanout': value => true;
-    'oslo_messaging_rabbit/use_queue_manager': value => true;
   }
 }

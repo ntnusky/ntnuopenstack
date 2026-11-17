@@ -8,8 +8,11 @@ class ntnuopenstack::octavia::base {
 
   if ($rabbitservers) {
     $ha_transport_conf = {
+      rabbit_qos_prefetch_count     => 1,
       rabbit_quorum_queue           => true,
+      rabbit_stream_fanout          => true,
       rabbit_transient_quorum_queue => true,
+      rabbit_use_queue_manager      => true,
     }
   } else {
     $ha_transport_conf = {}
@@ -24,12 +27,6 @@ class ntnuopenstack::octavia::base {
   class { '::octavia':
     default_transport_url => $transport_url,
     *                     => $ha_transport_conf,
-  }
-
-  # TODO: Monitor when this becomes a parameter in ::octavia
-  octavia_config {
-    'oslo_messaging_rabbit/rabbit_stream_fanout': value => true;
-    'oslo_messaging_rabbit/use_queue_manager': value => true;
   }
 
   class { '::octavia::cinder':

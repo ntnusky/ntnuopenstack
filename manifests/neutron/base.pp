@@ -28,8 +28,11 @@ class ntnuopenstack::neutron::base {
 
   if ($rabbitservers) {
     $ha_transport_conf = {
+      rabbit_qos_prefetch_count     => 1,
       rabbit_quorum_queue           => true,
+      rabbit_stream_fanout          => true,
       rabbit_transient_quorum_queue => true,
+      rabbit_use_queue_manager      => true,
     }
   } else {
     $ha_transport_conf = {}
@@ -45,11 +48,8 @@ class ntnuopenstack::neutron::base {
     *                       => $ha_transport_conf,
   }
 
-  # TODO: Monitor when this becomes a parameter in ::neutron
   neutron_config {
     'DEFAULT/bgp_drscheduler_driver': value => 'neutron_dynamic_routing.services.bgp.scheduler.bgp_dragent_scheduler.StaticScheduler';
     'DEFAULT/max_routes': value => $max_routes;
-    'oslo_messaging_rabbit/rabbit_stream_fanout': value => true;
-    'oslo_messaging_rabbit/use_queue_manager': value => true;
   }
 }
