@@ -46,4 +46,9 @@ class ntnuopenstack::barbican::api {
     ssl               => false,
     access_log_format => 'forwarded',
   }
+
+  barbican_config {
+    'oslo_messaging_rabbit/kombu_reconnect_splay': value => 2;
+    'oslo_concurrency/lock_path': value => '/var/lib/barbican/tmp';
+  }
 }
