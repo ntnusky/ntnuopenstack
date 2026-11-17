@@ -16,6 +16,7 @@ class ntnuopenstack::barbican::api {
       rabbit_qos_prefetch_count     => 1,
       rabbit_quorum_queue           => true,
       rabbit_stream_fanout          => true,
+      rabbit_transient_queues_ttl   => 0,
       rabbit_transient_quorum_queue => true,
       rabbit_use_queue_manager      => true,
     }
