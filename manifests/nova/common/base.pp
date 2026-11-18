@@ -17,6 +17,7 @@ class ntnuopenstack::nova::common::base (
       rabbit_qos_prefetch_count     => 1,
       rabbit_quorum_queue           => true,
       rabbit_stream_fanout          => true,
+      rabbit_transient_queues_ttl   => 0,
       rabbit_transient_quorum_queue => true,
       rabbit_use_queue_manager      => true,
     }
@@ -29,5 +30,9 @@ class ntnuopenstack::nova::common::base (
   class { '::nova':
     default_transport_url => $transport_url,
     *                     => $ha_transport_conf + $extra_options,
+  }
+
+  nova_config { 'oslo_messaging_rabbit/kombu_reconnect_splay':
+    value => 2,
   }
 }
