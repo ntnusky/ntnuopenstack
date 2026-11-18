@@ -70,4 +70,12 @@ class ntnuopenstack::glance::api {
     ssl                   => false,
     vhost_custom_fragment => 'LimitRequestBody 0',
   }
+
+  file { '/var/lock/glance':
+    ensure  => directory,
+    owner   => 'glance',
+    group   => 'glance',
+    mode    => '0755',
+    require => Class['glance::api'],
+  }
 }
