@@ -34,7 +34,6 @@ class ntnuopenstack::glance::api {
   contain ::ntnuopenstack::glance::firewall::server::api
   include ::ntnuopenstack::glance::horizon
   include ::ntnuopenstack::glance::quota
-  include ::ntnuopenstack::glance::rabbit
   include ::ntnuopenstack::glance::sudo
   require ::ntnuopenstack::repo
 
