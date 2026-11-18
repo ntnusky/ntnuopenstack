@@ -31,6 +31,7 @@ class ntnuopenstack::neutron::base {
       rabbit_qos_prefetch_count     => 1,
       rabbit_quorum_queue           => true,
       rabbit_stream_fanout          => true,
+      rabbit_transient_queues_ttl   => 0,
       rabbit_transient_quorum_queue => true,
       rabbit_use_queue_manager      => true,
     }
@@ -51,5 +52,6 @@ class ntnuopenstack::neutron::base {
   neutron_config {
     'DEFAULT/bgp_drscheduler_driver': value => 'neutron_dynamic_routing.services.bgp.scheduler.bgp_dragent_scheduler.StaticScheduler';
     'DEFAULT/max_routes': value => $max_routes;
+    'oslo_messaging_rabbit/kombu_reconnect_splay': value => 2;
   }
 }
