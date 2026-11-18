@@ -23,7 +23,7 @@ class ntnuopenstack::cinder::base {
       rabbit_stream_fanout          => true,
       rabbit_transient_queues_ttl   => 0,
       rabbit_transient_quorum_queue => true,
-      rabbit_use_queue_manager             => true,
+      rabbit_use_queue_manager      => true,
     }
   } else {
     $ha_transport_conf = {}
