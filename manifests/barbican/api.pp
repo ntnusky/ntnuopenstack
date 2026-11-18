@@ -52,4 +52,12 @@ class ntnuopenstack::barbican::api {
     'oslo_messaging_rabbit/kombu_reconnect_splay': value => 2;
     'oslo_concurrency/lock_path': value => '/var/lib/barbican/tmp';
   }
+
+  file { '/var/lib/barbican/tmp':
+    ensure  => directory,
+    group   => 'barbican',
+    mode    => '0750',
+    owner   => 'barbican',
+    require => Class['::barbican'],
+  }
 }
