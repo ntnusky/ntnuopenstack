@@ -21,6 +21,7 @@ class ntnuopenstack::cinder::base {
       rabbit_qos_prefetch_count     => 1,
       rabbit_quorum_queue           => true,
       rabbit_stream_fanout          => true,
+      rabbit_transient_queues_ttl   => 0,
       rabbit_transient_quorum_queue => true,
       use_queue_manager             => true,
     }
@@ -58,5 +59,9 @@ class ntnuopenstack::cinder::base {
     region_name => $region_name,
     username    =>
       $services[$region_name]['services']['nova']['keystone']['username'],
+  }
+
+  cinder_config { 'oslo_messaging_rabbit/kombu_reconnect_splay':
+    value => 2,
   }
 }
