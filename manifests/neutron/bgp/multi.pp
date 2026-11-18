@@ -22,6 +22,9 @@ class ntnuopenstack::neutron::bgp::multi {
   Systemd::Manage_unit['neutron-bgp-multiagent@.service']
   -> Service <| tag == 'neutron-bgp-mutiagent-service' |>
 
+  Anchor['neutron::service::begin']
+  ~> Service <| tag == 'neutron-bgp-mutiagent-service' |>
+
   systemd::manage_unit { 'neutron-bgp-multiagent@.service':
     enable        => false,
     active        => false,
