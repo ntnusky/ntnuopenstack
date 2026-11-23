@@ -72,7 +72,7 @@ class ntnuopenstack::neutron::tenant {
     manage_vswitch => $manage_vswitch,
     tenant_mapping => $tenant_mapping,
     local_ip       => $local_ip,
-    tunnel_types   => $strategy in ['vxlan','common'] ? {
+    tunnel_types   => $strategy in ['vxlan','combo'] ? {
                             true => ['vxlan'], default => undef, },
   }
 }
